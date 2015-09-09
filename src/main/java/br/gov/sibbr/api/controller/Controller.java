@@ -24,8 +24,13 @@ public class Controller {
 	
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/occurrences", method = RequestMethod.GET)
-	public Result occurrence(@RequestParam(value="scientificname", defaultValue="") String scientificname) {
-		ArrayList<Occurrence> occurrences = service.fetchOccurrences(scientificname);
+	public Result occurrence(@RequestParam(value="scientificname", defaultValue="") String scientificname, @RequestParam(value="ignoreNullCoordinates", defaultValue="false") String ignorenullcoordinates) {
+		ArrayList<Occurrence> occurrences = null;
+		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
+			occurrences = service.fetchOccurrences(scientificname, false);
+		} else {
+			occurrences = service.fetchOccurrences(scientificname, true);
+		}
 		return new Result(scientificname, occurrences);
 	}
 }

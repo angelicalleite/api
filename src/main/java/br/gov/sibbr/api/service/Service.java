@@ -46,9 +46,14 @@ public class Service {
 	 * @param scientificname
 	 * @return
 	 */
-	public ArrayList<Occurrence> fetchOccurrences(String scientificname) {
+	public ArrayList<Occurrence> fetchOccurrences(String scientificname, boolean ignoreNullCoordinates) {
 		ArrayList<Occurrence> occurrences = null;
-		ResultSet rs = dbc.queryOccurrences(scientificname);
+		ResultSet rs = null;
+		if (ignoreNullCoordinates) {
+			rs = dbc.queryOccurrencesIgnoreNullCoordinates(scientificname);
+		} else {
+			rs = dbc.queryOccurrences(scientificname);
+		}	
 		if (rs != null)
 			occurrences = processResultSet(rs);
 

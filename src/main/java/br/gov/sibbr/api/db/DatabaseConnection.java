@@ -105,4 +105,26 @@ public class DatabaseConnection {
 		}
 		return resultSet;
 	}
+	
+	/**
+	 * Fetches records from dataportal schema, returning the auto_id,
+	 * decimallatitude and decmiallongitude fields from occurrence table that
+	 * match the given scientificname;
+	 * 
+	 * @param scientificname
+	 * @return
+	 */
+	public ResultSet queryOccurrencesIgnoreNullCoordinates(String scientificname) {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery(
+					"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+							+ scientificname + "\' and decimallatitude is not null and decimallatitude is not null");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
 }
