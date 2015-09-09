@@ -92,20 +92,27 @@ public class DatabaseConnection {
 	 * @param scientificname
 	 * @return
 	 */
-	public ResultSet queryOccurrences(String scientificname) {
+	public ResultSet queryOccurrences(String scientificname, int limit) {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
-							+ scientificname + "\'");
+			// Avoid limit values out of the appropriate range ( <= 0)
+			if (limit > 0) {
+				resultSet = statement.executeQuery(
+						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+								+ scientificname + "\' limit " + limit);
+			} else {
+				resultSet = statement.executeQuery(
+						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+								+ scientificname + "\'");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return resultSet;
 	}
-	
+
 	/**
 	 * Fetches records from dataportal schema, returning the auto_id,
 	 * decimallatitude and decmiallongitude fields from occurrence table that
@@ -114,14 +121,23 @@ public class DatabaseConnection {
 	 * @param scientificname
 	 * @return
 	 */
-	public ResultSet queryOccurrencesIgnoreNullCoordinates(String scientificname) {
+	public ResultSet queryOccurrencesIgnoreNullCoordinates(String scientificname, int limit) {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
-							+ scientificname + "\' and decimallatitude is not null and decimallatitude is not null");
+			// Avoid limit values out of the appropriate range ( <= 0)
+			if (limit > 0) {
+				resultSet = statement.executeQuery(
+						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+								+ scientificname
+								+ "\' and decimallatitude is not null and decimallatitude is not null limit " + limit);
+			} else {
+				resultSet = statement.executeQuery(
+						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+								+ scientificname
+								+ "\' and decimallatitude is not null and decimallatitude is not null");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

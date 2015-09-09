@@ -46,13 +46,13 @@ public class Service {
 	 * @param scientificname
 	 * @return
 	 */
-	public ArrayList<Occurrence> fetchOccurrences(String scientificname, boolean ignoreNullCoordinates) {
+	public ArrayList<Occurrence> fetchOccurrences(String scientificname, boolean ignoreNullCoordinates, int limit) {
 		ArrayList<Occurrence> occurrences = null;
 		ResultSet rs = null;
 		if (ignoreNullCoordinates) {
-			rs = dbc.queryOccurrencesIgnoreNullCoordinates(scientificname);
+			rs = dbc.queryOccurrencesIgnoreNullCoordinates(scientificname, limit);
 		} else {
-			rs = dbc.queryOccurrences(scientificname);
+			rs = dbc.queryOccurrences(scientificname, limit);
 		}	
 		if (rs != null)
 			occurrences = processResultSet(rs);

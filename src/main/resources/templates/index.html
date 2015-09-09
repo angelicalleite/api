@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>API de dados de ocorrência SiBBr</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<h1>API de dados de ocorrência SiBBr</h1>
+	<h2>Interface</h2>
+	<p
+		th:text="'Este é o serviço de acesso aos dados do portal de registros de ocorrências de espécies do SiBBr.'" />
+	<p
+		th:text="'Os resultados serão entregues no formato JSON e cada ocorrência terá apenas os seguintes campos:'" />
+	<dl>
+		<dt>auto_id</dt>
+		<dd>Identificador único de um registro de ocorrências no
+			explorador de dados de biodiversidade</dd>
+		<dt>decimallatitude</dt>
+		<dd>Latitude da coordenada do registro</dd>
+		<dt>decimallongitude</dt>
+		<dd>Longitude da coordenada do registro</dd>
+	</dl>
+	<p
+		th:text="'Siga as instruções e exemplos abaixo para realizar consultas.'" />
+</body>
+</html>
