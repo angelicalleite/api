@@ -1,0 +1,7 @@
+br/gov/sibbr/api/service/Service.class
+br/gov/sibbr/api/model/Occurrence.class
+br/gov/sibbr/api/model/Result.class
+br/gov/sibbr/api/db/Utils.class
+br/gov/sibbr/api/db/DatabaseConnection.class
+br/gov/sibbr/api/Application.class
+br/gov/sibbr/api/controller/Controller.class
