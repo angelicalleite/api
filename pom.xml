@@ -26,7 +26,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.4-1202-jdbc42</version>
+			<version>9.4-1202-jdbc4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
@@ -36,7 +36,7 @@
 	</dependencies>
 
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>1.7</java.version>
 	</properties>
 
 	<build>
