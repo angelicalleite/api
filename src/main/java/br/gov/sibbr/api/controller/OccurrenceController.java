@@ -19,13 +19,13 @@ import br.gov.sibbr.api.service.Service;
  * @author Pedro Guimarães
  *
  */
-public class Controller {
+public class OccurrenceController {
 
 	// Auxiliary service class
 	Service service = new Service();
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/occurrences", method = RequestMethod.GET)
+	@RequestMapping(value = "/ocorrencias", method = RequestMethod.GET)
 	public Result occurrence(@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit) {

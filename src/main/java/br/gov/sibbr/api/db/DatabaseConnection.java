@@ -57,7 +57,7 @@ public class DatabaseConnection {
 	}
 
 	/**
-	 * Default setup for postgres connection.
+	 * Default setup for postgres connection. Default values are hard coded here.
 	 * 
 	 * @return
 	 */
