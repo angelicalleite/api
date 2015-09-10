@@ -1,4 +1,4 @@
-## api
+## api - version 1.0
 
 This is a small public api service that allows the users to query against the SiBBr's occurrence data portal information.
 
@@ -22,3 +22,12 @@ Interface
 
 Licence
 - This code is provided as free software, under the terms of the GNU-GPL-v2. 
+
+Dependencies
+- Java 1.8
+- Spring 4
+- Spring boot 1.2.5.RELEASE
+- Maven
+- Thymeleaf
+- Postgres JDBC driver 9.4-1202-jdbc42
+- Jackson 0.9.5(for JSON support)
