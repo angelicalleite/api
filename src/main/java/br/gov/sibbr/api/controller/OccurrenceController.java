@@ -48,7 +48,7 @@ public class OccurrenceController {
 		int intLimit = Integer.parseInt(limit);
 		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
 			occurrences = service.fetchOccurrences(scientificname, false, intLimit);
-		} else {
+		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
 			occurrences = service.fetchOccurrences(scientificname, true, intLimit);
 		}
 		return new Result(scientificname, occurrences);
