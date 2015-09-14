@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sibbr.api.model.Occurrence;
-import br.gov.sibbr.api.model.Result;
+import br.gov.sibbr.api.model.OccurrenceResult;
+import br.gov.sibbr.api.model.StatsResult;
 import br.gov.sibbr.api.service.Service;
 
 @RestController
@@ -41,17 +42,26 @@ public class OccurrenceController {
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/ocorrencias", method = RequestMethod.GET)
-	public Result occurrence(@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
+	public OccurrenceResult occurrence(
+			@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit) {
 		ArrayList<Occurrence> occurrences = null;
 		int intLimit = Integer.parseInt(limit);
 		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-			occurrences = service.fetchOccurrences(scientificname, false, intLimit);
+			occurrences = service.fetchOccurrences(scientificname, false,
+					intLimit);
 		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-			occurrences = service.fetchOccurrences(scientificname, true, intLimit);
+			occurrences = service.fetchOccurrences(scientificname, true,
+					intLimit);
 		}
-		return new Result(scientificname, occurrences);
+		return new OccurrenceResult(scientificname, occurrences);
 	}
-	
+
+	// Method responsible for managing occurrence requests
+	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	public StatsResult stats() {
+		StatsResult statsResult = service.fetchStats();
+		return statsResult;
+	}
 }

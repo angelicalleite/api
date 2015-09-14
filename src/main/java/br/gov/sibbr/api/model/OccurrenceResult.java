@@ -25,7 +25,7 @@ import java.util.ArrayList;
  *
  */
 
-public class Result {
+public class OccurrenceResult {
 
 	// Represents the requested scientificname
 	private String scientificname;
@@ -41,7 +41,7 @@ public class Result {
 	 * @param scientificname
 	 * @param occurrences
 	 */
-	public Result(String scientificname, ArrayList<Occurrence> occurrences) {
+	public OccurrenceResult(String scientificname, ArrayList<Occurrence> occurrences) {
 		this.scientificname = scientificname;
 		this.count = occurrences.size();
 		this.occurrences = occurrences;

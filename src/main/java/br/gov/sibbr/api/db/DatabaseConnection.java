@@ -72,7 +72,8 @@ public class DatabaseConnection {
 	}
 
 	/**
-	 * Default setup for postgres connection. Default values are hard coded here.
+	 * Default setup for postgres connection. Default values are hard coded
+	 * here.
 	 * 
 	 * @return
 	 */
@@ -114,12 +115,12 @@ public class DatabaseConnection {
 			statement = conn.createStatement();
 			// Avoid limit values out of the appropriate range ( <= 0)
 			if (limit > 0) {
-				resultSet = statement.executeQuery(
-						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+				resultSet = statement
+						.executeQuery("SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
 								+ scientificname + "\' limit " + limit);
 			} else {
-				resultSet = statement.executeQuery(
-						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+				resultSet = statement
+						.executeQuery("SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
 								+ scientificname + "\'");
 			}
 		} catch (SQLException e) {
@@ -136,23 +137,216 @@ public class DatabaseConnection {
 	 * @param scientificname
 	 * @return
 	 */
-	public ResultSet queryOccurrencesIgnoreNullCoordinates(String scientificname, int limit) {
+	public ResultSet queryOccurrencesIgnoreNullCoordinates(
+			String scientificname, int limit) {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
 			// Avoid limit values out of the appropriate range ( <= 0)
 			if (limit > 0) {
-				resultSet = statement.executeQuery(
-						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+				resultSet = statement
+						.executeQuery("SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
 								+ scientificname
-								+ "\' and decimallatitude is not null and decimallatitude is not null limit " + limit);
+								+ "\' and decimallatitude is not null and decimallatitude is not null limit "
+								+ limit);
 			} else {
-				resultSet = statement.executeQuery(
-						"SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
+				resultSet = statement
+						.executeQuery("SELECT auto_id, decimallatitude, decimallongitude FROM occurrence WHERE scientificname = \'"
 								+ scientificname
 								+ "\' and decimallatitude is not null and decimallatitude is not null");
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+
+	/**
+	 * Returns the total amount of records available.
+	 * 
+	 * @param scientificname
+	 * @return
+	 */
+	public ResultSet queryTotalRecords() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(auto_id) as totalrecords FROM occurrence");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Returns the total amount of records available with georeferencial information.
+	 * 
+	 * @param scientificname
+	 * @return
+	 */
+	public ResultSet queryTotalGeoRecords() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(auto_id) as totalrecords FROM occurrence where decimallatitude is not null and decimallongitude is not null");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of repatriated records (includes null coordinate records)
+	 * @return
+	 */
+	public ResultSet queryTotalRepatriatedRecords() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(auto_id) as totalrecords FROM occurrence where publishername like 'SiBBr'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of repatriated records (includes null coordinate records)
+	 * @return
+	 */
+	public ResultSet queryTotalPublishers() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(auto_id) as totalpublishers FROM publisher");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of repatriated records (includes null coordinate records)
+	 * @return
+	 */
+	public ResultSet queryTotalResources() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(id) as totalresources FROM dwca_resource");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of species, depending on taxon rank information.
+	 * @return
+	 */
+	public ResultSet queryTotalSpecies() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(distinct(scientificname)) as totalspecies FROM occurrence where taxonrank in ('espécie', 'EspÈcie', 'SPECIES','ESPECIE')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of phylum, depending on taxon rank information.
+	 * @return
+	 */
+	public ResultSet queryTotalPhylum() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(distinct(scientificname)) as totalphylum FROM occurrence where taxonrank in ('PHYLUM')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of classes, depending on taxon rank information.
+	 * @return
+	 */
+	public ResultSet queryTotalClass() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(distinct(scientificname)) as totalclass FROM occurrence where taxonrank in ('CLASS', 'classe')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of orders, depending on taxon rank information.
+	 * @return
+	 */
+	public ResultSet queryTotalOrder() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(distinct(scientificname)) as totalorder FROM occurrence where taxonrank in ('ORDER', 'ordem')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of families, depending on taxon rank information.
+	 * @return
+	 */
+	public ResultSet queryTotalFamily() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(distinct(scientificname)) as totalfamily FROM occurrence where taxonrank in ('FAMILY', 'FamÌlia', 'família')");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve amount of genders, depending on taxon rank information.
+	 * @return
+	 */
+	public ResultSet queryTotalGenus() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement
+					.executeQuery("SELECT count(distinct(scientificname)) as totalgenus FROM occurrence where taxonrank in ('GENUS', 'GÍnero', 'gênero')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
