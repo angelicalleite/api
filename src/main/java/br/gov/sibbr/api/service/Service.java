@@ -25,6 +25,8 @@ import br.gov.sibbr.api.db.DatabaseQueries;
 import br.gov.sibbr.api.db.Utils;
 import br.gov.sibbr.api.model.OccurrenceExpanded;
 import br.gov.sibbr.api.model.OccurrenceReduced;
+import br.gov.sibbr.api.model.Resource;
+import br.gov.sibbr.api.model.ResourceResult;
 import br.gov.sibbr.api.model.StatsResult;
 
 /**
@@ -79,6 +81,18 @@ public class Service {
 		return occurrences;
 	}
 
+	public ArrayList<Resource> fetchResources() {
+		ArrayList<Resource> resources = null;
+		ResultSet rs = dbq.queryResources();
+		resources = processResourceResultSet(rs);
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resources;
+	}
+	
 	public StatsResult fetchStats() {
 		ResultSet resultSet = null;
 		StatsResult statsResult = null;
@@ -120,8 +134,27 @@ public class Service {
 		return statsResult;
 	}
 
+	public ArrayList<Resource> processResourceResultSet(ResultSet rs) {
+		ArrayList<Resource> resources = new ArrayList<Resource>();
+		try {
+			while (rs.next()) {
+				Integer id = rs.getInt("id");
+				String name = Utils.getString(rs, "name");
+				String archiveurl = Utils.getString(rs, "archive_url");
+				String gbifpackageid = Utils.getString(rs, "gbif_package_id");
+				Integer recordcount = rs.getInt("record_count");
+				Integer publisherid = rs.getInt("publisher_fkey");
+				Resource resource = new Resource(id, name, archiveurl, gbifpackageid, recordcount, publisherid);
+				resources.add(resource);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resources;
+	}
+	
 	/**
-	 * Processes a given resultset into an arraylist of occurrence objects.
+	 * Processes a given resultSet into an arraylist of occurrence objects.
 	 * 
 	 * @param rs
 	 * @return

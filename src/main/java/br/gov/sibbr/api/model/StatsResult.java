@@ -16,7 +16,7 @@
 package br.gov.sibbr.api.model;
 
 /**
- * This class should model an api result to be mapped Integero a json object,
+ * This class should model an api result to be mapped into a json object,
  * including arbitrary headers. This result represents the current status of the database.
  * 
  * @author Pedro Guimarães

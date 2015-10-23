@@ -13,8 +13,10 @@ public class DatabaseQueries {
 	public static final int RETURN_ALL_FIELDS = 1;
 
 	public static final String OCCURRENCE_TABLE = "occurrence";
-	public static final String ALL_FIELDS = "auto_id, resourcename, publishername, kingdom, phylum, _class, _order, family, genus, specificepithet, infraspecificepithet, species, scientificname, taxonrank, typestatus, recordedby, eventdate, continent, country, stateprovince, municipality, county, minimumelevationinmeters, maximumelevationinmeters, hascoordinates, decimallatitude, decimallongitude, hasmedia, associatedmedia";
-	public static final String SOME_FIELDS = "auto_id, decimallatitude, decimallongitude";
+	public static final String RESOURCE_TABLE = "dwca_resource";
+	public static final String ALL_OCCURRENCE_FIELDS = "auto_id, resourcename, publishername, kingdom, phylum, _class, _order, family, genus, specificepithet, infraspecificepithet, species, scientificname, taxonrank, typestatus, recordedby, eventdate, continent, country, stateprovince, municipality, county, minimumelevationinmeters, maximumelevationinmeters, hascoordinates, decimallatitude, decimallongitude, hasmedia, associatedmedia";
+	public static final String SOME_OCCURRENCE_FIELDS = "auto_id, decimallatitude, decimallongitude";
+	public static final String RESOURCE_FIELDS = "id, name, archive_url, gbif_package_id, record_count, publisher_fkey";
 
 	/**
 	 * Default class constructor, creates a new connection to the database
@@ -28,7 +30,10 @@ public class DatabaseQueries {
 		}
 	}
 
-	/**
+	/** catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
 	 * Constructor that receives a connection
 	 * 
 	 * @param connection
@@ -42,9 +47,8 @@ public class DatabaseQueries {
 	}
 
 	/**
-	 * Fetches records from dataportal schema, returning the auto_id,
-	 * decimallatitude and decmiallongitude fields from occurrence table that
-	 * match the given scientificname;
+	 * Fetches records from dataportal schema, returning different sets of fields
+	 * from occurrence table that match the given scientificname;
 	 * 
 	 * @param scientificname
 	 * @return
@@ -57,23 +61,39 @@ public class DatabaseQueries {
 			// Avoid limit values out of the appropriate range ( <= 0)
 			if (limit > 0) {
 				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname + "\' limit " + limit);
 				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname + "\' limit " + limit);
 				}
 			}
 			// No limits required, return all records
 			else {
 				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname + "\'");
 				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname + "\'");
 				}
 			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+
+	/**
+	 * Fetches records from dwca_resource table
+	 * @return
+	 */
+	public ResultSet queryResources() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery("SELECT " + RESOURCE_FIELDS + " FROM " + RESOURCE_TABLE);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -96,11 +116,11 @@ public class DatabaseQueries {
 			// Avoid limit values out of the appropriate range ( <= 0)
 			if (limit > 0) {
 				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname
 							+ "\' and decimallatitude is not null and decimallatitude is not null limit " + limit);
 				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname
 							+ "\' and decimallatitude is not null and decimallatitude is not null limit " + limit);
 				}
@@ -108,11 +128,11 @@ public class DatabaseQueries {
 			// No limits required, return all records
 			else {
 				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname
 							+ "\' and decimallatitude is not null and decimallatitude is not null");
 				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_FIELDS + " FROM " + OCCURRENCE_TABLE
+					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
 							+ " WHERE scientificname = \'" + scientificname
 							+ "\' and decimallatitude is not null and decimallatitude is not null");
 				}
@@ -153,8 +173,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(auto_id) as totalrecords FROM " + OCCURRENCE_TABLE + " where decimallatitude is not null and decimallongitude is not null");
+			resultSet = statement.executeQuery("SELECT count(auto_id) as totalrecords FROM " + OCCURRENCE_TABLE
+					+ " where decimallatitude is not null and decimallongitude is not null");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -171,8 +191,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(auto_id) as totalrecords FROM " + OCCURRENCE_TABLE + " where publishername like 'SiBBr'");
+			resultSet = statement.executeQuery("SELECT count(auto_id) as totalrecords FROM " + OCCURRENCE_TABLE
+					+ " where publishername like 'SiBBr'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -223,8 +243,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(distinct(scientificname)) as totalspecies FROM " + OCCURRENCE_TABLE + " where taxonrank in ('espécie', 'EspÈcie', 'SPECIES','ESPECIE')");
+			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalspecies FROM "
+					+ OCCURRENCE_TABLE + " where taxonrank in ('espécie', 'EspÈcie', 'SPECIES','ESPECIE')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -241,8 +261,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(distinct(scientificname)) as totalphylum FROM " + OCCURRENCE_TABLE + " where taxonrank in ('PHYLUM')");
+			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalphylum FROM "
+					+ OCCURRENCE_TABLE + " where taxonrank in ('PHYLUM')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -259,8 +279,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(distinct(scientificname)) as totalclass FROM " + OCCURRENCE_TABLE + " where taxonrank in ('CLASS', 'classe')");
+			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalclass FROM "
+					+ OCCURRENCE_TABLE + " where taxonrank in ('CLASS', 'classe')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -277,8 +297,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(distinct(scientificname)) as totalorder FROM " + OCCURRENCE_TABLE + " where taxonrank in ('ORDER', 'ordem')");
+			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalorder FROM "
+					+ OCCURRENCE_TABLE + " where taxonrank in ('ORDER', 'ordem')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -295,8 +315,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(distinct(scientificname)) as totalfamily FROM " + OCCURRENCE_TABLE + " where taxonrank in ('FAMILY', 'FamÌlia', 'família')");
+			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalfamily FROM "
+					+ OCCURRENCE_TABLE + " where taxonrank in ('FAMILY', 'FamÌlia', 'família')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -313,8 +333,8 @@ public class DatabaseQueries {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT count(distinct(scientificname)) as totalgenus FROM " + OCCURRENCE_TABLE + " where taxonrank in ('GENUS', 'GÍnero', 'gênero')");
+			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalgenus FROM "
+					+ OCCURRENCE_TABLE + " where taxonrank in ('GENUS', 'GÍnero', 'gênero')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
