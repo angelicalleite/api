@@ -15,14 +15,11 @@
 
 package br.gov.sibbr.api.controller;
 
-import java.util.ArrayList;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.gov.sibbr.api.model.Occurrence;
 import br.gov.sibbr.api.model.OccurrenceResult;
 import br.gov.sibbr.api.model.StatsResult;
 import br.gov.sibbr.api.service.Service;
@@ -30,7 +27,7 @@ import br.gov.sibbr.api.service.Service;
 @RestController
 /**
  * Controller responsible for managing URL requests and calling for services to
- * provide data
+ * provide occurrence data
  * 
  * @author Pedro Guimarães
  *
@@ -42,20 +39,20 @@ public class OccurrenceController {
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/ocorrencias", method = RequestMethod.GET)
-	public OccurrenceResult occurrence(
-			@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
+	public OccurrenceResult occurrence(@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
-			@RequestParam(value = "limit", defaultValue = "0") String limit) {
-		ArrayList<Occurrence> occurrences = null;
+			@RequestParam(value = "limit", defaultValue = "0") String limit,
+			@RequestParam(value = "fields", defaultValue = "0") String fields) {
 		int intLimit = Integer.parseInt(limit);
+		int intFields = Integer.parseInt(fields);
 		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-			occurrences = service.fetchOccurrences(scientificname, false,
-					intLimit);
+			return new OccurrenceResult(scientificname,
+					service.fetchOccurrences(scientificname, false, intLimit, intFields));
 		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-			occurrences = service.fetchOccurrences(scientificname, true,
-					intLimit);
+			return new OccurrenceResult(scientificname,
+					service.fetchOccurrences(scientificname, true, intLimit, intFields));
 		}
-		return new OccurrenceResult(scientificname, occurrences);
+		return null;
 	}
 
 	// Method responsible for managing occurrence requests

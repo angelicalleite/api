@@ -22,12 +22,18 @@ package br.gov.sibbr.api.model;
  * @author Pedro Guimarães
  *
  */
-public class Occurrence {
+public class OccurrenceReduced {
 	public Integer auto_id;
 	public Double decimallatitude;
 	public Double decimallongitude;
 
-	public Occurrence(Integer auto_id, Double decimallatitude, Double decimallongtude) {
+	/**
+	 * Default constructor for some of the available filters for the API queries
+	 * @param auto_id
+	 * @param decimallatitude
+	 * @param decimallongtude
+	 */
+	public OccurrenceReduced(Integer auto_id, Double decimallatitude, Double decimallongtude) {
 		this.auto_id = auto_id;
 		this.decimallatitude = decimallatitude;
 		this.decimallongitude = decimallongtude;

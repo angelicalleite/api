@@ -15,25 +15,17 @@
 
 package br.gov.sibbr.api.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.annotation.PreDestroy;
 
-import org.codehaus.jackson.JsonGenerationException;
-
-import br.gov.sibbr.api.db.DatabaseConnection;
+import br.gov.sibbr.api.db.DatabaseQueries;
 import br.gov.sibbr.api.db.Utils;
-import br.gov.sibbr.api.model.Occurrence;
+import br.gov.sibbr.api.model.OccurrenceExpanded;
+import br.gov.sibbr.api.model.OccurrenceReduced;
 import br.gov.sibbr.api.model.StatsResult;
-
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class is responsible for communicating with the database to fetch
@@ -45,13 +37,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class Service {
 
-	DatabaseConnection dbc = null;
+	DatabaseQueries dbq = null;
 
 	/**
 	 * Default constructor, starts up a new connection to the database;
 	 */
 	public Service() {
-		dbc = new DatabaseConnection();
+		try {
+			dbq = new DatabaseQueries();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -62,19 +58,18 @@ public class Service {
 	 * @param scientificname
 	 * @return
 	 */
-	public ArrayList<Occurrence> fetchOccurrences(String scientificname,
-			boolean ignoreNullCoordinates, int limit) {
-		ArrayList<Occurrence> occurrences = null;
+	public ArrayList<?> fetchOccurrences(String scientificname, boolean ignoreNullCoordinates, int limit,
+			int fields) {
+		ArrayList<?> occurrences = null;
 		ResultSet rs = null;
 		if (ignoreNullCoordinates) {
-			rs = dbc.queryOccurrencesIgnoreNullCoordinates(scientificname,
-					limit);
+			rs = dbq.queryOccurrencesIgnoreNullCoordinates(scientificname, limit, fields);
 		} else {
-			rs = dbc.queryOccurrences(scientificname, limit);
+			rs = dbq.queryOccurrences(scientificname, limit, fields);
 		}
-		if (rs != null)
-			occurrences = processOccurrenceResultSet(rs);
-
+		if (rs != null) {
+			occurrences = processOccurrenceResultSet(rs, fields);
+		}
 		// Close resultSet after being used:
 		try {
 			rs.close();
@@ -88,41 +83,40 @@ public class Service {
 		ResultSet resultSet = null;
 		StatsResult statsResult = null;
 		// Total records:
-		resultSet = dbc.queryTotalRecords();
+		resultSet = dbq.queryTotalRecords();
 		int totalRecords = processTotalRecords(resultSet);
 		// Total georeferenced records:
-		resultSet = dbc.queryTotalGeoRecords();
+		resultSet = dbq.queryTotalGeoRecords();
 		int totalGeoRecords = processTotalGeoRecords(resultSet);
 		// Total repatriated records:
-		resultSet = dbc.queryTotalRepatriatedRecords();
+		resultSet = dbq.queryTotalRepatriatedRecords();
 		int totalRepatriatedRecords = processTotalRepatriatedRecords(resultSet);
 		// Total publishers:
-		resultSet = dbc.queryTotalPublishers();
+		resultSet = dbq.queryTotalPublishers();
 		int totalPublishers = processTotalPublishers(resultSet);
 		// Total resources:
-		resultSet = dbc.queryTotalResources();
-		int totalResources= processTotalResources(resultSet);
+		resultSet = dbq.queryTotalResources();
+		int totalResources = processTotalResources(resultSet);
 		// Total species:
-		resultSet = dbc.queryTotalSpecies();
+		resultSet = dbq.queryTotalSpecies();
 		int totalSpecies = processTotalSpecies(resultSet);
 		// Total phylum:
-		resultSet = dbc.queryTotalPhylum();
+		resultSet = dbq.queryTotalPhylum();
 		int totalPhylum = processTotalPhylum(resultSet);
 		// Total classes:
-		resultSet = dbc.queryTotalClass();
+		resultSet = dbq.queryTotalClass();
 		int totalClasses = processTotalClasses(resultSet);
 		// Total orders:
-		resultSet = dbc.queryTotalOrder();
+		resultSet = dbq.queryTotalOrder();
 		int totalOrders = processTotalOrders(resultSet);
 		// Total families:
-		resultSet = dbc.queryTotalFamily();
+		resultSet = dbq.queryTotalFamily();
 		int totalFamilies = processTotalFamilies(resultSet);
 		// Total genus:
-		resultSet = dbc.queryTotalGenus();
+		resultSet = dbq.queryTotalGenus();
 		int totalGenus = processTotalGenus(resultSet);
-		statsResult = new StatsResult(totalRecords, totalGeoRecords,
-				totalRepatriatedRecords, totalPublishers, totalResources, totalSpecies, totalPhylum,
-				totalClasses, totalOrders, totalFamilies, totalGenus);
+		statsResult = new StatsResult(totalRecords, totalGeoRecords, totalRepatriatedRecords, totalPublishers,
+				totalResources, totalSpecies, totalPhylum, totalClasses, totalOrders, totalFamilies, totalGenus);
 		return statsResult;
 	}
 
@@ -132,30 +126,74 @@ public class Service {
 	 * @param rs
 	 * @return
 	 */
-	public ArrayList<Occurrence> processOccurrenceResultSet(ResultSet rs) {
-		ArrayList<Occurrence> occurrences = new ArrayList<Occurrence>();
-		try {
-			while (rs.next()) {
-				Integer auto_id = Integer.parseInt(rs.getString("auto_id"));
-				Double decimallatitude = Utils.getDouble(rs, "decimallatitude");
-				Double decimallongitude = Utils.getDouble(rs,
-						"decimallongitude");
-				Occurrence occurrence = new Occurrence(auto_id,
-						decimallatitude, decimallongitude);
-				occurrences.add(occurrence);
+	public ArrayList<?> processOccurrenceResultSet(ResultSet rs, int complete) {
+		ArrayList<OccurrenceExpanded> occurrencesExpanded = new ArrayList<OccurrenceExpanded>();
+		ArrayList<OccurrenceReduced> occurrencesReduced = new ArrayList<OccurrenceReduced>();
+		if (complete == DatabaseQueries.RETURN_SOME_FIELDS) {
+			try {
+				while (rs.next()) {
+					Integer auto_id = Integer.parseInt(Utils.getString(rs, "auto_id"));
+					Double decimallatitude = Utils.getDouble(rs, "decimallatitude");
+					Double decimallongitude = Utils.getDouble(rs, "decimallongitude");
+					OccurrenceReduced occurrence = new OccurrenceReduced(auto_id, decimallatitude, decimallongitude);
+					occurrencesReduced.add(occurrence);
+				}
+				return occurrencesReduced;
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		} else if (complete == DatabaseQueries.RETURN_ALL_FIELDS) {
+			try {
+				while (rs.next()) {
+					Integer auto_id = Integer.parseInt(Utils.getString(rs, "auto_id"));
+					String resourcename = Utils.getString(rs, "resourcename");
+					String publishername = Utils.getString(rs, "publishername");
+					String kingdom = Utils.getString(rs, "kingdom");
+					String phylum = Utils.getString(rs, "phylum");
+					String _class = Utils.getString(rs, "_class");
+					String _order = Utils.getString(rs, "_order");
+					String family = Utils.getString(rs, "family");
+					String genus = Utils.getString(rs, "genus");
+					String specificepithet = Utils.getString(rs, "specificepithet");
+					String infraspecificepithet = Utils.getString(rs, "infraspecificepithet");
+					String species = Utils.getString(rs, "species");
+					String scientificname = Utils.getString(rs, "scientificname");
+					String taxonrank = Utils.getString(rs, "taxonrank");
+					String typestatus = Utils.getString(rs, "typestatus");
+					String recordedby = Utils.getString(rs, "recordedby");
+					String eventdate = Utils.getString(rs, "eventdate");
+					String continent = Utils.getString(rs, "continent");
+					String country = Utils.getString(rs, "country");
+					String stateprovince = Utils.getString(rs, "stateprovince");
+					String municipality = Utils.getString(rs, "municipality");
+					String county = Utils.getString(rs, "county");
+					Double minimumelevationinmeters = Utils.getDouble(rs, "minimumelevationinmeters");
+					Double maximumelevationinmeters = Utils.getDouble(rs, "maximumelevationinmeters");
+					Boolean hascoordinates = rs.getBoolean("hascoordinates");
+					Double decimallatitude = Utils.getDouble(rs, "decimallatitude");
+					Double decimallongitude = Utils.getDouble(rs, "decimallongitude");
+					Boolean hasmedia = rs.getBoolean("hasmedia");
+					String associatedmedia = Utils.getString(rs, "associatedmedia");
+					OccurrenceExpanded occurrence = new OccurrenceExpanded(auto_id, resourcename, publishername, kingdom, phylum,
+							_class, _order, family, genus, specificepithet, infraspecificepithet, species,
+							scientificname, taxonrank, typestatus, recordedby, eventdate, continent, country,
+							stateprovince, municipality, county, minimumelevationinmeters, maximumelevationinmeters,
+							hascoordinates, decimallatitude, decimallongitude, hasmedia, associatedmedia);
+					occurrencesExpanded.add(occurrence);
+				}
+				return occurrencesExpanded;
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		return occurrences;
+		return null;
 	}
 
 	public Integer processTotalRecords(ResultSet resultSet) {
 		Integer totalRecords = null;
 		try {
 			while (resultSet.next()) {
-				totalRecords = Integer.parseInt(resultSet
-						.getString("totalrecords"));
+				totalRecords = Integer.parseInt(resultSet.getString("totalrecords"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -167,8 +205,7 @@ public class Service {
 		Integer totalGeoRecords = null;
 		try {
 			while (resultSet.next()) {
-				totalGeoRecords = Integer.parseInt(resultSet
-						.getString("totalrecords"));
+				totalGeoRecords = Integer.parseInt(resultSet.getString("totalrecords"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -186,8 +223,7 @@ public class Service {
 		Integer totalRepatriatedRecords = null;
 		try {
 			while (resultSet.next()) {
-				totalRepatriatedRecords = Integer.parseInt(resultSet
-						.getString("totalrecords"));
+				totalRepatriatedRecords = Integer.parseInt(resultSet.getString("totalrecords"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -197,6 +233,7 @@ public class Service {
 
 	/**
 	 * Process amount of publishers.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -204,17 +241,17 @@ public class Service {
 		Integer totalPublishers = null;
 		try {
 			while (resultSet.next()) {
-				totalPublishers = Integer.parseInt(resultSet
-						.getString("totalpublishers"));
+				totalPublishers = Integer.parseInt(resultSet.getString("totalpublishers"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return totalPublishers;
 	}
-	
+
 	/**
 	 * Process amount of resources.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -222,17 +259,17 @@ public class Service {
 		Integer totalResources = null;
 		try {
 			while (resultSet.next()) {
-				totalResources = Integer.parseInt(resultSet
-						.getString("totalresources"));
+				totalResources = Integer.parseInt(resultSet.getString("totalresources"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return totalResources;
 	}
-	
+
 	/**
 	 * Process amount of species.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -240,17 +277,17 @@ public class Service {
 		Integer totalSpecies = null;
 		try {
 			while (resultSet.next()) {
-				totalSpecies = Integer.parseInt(resultSet
-						.getString("totalspecies"));
+				totalSpecies = Integer.parseInt(resultSet.getString("totalspecies"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return totalSpecies;
 	}
-	
+
 	/**
 	 * Process amount of phylum.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -258,17 +295,17 @@ public class Service {
 		Integer totalPhylum = null;
 		try {
 			while (resultSet.next()) {
-				totalPhylum = Integer.parseInt(resultSet
-						.getString("totalphylum"));
+				totalPhylum = Integer.parseInt(resultSet.getString("totalphylum"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return totalPhylum;
 	}
-	
+
 	/**
 	 * Process amount of classes.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -276,8 +313,7 @@ public class Service {
 		Integer totalClass = null;
 		try {
 			while (resultSet.next()) {
-				totalClass = Integer.parseInt(resultSet
-						.getString("totalclass"));
+				totalClass = Integer.parseInt(resultSet.getString("totalclass"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -287,6 +323,7 @@ public class Service {
 
 	/**
 	 * Process amount of orders.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -294,17 +331,17 @@ public class Service {
 		Integer totalOrders = null;
 		try {
 			while (resultSet.next()) {
-				totalOrders = Integer.parseInt(resultSet
-						.getString("totalorder"));
+				totalOrders = Integer.parseInt(resultSet.getString("totalorder"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return totalOrders;
 	}
-	
+
 	/**
 	 * Process amount of families.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -312,17 +349,17 @@ public class Service {
 		Integer totalFamilies = null;
 		try {
 			while (resultSet.next()) {
-				totalFamilies = Integer.parseInt(resultSet
-						.getString("totalfamily"));
+				totalFamilies = Integer.parseInt(resultSet.getString("totalfamily"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return totalFamilies;
 	}
-	
+
 	/**
 	 * Process amount of genus.
+	 * 
 	 * @param resultSet
 	 * @return
 	 */
@@ -330,21 +367,20 @@ public class Service {
 		Integer totalFamilies = null;
 		try {
 			while (resultSet.next()) {
-				totalFamilies = Integer.parseInt(resultSet
-						.getString("totalgenus"));
+				totalFamilies = Integer.parseInt(resultSet.getString("totalgenus"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return totalFamilies;
 	}
-	
+
 	/**
 	 * Release database connection once the application stops running
 	 */
 	@PreDestroy
 	private void destroy() {
-		dbc.releaseConnection();
+		dbq.releaseConnection();
 		System.out.println("*** Destroying database connection [Clean up]");
 	}
 }

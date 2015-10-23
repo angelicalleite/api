@@ -4,7 +4,7 @@
 
 	<groupId>br.gov.sibbr</groupId>
 	<artifactId>api</artifactId>
-	<version>1.0</version>
+	<version>1.1-SNAPSHOT</version>
 	<name>API</name>
 	<description>A simple java api to provide access to liger-data-access tables</description>
 

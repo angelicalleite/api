@@ -34,14 +34,14 @@ public class OccurrenceResult {
 	private int count;
 	
 	// The actual dataset of results
-	private ArrayList<Occurrence> occurrences;
+	private ArrayList<?> occurrences;
 
 	/**
 	 * Default constructor
 	 * @param scientificname
 	 * @param occurrences
 	 */
-	public OccurrenceResult(String scientificname, ArrayList<Occurrence> occurrences) {
+	public OccurrenceResult(String scientificname, ArrayList<?> occurrences) {
 		this.scientificname = scientificname;
 		this.count = occurrences.size();
 		this.occurrences = occurrences;
@@ -63,11 +63,11 @@ public class OccurrenceResult {
 		this.count = count;
 	}
 
-	public ArrayList<Occurrence> getOccurrences() {
+	public ArrayList<?> getOccurrences() {
 		return occurrences;
 	}
 
-	public void setOccurrences(ArrayList<Occurrence> occurrences) {
+	public void setOccurrences(ArrayList<OccurrenceExpanded> occurrences) {
 		this.occurrences = occurrences;
 	}
 }

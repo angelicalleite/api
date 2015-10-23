@@ -33,4 +33,18 @@ public class Utils {
 		double nValue = rs.getDouble(strColName);
 		return rs.wasNull() ? null : nValue;
 	}
+	
+	/**
+	 * Auxiliary method to avoid 0.0 values for double fields when field value
+	 * is null
+	 * 
+	 * @param rs
+	 * @param strColName
+	 * @return
+	 * @throws SQLException
+	 */
+	public static String getString (ResultSet rs, String strColName) throws SQLException {
+		String value = rs.getString(strColName);
+		return rs.wasNull() ? null : value;
+	}
 }
