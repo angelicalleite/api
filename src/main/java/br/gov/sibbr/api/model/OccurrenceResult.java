@@ -36,6 +36,14 @@ public class OccurrenceResult {
 	// The actual dataset of results
 	private ArrayList<?> occurrences;
 
+	/*
+	 * Default constructor for queries where no scientific name is provided for the occurrence search
+	 */
+	public OccurrenceResult() {
+		this.scientificname = "No scientific name provided for the search";
+		this.count = 0;
+		this.occurrences = null;
+	}
 	/**
 	 * Default constructor
 	 * @param scientificname

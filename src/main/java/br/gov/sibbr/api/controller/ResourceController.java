@@ -16,10 +16,13 @@
 package br.gov.sibbr.api.controller;
 
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.gov.sibbr.api.model.OccurrenceResult;
 import br.gov.sibbr.api.model.ResourceResult;
 import br.gov.sibbr.api.service.Service;
 
@@ -28,10 +31,31 @@ public class ResourceController {
 
 	// Auxiliary service class
 	Service service = new Service();
-	
+
 	@RequestMapping(value = "/recursos", method = RequestMethod.GET)
 	public ResourceResult resources(Model model) {
 		ResourceResult resourceResult = new ResourceResult(service.fetchResources());
 		return resourceResult;
+	}
+
+	// Method responsible for managing occurrence requests with resource
+	// filtering
+	@RequestMapping(value = "/recursos/{id}/ocorrencias", method = RequestMethod.GET)
+	public OccurrenceResult occurrencesByResource(@PathVariable String id,
+			@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
+			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
+			@RequestParam(value = "limit", defaultValue = "0") String limit,
+			@RequestParam(value = "fields", defaultValue = "0") String fields) {
+		int intResourceId = Integer.parseInt(id);
+		int intLimit = Integer.parseInt(limit);
+		int intFields = Integer.parseInt(fields);
+		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
+			return new OccurrenceResult(scientificname,
+					service.fetchOccurrencesByResource(scientificname, false, intLimit, intFields, intResourceId));
+		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
+			return new OccurrenceResult(scientificname,
+					service.fetchOccurrencesByResource(scientificname, true, intLimit, intFields, intResourceId));
+		}
+		return new OccurrenceResult();
 	}
 }

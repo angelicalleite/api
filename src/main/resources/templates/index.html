@@ -5,7 +5,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	</head>
 	<body>
-		<h1>Interface</h1>
+		<h1>Interface - v1.1</h1>
 		<p><b>* * * Português * * * </b></p>
 		<p>Esta interface permite o acesso aos dados de registros de ocorrências de espécies do explorador do SiBBr. Para realizar consultas à interface, siga as orientações abaixo.</p>
 		<h2>1. <i>/ocorrencias</i> - Registros de ocorrência</h2>
@@ -60,8 +60,8 @@
 			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 		
-		<h2>2. <i>/recursos</i> Recursos</h2>
-		<p>Esta consulta permite a listagem dos recursos disponíveis.</p>
+		<h2>2. <i>/recursos</i> - Recursos</h2>
+		<p>Esta consulta permite a listagem dos recursos disponíveis e a filtragem de ocorrências por recurso.</p>
 		<p>Os resultados serão exibidos no formato JSON, com os seguintes campos:</p>
 		<ul>
 			<li><b>count</b> - Número total de recursos disponíveis.</li>
@@ -77,13 +77,23 @@
 		</ul>	
 		<h3>Parâmetros</h3>
 		<ul>
-			<li><i>Não há parâmetros para esta consulta</i></li>
+			<li><i>Listar os recursos disponíveis:</i></li>
 			<p>Uso: <i>http://gbif.sibbr.gov.br/api/recursos</i></p>
+			<li><i>Filtrar registros de ocorrência de um dado recurso, utilizando parâmetros análogos aos da consulta de ocorrências:</i></li>
+			<p>Uso: <b>http://gbif.sibbr.gov.br/api/recursos/{id_do_recurso}/ocorrencias</b></p>
+			<li><b>scientificname</b> - Nome científico do taxon a ser procurado. (Valor padrão é vazio(""). Observe que é comum registros sem nenhum valor para este campo.)</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/12/ocorrencias?scientificname=Speothos venaticus</i></p>
+			<li><b>fields</b> - Indica o conjunto de campos a serem retornados. O valor 1 retorna todos os campos disponíveis, enquanto o valor 0 retorna apenas o subconjunto de campos {auto_id, decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
+			<li><b>ignoreNullCoordinates</b> - Filtrar registros que não possuam informação sobre as coordenadas (Valor padrão é <b>false</b>).</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/20/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
+			<li><b>limit</b> - Limitar o número máximo de resultados retornados pela consulta (Valor padrão é sem limites). Este campo aceita apenas números naturais.</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 		
 		<p><b>* * * English * * * </b></p>
 		<p>This interface allows access to species occurrence data records from the SiBBr explorer. To query the interface, please follow the instructions:</p>
-		<h2>1. Occurrence records</h2>
+		<h2>1. /ocorrencias - Occurrence records</h2>
 		<p>These queries allow the search for occurrence records based on the usage of the scientific name filter (<b>scientificname</b>).</p>
 		<p>Results will be returned in the JSON format, with the following fields:</p>
 		<ul>
@@ -134,7 +144,7 @@
 			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Aeschynomene falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 		
-		<h2>2. <i>/recursos</i> Resources</h2>
+		<h2>2. <i>/recursos</i> - Resources</h2>
 		<p>This query allows the listing of the available resources.</p>
 		<p>Results will be returned in the JSON format, with the following fields:</p>
 		<ul>
@@ -149,10 +159,20 @@
 				<li><b>publisherid</b> - Unique identifier to the resource's publisher whithin the system.</li>
 			</ul>
 		</ul>	
-		<h3>Parâmetros</h3>
+		<h3>Parameters</h3>
 		<ul>
-			<li><i>Não há parâmetros para esta consulta</i></li>
-			<p>Uso: <i>http://gbif.sibbr.gov.br/api/recursos</i></p>
+			<li><i>List available resources:</i></li>
+			<p>Usage: <i>http://gbif.sibbr.gov.br/api/recursos</i></p>
+			<li><i>Filter occurrence records from a given resource, with analogous parameters to the occurrence search:</i></li>
+			<p>Usage: <b>http://gbif.sibbr.gov.br/api/recursos/{id_do_recurso}/ocorrencias</b></p>
+			<li><b>scientificname</b> - Scientific name of the taxon to be queried.(Default is null. Observe that it is not unusual to have records without a value for this field.</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/12/ocorrencias?scientificname=Speothos venaticus</i></p>
+			<li><b>fields</b> - Indicates the set of fields to be returned. Value 1 retorns all available fields, while value 0 returns only the subset of fields {auto_id, decimalLatitude, decimallongitude}. <b>(Default value is 0)</b>.</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
+			<li><b>ignoreNullCoordinates</b> - Filter records that do not possess coordinate information (Default value is <b>false</b>).</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/20/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
+			<li><b>limit</b> - Limit the maximum amount of results returned by the query (Default value is without limit). This field supports only natural numbers.</li>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 	</body>
 </html>

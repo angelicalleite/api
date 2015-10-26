@@ -15,6 +15,7 @@
 
 package br.gov.sibbr.api.controller;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,20 +40,24 @@ public class OccurrenceController {
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/ocorrencias", method = RequestMethod.GET)
-	public OccurrenceResult occurrence(@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
+	public OccurrenceResult occurrence(
+			@RequestParam(value = "scientificname", defaultValue = "null") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit,
 			@RequestParam(value = "fields", defaultValue = "0") String fields) {
 		int intLimit = Integer.parseInt(limit);
 		int intFields = Integer.parseInt(fields);
-		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-			return new OccurrenceResult(scientificname,
-					service.fetchOccurrences(scientificname, false, intLimit, intFields));
-		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-			return new OccurrenceResult(scientificname,
-					service.fetchOccurrences(scientificname, true, intLimit, intFields));
+		// Avoid returning all records when no filter is provided
+		if (!scientificname.equalsIgnoreCase("null")) {
+			if (ignorenullcoordinates.equalsIgnoreCase("false")) {
+				return new OccurrenceResult(scientificname,
+						service.fetchOccurrences(scientificname, false, intLimit, intFields));
+			} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
+				return new OccurrenceResult(scientificname,
+						service.fetchOccurrences(scientificname, true, intLimit, intFields));
+			}
 		}
-		return null;
+		return new OccurrenceResult();
 	}
 
 	// Method responsible for managing occurrence requests

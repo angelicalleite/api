@@ -60,8 +60,7 @@ public class Service {
 	 * @param scientificname
 	 * @return
 	 */
-	public ArrayList<?> fetchOccurrences(String scientificname, boolean ignoreNullCoordinates, int limit,
-			int fields) {
+	public ArrayList<?> fetchOccurrences(String scientificname, boolean ignoreNullCoordinates, int limit, int fields) {
 		ArrayList<?> occurrences = null;
 		ResultSet rs = null;
 		if (ignoreNullCoordinates) {
@@ -81,6 +80,40 @@ public class Service {
 		return occurrences;
 	}
 
+	/**
+	 * Hits the db querying over table occurrence in search of matches for the
+	 * provided scientificname, filtering results by resource. If the resultSet
+	 * is null, the method returns null.
+	 * 
+	 * @param scientificname
+	 * @return
+	 */
+	public ArrayList<?> fetchOccurrencesByResource(String scientificname, boolean ignoreNullCoordinates, int limit, int fields,
+			int resourceId) {
+		ArrayList<?> occurrences = null;
+		ResultSet rs = null;
+		if (ignoreNullCoordinates) {
+			rs = dbq.queryOccurrencesIgnoreNullCoordinatesByResource(scientificname, limit, fields, resourceId);
+		} else {
+			rs = dbq.queryOccurrencesByResource(scientificname, limit, fields, resourceId);
+		}
+		if (rs != null) {
+			occurrences = processOccurrenceResultSet(rs, fields);
+		}
+		// Close resultSet after being used:
+		try {
+			rs.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return occurrences;
+	}
+
+	/**
+	 * Fetch the list of available resources
+	 * 
+	 * @return
+	 */
 	public ArrayList<Resource> fetchResources() {
 		ArrayList<Resource> resources = null;
 		ResultSet rs = dbq.queryResources();
@@ -92,7 +125,7 @@ public class Service {
 		}
 		return resources;
 	}
-	
+
 	public StatsResult fetchStats() {
 		ResultSet resultSet = null;
 		StatsResult statsResult = null;
@@ -152,7 +185,7 @@ public class Service {
 		}
 		return resources;
 	}
-	
+
 	/**
 	 * Processes a given resultSet into an arraylist of occurrence objects.
 	 * 
@@ -207,9 +240,9 @@ public class Service {
 					Double decimallongitude = Utils.getDouble(rs, "decimallongitude");
 					Boolean hasmedia = rs.getBoolean("hasmedia");
 					String associatedmedia = Utils.getString(rs, "associatedmedia");
-					OccurrenceExpanded occurrence = new OccurrenceExpanded(auto_id, resourcename, publishername, kingdom, phylum,
-							_class, _order, family, genus, specificepithet, infraspecificepithet, species,
-							scientificname, taxonrank, typestatus, recordedby, eventdate, continent, country,
+					OccurrenceExpanded occurrence = new OccurrenceExpanded(auto_id, resourcename, publishername,
+							kingdom, phylum, _class, _order, family, genus, specificepithet, infraspecificepithet,
+							species, scientificname, taxonrank, typestatus, recordedby, eventdate, continent, country,
 							stateprovince, municipality, county, minimumelevationinmeters, maximumelevationinmeters,
 							hascoordinates, decimallatitude, decimallongitude, hasmedia, associatedmedia);
 					occurrencesExpanded.add(occurrence);
