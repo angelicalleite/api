@@ -25,101 +25,19 @@ package br.gov.sibbr.api.model;
 
 public class StatsResult {
 	
-	private Integer totalRecords;
-	private Integer totalGeoReferencedRecords;
-	private Integer totalRepatriated;
-	private Integer totalPublishers;
-	private Integer totalResources;
-	private Integer totalSpecies;
-	private Integer totalPhylum;
-	private Integer totalClass;
-	private Integer totalOrder;
-	private Integer totalFamily;
-	private Integer totalGender;
+	private Integer amount;
 	
 	/**
 	 * Default class constructor
 	 */
-	public StatsResult(Integer totalRecords, Integer totalGeoReferencedRecords, Integer totalRepatriated, Integer totalPublishers, Integer totalResources, Integer totalSpecies, Integer totalPhylum, Integer totalClass, 
-Integer totalOrder, Integer totalFamily, Integer totalGender) {
-		this.totalRecords = totalRecords;
-		this.totalGeoReferencedRecords = totalGeoReferencedRecords;
-		this.totalRepatriated = totalRepatriated;
-		this.totalPublishers = totalPublishers;
-		this.totalResources = totalResources;
-		this.totalSpecies = totalSpecies;
-		this.totalPhylum = totalPhylum;
-		this.totalClass = totalClass;
-		this.totalOrder = totalOrder;
-		this.totalFamily = totalFamily;
-		this.totalGender = totalGender;
+	public StatsResult(Integer amount) {
+		this.amount = amount;
 	}
 	
-	public Integer getTotalRecords() {
-		return totalRecords;
+	public Integer getAmount() {
+		return amount;
 	}
-	public void setTotalRecords(Integer totalRecords) {
-		this.totalRecords = totalRecords;
+	public void setAmount(Integer amount) {
+		this.amount = amount;
 	}
-	public Integer getTotalGeoReferencedRecords() {
-		return totalGeoReferencedRecords;
-	}
-	public void setTotalGeoReferencedRecords(Integer totalGeoReferencedRecords) {
-		this.totalGeoReferencedRecords = totalGeoReferencedRecords;
-	}
-	public Integer getTotalRepatriated() {
-		return totalRepatriated;
-	}
-	public void setTotalRepatriated(Integer totalRepatriated) {
-		this.totalRepatriated = totalRepatriated;
-	}
-	public Integer getTotalPublishers() {
-		return totalPublishers;
-	}
-	public void setTotalPublishers(Integer totalPublishers) {
-		this.totalPublishers = totalPublishers;
-	}
-	public Integer getTotalResources() {
-		return totalResources;
-	}
-	public void setTotalResources(Integer totalResources) {
-		this.totalResources = totalResources;
-	}
-	public Integer getTotalSpecies() {
-		return totalSpecies;
-	}
-	public void setTotalSpecies(Integer totalSpecies) {
-		this.totalSpecies = totalSpecies;
-	}
-	public Integer getTotalPhylum() {
-		return totalPhylum;
-	}
-	public void setTotalPhylum(Integer totalPhylum) {
-		this.totalPhylum = totalPhylum;
-	}
-	public Integer getTotalClass() {
-		return totalClass;
-	}
-	public void setTotalClass(Integer totalClass) {
-		this.totalClass = totalClass;
-	}
-	public Integer getTotalOrder() {
-		return totalOrder;
-	}
-	public void setTotalOrder(Integer totalOrder) {
-		this.totalOrder = totalOrder;
-	}
-	public Integer getTotalFamily() {
-		return totalFamily;
-	}
-	public void setTotalFamily(Integer totalFamily) {
-		this.totalFamily = totalFamily;
-	}
-	public Integer getTotalGender() {
-		return totalGender;
-	}
-	public void setTotalGender(Integer totalGender) {
-		this.totalGender = totalGender;
-	}	
-
 }

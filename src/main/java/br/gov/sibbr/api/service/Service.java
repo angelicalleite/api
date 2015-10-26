@@ -88,8 +88,8 @@ public class Service {
 	 * @param scientificname
 	 * @return
 	 */
-	public ArrayList<?> fetchOccurrencesByResource(String scientificname, boolean ignoreNullCoordinates, int limit, int fields,
-			int resourceId) {
+	public ArrayList<?> fetchOccurrencesByResource(String scientificname, boolean ignoreNullCoordinates, int limit,
+			int fields, int resourceId) {
 		ArrayList<?> occurrences = null;
 		ResultSet rs = null;
 		if (ignoreNullCoordinates) {
@@ -126,47 +126,167 @@ public class Service {
 		return resources;
 	}
 
-	public StatsResult fetchStats() {
+	/**
+	 * Fetch total record count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalRecords() {
 		ResultSet resultSet = null;
 		StatsResult statsResult = null;
 		// Total records:
 		resultSet = dbq.queryTotalRecords();
 		int totalRecords = processTotalRecords(resultSet);
+		return new StatsResult(totalRecords);
+	}
+
+	/**
+	 * Fetch total georeferrenced record count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalGeoRecords() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total georeferenced records:
 		resultSet = dbq.queryTotalGeoRecords();
 		int totalGeoRecords = processTotalGeoRecords(resultSet);
+		return new StatsResult(totalGeoRecords);
+	}
+
+	/**
+	 * Fetch total repatriated record count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalRepatriatedRecords() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total repatriated records:
 		resultSet = dbq.queryTotalRepatriatedRecords();
 		int totalRepatriatedRecords = processTotalRepatriatedRecords(resultSet);
+		return new StatsResult(totalRepatriatedRecords);
+	}
+
+	/**
+	 * Fetch total publisher count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalPublishers() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total publishers:
 		resultSet = dbq.queryTotalPublishers();
 		int totalPublishers = processTotalPublishers(resultSet);
+		return new StatsResult(totalPublishers);
+	}
+
+	/**
+	 * Fetch total resources count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalResources() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total resources:
 		resultSet = dbq.queryTotalResources();
 		int totalResources = processTotalResources(resultSet);
+		return new StatsResult(totalResources);
+	}
+
+	/**
+	 * Fetch total species count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalSpecies() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total species:
 		resultSet = dbq.queryTotalSpecies();
 		int totalSpecies = processTotalSpecies(resultSet);
+		return new StatsResult(totalSpecies);
+	}
+
+	/**
+	 * Fetch total phylum count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalPhylum() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total phylum:
 		resultSet = dbq.queryTotalPhylum();
 		int totalPhylum = processTotalPhylum(resultSet);
+		return new StatsResult(totalPhylum);
+	}
+
+	/**
+	 * Fetch total phylum count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalClass() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total classes:
 		resultSet = dbq.queryTotalClass();
 		int totalClasses = processTotalClasses(resultSet);
+		return new StatsResult(totalClasses);
+	}
+
+	/**
+	 * Fetch total order count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalOrder() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total orders:
 		resultSet = dbq.queryTotalOrder();
 		int totalOrders = processTotalOrders(resultSet);
-		// Total families:
-		resultSet = dbq.queryTotalFamily();
-		int totalFamilies = processTotalFamilies(resultSet);
+		return new StatsResult(totalOrders);
+	}
+
+	/**
+	 * Fetch total genus count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalGenus() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
 		// Total genus:
 		resultSet = dbq.queryTotalGenus();
 		int totalGenus = processTotalGenus(resultSet);
-		statsResult = new StatsResult(totalRecords, totalGeoRecords, totalRepatriatedRecords, totalPublishers,
-				totalResources, totalSpecies, totalPhylum, totalClasses, totalOrders, totalFamilies, totalGenus);
-		return statsResult;
+		return new StatsResult(totalGenus);
 	}
 
+	/**
+	 * Fetch total family count
+	 * 
+	 * @return
+	 */
+	public StatsResult fetchTotalFamily() {
+		ResultSet resultSet = null;
+		StatsResult statsResult = null;
+		// Total families:
+		resultSet = dbq.queryTotalFamily();
+		int totalFamilies = processTotalFamilies(resultSet);
+		return new StatsResult(totalFamilies);
+	}
+
+	/**
+	 * Processes a resultSet from a resource query into an array of resource
+	 * objects
+	 * 
+	 * @param rs
+	 * @return
+	 */
 	public ArrayList<Resource> processResourceResultSet(ResultSet rs) {
 		ArrayList<Resource> resources = new ArrayList<Resource>();
 		try {

@@ -15,14 +15,12 @@
 
 package br.gov.sibbr.api.controller;
 
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sibbr.api.model.OccurrenceResult;
-import br.gov.sibbr.api.model.StatsResult;
 import br.gov.sibbr.api.service.Service;
 
 @RestController
@@ -58,12 +56,5 @@ public class OccurrenceController {
 			}
 		}
 		return new OccurrenceResult();
-	}
-
-	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats", method = RequestMethod.GET)
-	public StatsResult stats() {
-		StatsResult statsResult = service.fetchStats();
-		return statsResult;
 	}
 }

@@ -19,8 +19,14 @@ import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
+/**
+ * Controller for the html templates.
+ * @author Pedro Guimarães
+ *
+ */
 public class InterfaceController implements ErrorController {
 
 	private final String PATH = "/erro";
@@ -30,12 +36,17 @@ public class InterfaceController implements ErrorController {
 		return "index";
 	}
 
+	// Method responsible for managing occurrence requests
+	@RequestMapping(value = "/stats/", method = RequestMethod.GET)
+	public String stats() {
+		return "stats";
+	}
+	
 	@RequestMapping(value = PATH)
 	public String error() {
 		return "error";
 	}
 
-	@Override
 	public String getErrorPath() {
 		return PATH;
 	}
