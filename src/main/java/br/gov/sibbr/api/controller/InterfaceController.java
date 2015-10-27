@@ -21,6 +21,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import br.gov.sibbr.api.Application;
+
 @Controller
 /**
  * Controller for the html templates.
@@ -29,19 +31,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 public class InterfaceController implements ErrorController {
 
-	private final String PATH = "/erro";
+	private final String PATH = Application.VERSION + "/erro";
 
-	@RequestMapping("/")
+	@RequestMapping(Application.VERSION + "/")
 	public String greeting(Model model) {
 		return "index";
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/", method = RequestMethod.GET)
+	@RequestMapping(value = Application.VERSION + "/stats", method = RequestMethod.GET)
 	public String stats() {
 		return "stats";
 	}
-	
+
 	@RequestMapping(value = PATH)
 	public String error() {
 		return "error";

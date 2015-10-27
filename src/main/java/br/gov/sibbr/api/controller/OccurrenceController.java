@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.gov.sibbr.api.Application;
 import br.gov.sibbr.api.model.OccurrenceResult;
 import br.gov.sibbr.api.service.Service;
 
@@ -39,7 +40,7 @@ public class OccurrenceController {
 
 	// Method responsible for managing occurrence requests
 	@Cacheable("occurrence")
-	@RequestMapping(value = "/ocorrencias", method = RequestMethod.GET)
+	@RequestMapping(value = Application.VERSION + "/ocorrencias", method = RequestMethod.GET)
 	public OccurrenceResult occurrence(
 			@RequestParam(value = "scientificname", defaultValue = "null") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
