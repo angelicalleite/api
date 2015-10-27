@@ -15,6 +15,7 @@
 
 package br.gov.sibbr.api.controller;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +41,7 @@ public class ResourceController {
 
 	// Method responsible for managing occurrence requests with resource
 	// filtering
+	@Cacheable("resource_occurrence")
 	@RequestMapping(value = "/recursos/{id}/ocorrencias", method = RequestMethod.GET)
 	public OccurrenceResult occurrencesByResource(@PathVariable String id,
 			@RequestParam(value = "scientificname", defaultValue = "") String scientificname,

@@ -24,7 +24,6 @@ import java.util.ArrayList;
  * @author Pedro Guimarães
  *
  */
-
 public class OccurrenceResult {
 
 	// Represents the requested scientificname
@@ -44,6 +43,7 @@ public class OccurrenceResult {
 		this.count = 0;
 		this.occurrences = null;
 	}
+	
 	/**
 	 * Default constructor
 	 * @param scientificname

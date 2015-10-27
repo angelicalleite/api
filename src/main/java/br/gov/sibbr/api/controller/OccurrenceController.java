@@ -15,6 +15,7 @@
 
 package br.gov.sibbr.api.controller;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +38,7 @@ public class OccurrenceController {
 	Service service = new Service();
 
 	// Method responsible for managing occurrence requests
+	@Cacheable("occurrence")
 	@RequestMapping(value = "/ocorrencias", method = RequestMethod.GET)
 	public OccurrenceResult occurrence(
 			@RequestParam(value = "scientificname", defaultValue = "null") String scientificname,
