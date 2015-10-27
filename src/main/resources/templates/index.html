@@ -52,13 +52,13 @@
 		<h3>Parâmetros</h3>
 		<ul>
 			<li><b>scientificname</b> - Nome científico do taxon a ser procurado. (Valor padrão é vazio. Observe que é comum registros sem nenhum valor para este campo.)</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Speothos venaticus</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Speothos venaticus</i></p>
 			<li><b>fields</b> - Indica o conjunto de campos a serem retornados. O valor 1 retorna todos os campos disponíveis, enquanto o valor 0 retorna apenas o subconjunto de campos {auto_id, decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
 			<li><b>ignoreNullCoordinates</b> - Filtrar registros que não possuam informação sobre as coordenadas (Valor padrão é <b>false</b>).</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
 			<li><b>limit</b> - Limitar o número máximo de resultados retornados pela consulta (Valor padrão é sem limites). Este campo aceita apenas números naturais.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 		
 		<h2>2. <i>/recursos</i> - Recursos</h2>
@@ -79,17 +79,17 @@
 		<h3>Parâmetros</h3>
 		<ul>
 			<li><i>Listar os recursos disponíveis:</i></li>
-			<p>Uso: <i>http://gbif.sibbr.gov.br/api/recursos</i></p>
+			<p>Uso: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos</i></p>
 			<li><i>Filtrar registros de ocorrência de um dado recurso, utilizando parâmetros análogos aos da consulta de ocorrências:</i></li>
-			<p>Uso: <b>http://gbif.sibbr.gov.br/api/recursos/{id_do_recurso}/ocorrencias</b></p>
+			<p>Uso: <b>http://gbif.sibbr.gov.br/api/v1.1/recursos/{id_do_recurso}/ocorrencias</b></p>
 			<li><b>scientificname</b> - Nome científico do taxon a ser procurado. (Valor padrão é vazio(""). Observe que é comum registros sem nenhum valor para este campo.)</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/12/ocorrencias?scientificname=Speothos venaticus</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/12/ocorrencias?scientificname=Speothos venaticus</i></p>
 			<li><b>fields</b> - Indica o conjunto de campos a serem retornados. O valor 1 retorna todos os campos disponíveis, enquanto o valor 0 retorna apenas o subconjunto de campos {auto_id, decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
 			<li><b>ignoreNullCoordinates</b> - Filtrar registros que não possuam informação sobre as coordenadas (Valor padrão é <b>false</b>).</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/20/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/20/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
 			<li><b>limit</b> - Limitar o número máximo de resultados retornados pela consulta (Valor padrão é sem limites). Este campo aceita apenas números naturais.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 			
 		<p><b>* * * English * * * </b></p>
@@ -137,13 +137,13 @@
 		<h3>Parameters</h3>
 		<ul>
 			<li><b>scientificname</b> - Scientific name of the taxon to be queried.(Default is null. Observe that it is not unusual to have records without a value for this field.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Speothos venaticus</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Speothos venaticus</i></p>
 			<li><b>fields</b> - Indicates the set of fields to be returned. Value 1 retorns all available fields, while value 0 returns only the subset of fields {auto_id, decimalLatitude, decimallongitude}. <b>(Default value is 0)</b>.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
 			<li><b>ignoreNullCoordinates</b> - Filter records that do not possess coordinate information (Default value is <b>false</b>).</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
 			<li><b>limit</b> - Limit the maximum amount of results returned by the query (Default value is without limit). This field supports only natural numbers.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/ocorrencias?scientificname=Aeschynomene falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Aeschynomene falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 		
 		<h2>2. <i>/recursos</i> - Resources</h2>
@@ -164,17 +164,17 @@
 		<h3>Parameters</h3>
 		<ul>
 			<li><i>List available resources:</i></li>
-			<p>Usage: <i>http://gbif.sibbr.gov.br/api/recursos</i></p>
+			<p>Usage: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos</i></p>
 			<li><i>Filter occurrence records from a given resource, with analogous parameters to the occurrence search:</i></li>
-			<p>Usage: <b>http://gbif.sibbr.gov.br/api/recursos/{id_do_recurso}/ocorrencias</b></p>
+			<p>Usage: <b>http://gbif.sibbr.gov.br/api/v1.1/recursos/{id_do_recurso}/ocorrencias</b></p>
 			<li><b>scientificname</b> - Scientific name of the taxon to be queried.(Default is null. Observe that it is not unusual to have records without a value for this field.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/12/ocorrencias?scientificname=Speothos venaticus</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/12/ocorrencias?scientificname=Speothos venaticus</i></p>
 			<li><b>fields</b> - Indicates the set of fields to be returned. Value 1 retorns all available fields, while value 0 returns only the subset of fields {auto_id, decimalLatitude, decimallongitude}. <b>(Default value is 0)</b>.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i></p>
 			<li><b>ignoreNullCoordinates</b> - Filter records that do not possess coordinate information (Default value is <b>false</b>).</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/20/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/20/ocorrencias?scientificname=Verbena lobata&amp;ignoreNullCoordinates=true</i></p>
 			<li><b>limit</b> - Limit the maximum amount of results returned by the query (Default value is without limit). This field supports only natural numbers.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
+			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i></p>
 		</ul>
 	</body>
 </html>
