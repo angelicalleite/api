@@ -15,6 +15,8 @@
 
 package br.gov.sibbr.api.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sibbr.api.Application;
 import br.gov.sibbr.api.model.OccurrenceResult;
+import br.gov.sibbr.api.model.Resource;
 import br.gov.sibbr.api.model.ResourceResult;
 import br.gov.sibbr.api.service.Service;
 
@@ -36,8 +39,10 @@ public class ResourceController {
 
 	@RequestMapping(value = Application.VERSION + "/recursos", method = RequestMethod.GET)
 	public ResourceResult resources(Model model) {
-		ResourceResult resourceResult = new ResourceResult(
-				service.fetchResources());
+		Long startTimeInMs = System.currentTimeMillis();
+		ArrayList<Resource> resources = service.fetchResources();
+		Long totalTimeInMs = service.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		ResourceResult resourceResult = new ResourceResult(resources, totalTimeInMs);
 		return resourceResult;
 	}
 
@@ -51,17 +56,22 @@ public class ResourceController {
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit,
 			@RequestParam(value = "fields", defaultValue = "0") String fields) {
+		Long startTimeInMs = System.currentTimeMillis();
 		int intResourceId = Integer.parseInt(id);
 		int intLimit = Integer.parseInt(limit);
 		int intFields = Integer.parseInt(fields);
 		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-			return new OccurrenceResult(scientificname,
-					service.fetchOccurrencesByResource(scientificname, false,
-							intLimit, intFields, intResourceId));
+			ArrayList<?> occurrences = service.fetchOccurrencesByResource(scientificname, false,
+					intLimit, intFields, intResourceId);
+			Long totalTimeInMs = service.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+			return new OccurrenceResult(scientificname, occurrences, totalTimeInMs
+					);
 		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-			return new OccurrenceResult(scientificname,
-					service.fetchOccurrencesByResource(scientificname, true,
-							intLimit, intFields, intResourceId));
+			ArrayList<?> occurrences = service.fetchOccurrencesByResource(scientificname, true,
+					intLimit, intFields, intResourceId);
+			Long totalTimeInMs = service.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+			return new OccurrenceResult(scientificname, occurrences, totalTimeInMs
+					);
 		}
 		return new OccurrenceResult();
 	}

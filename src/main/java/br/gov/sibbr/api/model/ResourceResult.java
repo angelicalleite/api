@@ -32,6 +32,10 @@ public class ResourceResult {
 
 	// The actual dataset of results
 	private ArrayList<Resource> resources;
+	
+	// The amount of time that took the query in milliseconds
+	private Long queryLength;
+
 
 	/**
 	 * Default constructor
@@ -39,9 +43,10 @@ public class ResourceResult {
 	 * @param scientificname
 	 * @param resources
 	 */
-	public ResourceResult(ArrayList<Resource> resources) {
+	public ResourceResult(ArrayList<Resource> resources, Long queryLength) {
 		this.count = resources.size();
 		this.resources = resources;
+		this.queryLength = queryLength;
 	}
 
 	public int getCount() {

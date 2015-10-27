@@ -34,6 +34,9 @@ public class OccurrenceResult {
 	
 	// The actual dataset of results
 	private ArrayList<?> occurrences;
+	
+	// The amount of time that took the query in milliseconds
+	private Long queryLength;
 
 	/*
 	 * Default constructor for queries where no scientific name is provided for the occurrence search
@@ -42,6 +45,7 @@ public class OccurrenceResult {
 		this.scientificname = "No scientific name provided for the search";
 		this.count = 0;
 		this.occurrences = null;
+		this.queryLength = new Long(0);
 	}
 	
 	/**
@@ -49,12 +53,21 @@ public class OccurrenceResult {
 	 * @param scientificname
 	 * @param occurrences
 	 */
-	public OccurrenceResult(String scientificname, ArrayList<?> occurrences) {
+	public OccurrenceResult(String scientificname, ArrayList<?> occurrences, Long queryLength) {
 		this.scientificname = scientificname;
 		this.count = occurrences.size();
 		this.occurrences = occurrences;
+		this.queryLength = queryLength;
 	}
 	
+	public Long getQueryLength() {
+		return queryLength;
+	}
+
+	public void setQueryLength(Long queryLength) {
+		this.queryLength = queryLength;
+	}
+
 	public String getScientificName() {
 		return scientificname;
 	}

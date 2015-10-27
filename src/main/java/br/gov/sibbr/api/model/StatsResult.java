@@ -27,11 +27,15 @@ public class StatsResult {
 	
 	private Integer amount;
 	
+	// The amount of time that took the query in milliseconds
+	private Long queryLength;
+	
 	/**
 	 * Default class constructor
 	 */
-	public StatsResult(Integer amount) {
+	public StatsResult(Integer amount, Long queryLength) {
 		this.amount = amount;
+		this.queryLength = queryLength;
 	}
 	
 	public Integer getAmount() {

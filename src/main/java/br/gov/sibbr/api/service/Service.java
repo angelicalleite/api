@@ -26,7 +26,6 @@ import br.gov.sibbr.api.db.Utils;
 import br.gov.sibbr.api.model.OccurrenceExpanded;
 import br.gov.sibbr.api.model.OccurrenceReduced;
 import br.gov.sibbr.api.model.Resource;
-import br.gov.sibbr.api.model.ResourceResult;
 import br.gov.sibbr.api.model.StatsResult;
 
 /**
@@ -133,11 +132,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalRecords() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total records:
 		resultSet = dbq.queryTotalRecords();
 		int totalRecords = processTotalRecords(resultSet);
-		return new StatsResult(totalRecords);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalRecords, totalTimeInMs);
 	}
 
 	/**
@@ -147,11 +147,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalGeoRecords() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total georeferenced records:
 		resultSet = dbq.queryTotalGeoRecords();
 		int totalGeoRecords = processTotalGeoRecords(resultSet);
-		return new StatsResult(totalGeoRecords);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalGeoRecords, totalTimeInMs);
 	}
 
 	/**
@@ -161,11 +162,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalRepatriatedRecords() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total repatriated records:
 		resultSet = dbq.queryTotalRepatriatedRecords();
 		int totalRepatriatedRecords = processTotalRepatriatedRecords(resultSet);
-		return new StatsResult(totalRepatriatedRecords);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalRepatriatedRecords, totalTimeInMs);
 	}
 
 	/**
@@ -175,11 +177,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalPublishers() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total publishers:
 		resultSet = dbq.queryTotalPublishers();
 		int totalPublishers = processTotalPublishers(resultSet);
-		return new StatsResult(totalPublishers);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalPublishers, totalTimeInMs);
 	}
 
 	/**
@@ -189,11 +192,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalResources() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total resources:
 		resultSet = dbq.queryTotalResources();
 		int totalResources = processTotalResources(resultSet);
-		return new StatsResult(totalResources);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalResources, totalTimeInMs);
 	}
 
 	/**
@@ -203,11 +207,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalSpecies() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total species:
 		resultSet = dbq.queryTotalSpecies();
 		int totalSpecies = processTotalSpecies(resultSet);
-		return new StatsResult(totalSpecies);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalSpecies, totalTimeInMs);
 	}
 
 	/**
@@ -217,11 +222,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalPhylum() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total phylum:
 		resultSet = dbq.queryTotalPhylum();
 		int totalPhylum = processTotalPhylum(resultSet);
-		return new StatsResult(totalPhylum);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalPhylum, totalTimeInMs);
 	}
 
 	/**
@@ -231,11 +237,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalClass() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total classes:
 		resultSet = dbq.queryTotalClass();
 		int totalClasses = processTotalClasses(resultSet);
-		return new StatsResult(totalClasses);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalClasses, totalTimeInMs);
 	}
 
 	/**
@@ -245,11 +252,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalOrder() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total orders:
 		resultSet = dbq.queryTotalOrder();
 		int totalOrders = processTotalOrders(resultSet);
-		return new StatsResult(totalOrders);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalOrders, totalTimeInMs);
 	}
 
 	/**
@@ -259,11 +267,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalGenus() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total genus:
 		resultSet = dbq.queryTotalGenus();
 		int totalGenus = processTotalGenus(resultSet);
-		return new StatsResult(totalGenus);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalGenus, totalTimeInMs);
 	}
 
 	/**
@@ -273,11 +282,12 @@ public class Service {
 	 */
 	public StatsResult fetchTotalFamily() {
 		ResultSet resultSet = null;
-		StatsResult statsResult = null;
+		Long startTimeInMs = System.currentTimeMillis();
 		// Total families:
 		resultSet = dbq.queryTotalFamily();
 		int totalFamilies = processTotalFamilies(resultSet);
-		return new StatsResult(totalFamilies);
+		Long totalTimeInMs = calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		return new StatsResult(totalFamilies, totalTimeInMs);
 	}
 
 	/**
@@ -559,8 +569,19 @@ public class Service {
 			e.printStackTrace();
 		}
 		return totalFamilies;
+
 	}
 
+	/**
+	 * Auxiliary method to calculate the amount of time the queries take
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public Long calculateTimeLapse(Long start, Long end) {
+		return end-start;
+	}
+	
 	/**
 	 * Release database connection once the application stops running
 	 */

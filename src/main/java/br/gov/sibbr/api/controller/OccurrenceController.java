@@ -15,6 +15,8 @@
 
 package br.gov.sibbr.api.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,16 +48,25 @@ public class OccurrenceController {
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit,
 			@RequestParam(value = "fields", defaultValue = "0") String fields) {
+		Long startTimeInMs = System.currentTimeMillis();
 		int intLimit = Integer.parseInt(limit);
 		int intFields = Integer.parseInt(fields);
 		// Avoid returning all records when no filter is provided
 		if (!scientificname.equalsIgnoreCase("null")) {
 			if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-				return new OccurrenceResult(scientificname,
-						service.fetchOccurrences(scientificname, false, intLimit, intFields));
+				ArrayList<?> occurrences = service.fetchOccurrences(
+						scientificname, false, intLimit, intFields);
+				Long totalTimeInMs = service.calculateTimeLapse(startTimeInMs,
+						System.currentTimeMillis());
+				return new OccurrenceResult(scientificname, occurrences,
+						totalTimeInMs);
 			} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-				return new OccurrenceResult(scientificname,
-						service.fetchOccurrences(scientificname, true, intLimit, intFields));
+				ArrayList<?> occurrences = service.fetchOccurrences(
+						scientificname, true, intLimit, intFields);
+				Long totalTimeInMs = service.calculateTimeLapse(startTimeInMs,
+						System.currentTimeMillis());
+				return new OccurrenceResult(scientificname, occurrences,
+						totalTimeInMs);
 			}
 		}
 		return new OccurrenceResult();

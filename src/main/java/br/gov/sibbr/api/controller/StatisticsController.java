@@ -25,85 +25,74 @@ public class StatisticsController {
 	@RequestMapping(value = Application.VERSION + "/stats/totalRegistros", method = RequestMethod.GET)
 	@Cacheable("total_records")
 	public StatsResult fetchTotalRecords() {
-		StatsResult statsResult = service.fetchTotalRecords();
-		return statsResult;
+		return service.fetchTotalRecords();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalRegistrosGeorreferenciados", method = RequestMethod.GET)
 	@Cacheable("total_geo_records")
 	public StatsResult fetchTotalGeoRecords() {
-		StatsResult statsResult = service.fetchTotalGeoRecords();
-		return statsResult;
+		return service.fetchTotalGeoRecords();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalRegistrosRepatriados", method = RequestMethod.GET)
 	@Cacheable("total_repatriados")
 	public StatsResult fetchTotalRepatriatedRecords() {
-		StatsResult statsResult = service.fetchTotalRepatriatedRecords();
-		return statsResult;
+		return service.fetchTotalRepatriatedRecords();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalPublicadores", method = RequestMethod.GET)
 	public StatsResult fetchTotalPublishers() {
-		StatsResult statsResult = service.fetchTotalPublishers();
-		return statsResult;
+		return service.fetchTotalPublishers();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalRecursos", method = RequestMethod.GET)
 	public StatsResult fetchTotalResources() {
-		StatsResult statsResult = service.fetchTotalResources();
-		return statsResult;
+		return service.fetchTotalResources();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalEspecies", method = RequestMethod.GET)
 	@Cacheable("total_species")
 	public StatsResult fetchTotalSpecies() {
-		StatsResult statsResult = service.fetchTotalSpecies();
-		return statsResult;
+		return service.fetchTotalSpecies();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalFilo", method = RequestMethod.GET)
 	@Cacheable("total_phylum")
 	public StatsResult fetchTotalPhylum() {
-		StatsResult statsResult = service.fetchTotalPhylum();
-		return statsResult;
+		return service.fetchTotalPhylum();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalClasse", method = RequestMethod.GET)
 	@Cacheable("total_class")
 	public StatsResult fetchTotalClass() {
-		StatsResult statsResult = service.fetchTotalClass();
-		return statsResult;
+		return service.fetchTotalClass();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalOrdem", method = RequestMethod.GET)
 	@Cacheable("total_order")
 	public StatsResult fetchTotalOrder() {
-		StatsResult statsResult = service.fetchTotalOrder();
-		return statsResult;
+		return service.fetchTotalOrder();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalGenero", method = RequestMethod.GET)
 	@Cacheable("total_genus")
 	public StatsResult fetchTotalGenus() {
-		StatsResult statsResult = service.fetchTotalGenus();
-		return statsResult;
+		return service.fetchTotalGenus();
 	}
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = Application.VERSION + "/stats/totalFamilia", method = RequestMethod.GET)
 	@Cacheable("total_family")
 	public StatsResult fetchTotalFamily() {
-		StatsResult statsResult = service.fetchTotalFamily();
-		return statsResult;
+		return service.fetchTotalFamily();
 	}
 }
