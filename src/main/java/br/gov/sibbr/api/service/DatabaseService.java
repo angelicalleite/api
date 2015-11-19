@@ -36,14 +36,14 @@ import br.gov.sibbr.api.model.StatsResult;
  * @author Pedro Guimarães
  *
  */
-public class Service {
+public class DatabaseService {
 
 	DatabaseQueries dbq = null;
 
 	/**
 	 * Default constructor, starts up a new connection to the database;
 	 */
-	public Service() {
+	public DatabaseService() {
 		try {
 			dbq = new DatabaseQueries();
 		} catch (Exception e) {

@@ -30,9 +30,7 @@ import org.springframework.context.annotation.Bean;
  *
  */
 public class Application {
-	
-	// Current API version, used by URI building in controllers
-	public static final String VERSION = "/v1.1";
+
 	// List of all current cacheable calls to the API
 	public static final String[] CACHEABLE_CALLS = { "occurrence",
 			"resource_occurrence", "total_records", "total_geo_records",

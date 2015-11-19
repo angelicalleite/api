@@ -29,15 +29,15 @@ import br.gov.sibbr.api.Application;
 import br.gov.sibbr.api.model.OccurrenceResult;
 import br.gov.sibbr.api.model.Resource;
 import br.gov.sibbr.api.model.ResourceResult;
-import br.gov.sibbr.api.service.Service;
+import br.gov.sibbr.api.service.DatabaseService;
 
 @RestController
 public class ResourceController {
 
 	// Auxiliary service class
-	Service service = new Service();
+	DatabaseService service = new DatabaseService();
 
-	@RequestMapping(value = Application.VERSION + "/recursos", method = RequestMethod.GET)
+	@RequestMapping(value = "/recursos", method = RequestMethod.GET)
 	public ResourceResult resources(Model model) {
 		Long startTimeInMs = System.currentTimeMillis();
 		ArrayList<Resource> resources = service.fetchResources();
@@ -49,7 +49,7 @@ public class ResourceController {
 	// Method responsible for managing occurrence requests with resource
 	// filtering
 	@Cacheable("resource_occurrence")
-	@RequestMapping(value = Application.VERSION + "/recursos/{id}/ocorrencias", method = RequestMethod.GET)
+	@RequestMapping(value = "/recursos/{id}/ocorrencias", method = RequestMethod.GET)
 	public OccurrenceResult occurrencesByResource(
 			@PathVariable String id,
 			@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
