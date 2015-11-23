@@ -21,17 +21,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import br.gov.sibbr.api.Application;
 import br.gov.sibbr.api.model.LoginForm;
 import br.gov.sibbr.api.service.AuthService;
 
-@Controller
 /**
  * Controller for the general html templates.
  * 
  * @author Pedro Guimarães
  *
  */
+@Controller
 public class InterfaceController implements ErrorController {
 
 	private final String ERROR_PATH = "/erro";
@@ -41,14 +40,13 @@ public class InterfaceController implements ErrorController {
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(LoginForm loginForm, Model model) {
-		// TODO: receber e validar a lista de parâmetros, conectar ao banco de
-		// dados para verificar usuário e senha
 		String email = loginForm.getEmail();
 		String password = loginForm.getPassword();
 		if (email != null && password != null) {
 			String message = authService.checkPassword(email, password);
 			if (message == null) {
-				// Successful authentication with valid credentials, fetch user token:
+				// Successful authentication with valid credentials, fetch user
+				// token:
 				String token = authService.fetchToken(email);
 				if (token != null) {
 					model.addAttribute("token", token);
@@ -60,19 +58,46 @@ public class InterfaceController implements ErrorController {
 		return "login_fail";
 	}
 
+	// Method responsible for managing occurrence requests
+	@RequestMapping(value = "/admin", method = RequestMethod.POST)
+	public String admin(LoginForm loginForm, Model model) {
+		String email = loginForm.getEmail();
+		String password = loginForm.getPassword();
+		if (email != null && password != null) {
+			String message = authService.checkPassword(email, password);
+			if (message == null) {
+				// Successful authentication with valid credentials, fetch user
+				// token:
+				String token = authService.fetchToken(email);
+				if (token != null) {
+					model.addAttribute("token", token);
+					return "admin_login_success";
+				}
+			}
+			model.addAttribute("message", message);
+		}
+		return "admin_login_fail";
+	}
+
 	@RequestMapping("/")
 	public String greeting(Model model) {
 		return "index";
 	}
 
 	// Method responsible for calling the login template
-	@RequestMapping(value ="/login", method = RequestMethod.GET)
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "login";
 	}
 
+	// Method responsible for calling the login template
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String admin() {
+		return "admin";
+	}
+
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value ="/stats", method = RequestMethod.GET)
+	@RequestMapping(value = "/stats", method = RequestMethod.GET)
 	public String stats() {
 		return "stats";
 	}

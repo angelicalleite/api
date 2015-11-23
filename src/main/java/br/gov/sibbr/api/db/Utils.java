@@ -19,6 +19,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 
+/**
+ * Auxiliary class with a series of helpful auxiliary methods
+ * @author Pedro Guimarães
+ *
+ */
 public class Utils {
 
 	/**
@@ -34,29 +39,29 @@ public class Utils {
 		double nValue = rs.getDouble(strColName);
 		return rs.wasNull() ? null : nValue;
 	}
-	
+
 	/**
-	 * Auxiliary method to avoid problems with null values
-	 * is null
+	 * Auxiliary method to avoid problems with null values is null
 	 * 
 	 * @param rs
 	 * @param strColName
 	 * @return
 	 * @throws SQLException
 	 */
-	public static String getString (ResultSet rs, String strColName) throws SQLException {
+	public static String getString(ResultSet rs, String strColName) throws SQLException {
 		String value = rs.getString(strColName);
 		return rs.wasNull() ? null : value;
 	}
-	
+
 	/**
 	 * Auxiliary method to avoid problems with null timestamp values
+	 * 
 	 * @param rs
 	 * @param strColName
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Timestamp getTimestamp (ResultSet rs, String strColName) throws SQLException {
+	public static Timestamp getTimestamp(ResultSet rs, String strColName) throws SQLException {
 		Timestamp value = rs.getTimestamp(strColName);
 		return rs.wasNull() ? null : value;
 	}

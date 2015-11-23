@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
-        <title>Login page</title>
+        <title>Login realizado com sucesso || Login success</title>
     </head>
     <body>
     	<h2>Português</h2>
@@ -10,7 +10,7 @@
     	<b>Token de acesso:
     		<p th:text="${token}"/>
     	</b>
-    	<p>Use este token como o parâmetro <b>apiKey</b> em cada requisição à API.</p>
+    	<p>Use este token como o parâmetro <b>token</b> em cada requisição à API.</p>
     	<p><b>Nota:</b> Não compartilhe este token com outros, pois ele representa os acessos realizados à API pelo seu usuário. Este token é válido por <b>7 dias.</b></p>
     	<p>Depois deste período, você deve se identificar novamente para receber um novo token.</p> 
     	<h2>English</h2>
@@ -18,7 +18,7 @@
     	<b>Access token:
     		<p th:text="${token}"/>
     	</b>
-    	<p>Use this token as the <b>apiKey</b> parameter in every API request.</p>
+    	<p>Use this token as the <b>token</b> parameter in every API request.</p>
     	<p><b>Note:</b> Do not share this token with others, as it represents the accesses your user makes to the API. This token is valid for <b>7 days.</b></p>
     	<p>After that period, you should login once again in order to fetch a new token.</p>
     </body>

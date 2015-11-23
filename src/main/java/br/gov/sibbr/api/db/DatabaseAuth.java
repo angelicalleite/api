@@ -1,3 +1,18 @@
+/**
+  	SiBBr API - Interface pública de acesso aos registros de ocorrência
+    Copyright (C) 2015  SiBBr - Sistema de Informação sobre a Biodiversidade Brasileira
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
+
 package br.gov.sibbr.api.db;
 
 import java.sql.Connection;
@@ -5,6 +20,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * This class is responsible for providing database access methods to query the
+ * authentication database
+ * 
+ * @author pedro
+ *
+ */
 public class DatabaseAuth {
 
 	private Connection conn = null;
@@ -38,6 +60,26 @@ public class DatabaseAuth {
 	 * @param scientificname
 	 * @return
 	 */
+	public ResultSet queryToken(String token) {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery(
+					"SELECT * FROM " + API_TOKEN_TABLE + " WHERE " + API_TOKEN_TOKEN + " = \'" + token + "\'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+
+	/**
+	 * Fetches records from dataportal schema, returning different sets of
+	 * fields from occurrence table that match the given scientificname;
+	 * 
+	 * @param scientificname
+	 * @return
+	 */
 	public ResultSet queryApiUser(String email) {
 		ResultSet resultSet = null;
 		Statement statement = null;
@@ -60,8 +102,8 @@ public class DatabaseAuth {
 	public ResultSet queryApiUserTokenId(String email) {
 		ResultSet resultSet = null;
 		Statement statement = null;
-		String sql = "SELECT " + API_USER_TOKEN_ID + " FROM " + API_USER_TABLE + " WHERE "
-				+ API_USER_EMAIL + " = \'" + email + "\'";
+		String sql = "SELECT " + API_USER_TOKEN_ID + " FROM " + API_USER_TABLE + " WHERE " + API_USER_EMAIL + " = \'"
+				+ email + "\'";
 		try {
 			statement = conn.createStatement();
 			resultSet = statement.executeQuery(sql);

@@ -19,10 +19,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.springframework.beans.factory.annotation.Value;
-
-import br.gov.sibbr.api.Application;
-
 /**
  * This class is responsible to manage jdbc connections to the postgresql
  * database only for read operations.
@@ -40,7 +36,7 @@ public class DatabaseConnection {
 	public static String authUrl = "jdbc:postgresql://localhost/dataportal_auth";
 	public static String authUser = "dbadmin";
 	public static String authPassword = "dbadmin";
-	
+
 	/**
 	 * Singleton to connect to database
 	 * 

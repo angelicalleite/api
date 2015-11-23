@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.gov.sibbr.api.model.ErrorResult;
 import br.gov.sibbr.api.model.OccurrenceResult;
+import br.gov.sibbr.api.service.AuthService;
 import br.gov.sibbr.api.service.DatabaseService;
 
-@RestController
 /**
  * Controller responsible for managing URL requests and calling for services to
  * provide occurrence data
@@ -34,40 +35,49 @@ import br.gov.sibbr.api.service.DatabaseService;
  * @author Pedro Guimarães
  *
  */
+@RestController
 public class OccurrenceController {
 
-	// Auxiliary service class
-	DatabaseService service = new DatabaseService();
+	// Auxiliary service classes
+	DatabaseService databaseService = new DatabaseService();
+	AuthService authService = new AuthService();
 
 	// Method responsible for managing occurrence requests
 	@Cacheable("occurrence")
 	@RequestMapping(value = "/ocorrencias", method = RequestMethod.GET)
-	public OccurrenceResult occurrence(
+	public Object occurrence(
 			@RequestParam(value = "scientificname", defaultValue = "null") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit,
-			@RequestParam(value = "fields", defaultValue = "0") String fields) {
+			@RequestParam(value = "fields", defaultValue = "0") String fields,
+			@RequestParam(value = "token", defaultValue = "null") String token) {
 		Long startTimeInMs = System.currentTimeMillis();
 		int intLimit = Integer.parseInt(limit);
 		int intFields = Integer.parseInt(fields);
-		// Avoid returning all records when no filter is provided
-		if (!scientificname.equalsIgnoreCase("null")) {
-			if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-				ArrayList<?> occurrences = service.fetchOccurrences(
-						scientificname, false, intLimit, intFields);
-				Long totalTimeInMs = service.calculateTimeLapse(startTimeInMs,
-						System.currentTimeMillis());
-				return new OccurrenceResult(scientificname, occurrences,
-						totalTimeInMs);
-			} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-				ArrayList<?> occurrences = service.fetchOccurrences(
-						scientificname, true, intLimit, intFields);
-				Long totalTimeInMs = service.calculateTimeLapse(startTimeInMs,
-						System.currentTimeMillis());
-				return new OccurrenceResult(scientificname, occurrences,
-						totalTimeInMs);
+		// Check of the user has proper access grant token
+		String tokenCheck = authService.checkToken(token);
+		// If user provided a valid token, proceed:
+		if (tokenCheck == null) {
+			// Avoid returning all records when no filter is provided
+			if (!scientificname.equalsIgnoreCase("null")) {
+				if (ignorenullcoordinates.equalsIgnoreCase("false")) {
+					ArrayList<?> occurrences = databaseService.fetchOccurrences(scientificname, false, intLimit,
+							intFields);
+					Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+					return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
+				} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
+					ArrayList<?> occurrences = databaseService.fetchOccurrences(scientificname, true, intLimit,
+							intFields);
+					Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+					return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
+				}
 			}
+			// No scientificname provided:
+			return new ErrorResult("No scientific name provided for the search");
 		}
-		return new OccurrenceResult();
+		// The user has bad token authentication, display error message:
+		else {
+			return new ErrorResult(tokenCheck);
+		}	
 	}
 }

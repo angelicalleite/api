@@ -16,40 +16,24 @@
 package br.gov.sibbr.api.model;
 
 /**
- * This class should model an api result to be mapped into a json object,
- * including arbitrary headers. This result represents the current status of the database.
- * 
+ * Simple class to output error messages as JSON results
  * @author Pedro Guimarães
  *
  */
+public class ErrorResult {
 
-public class StatsResult {
+	// Error messages
+	private String error;
 	
-	private Integer amount;
-	
-	// The amount of time that took the query in milliseconds
-	private Long queryLength;
-	
-	/**
-	 * Default class constructor
-	 */
-	public StatsResult(Integer amount, Long queryLength) {
-		this.amount = amount;
-		this.queryLength = queryLength;
-	}
-	
-	public Integer getAmount() {
-		return amount;
-	}
-	public void setAmount(Integer amount) {
-		this.amount = amount;
+	public ErrorResult(String error) {
+		this.error = error;
 	}
 
-	public Long getQueryLength() {
-		return queryLength;
+	public String getError() {
+		return error;
 	}
 
-	public void setQueryLength(Long queryLength) {
-		this.queryLength = queryLength;
+	public void setError(String error) {
+		this.error = error;
 	}
 }

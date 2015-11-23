@@ -1,3 +1,18 @@
+/**
+  	SiBBr API - Interface pública de acesso aos registros de ocorrência
+    Copyright (C) 2015  SiBBr - Sistema de Informação sobre a Biodiversidade Brasileira
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ */
+
 package br.gov.sibbr.api.service;
 
 import java.security.MessageDigest;
@@ -13,6 +28,11 @@ import java.util.Random;
 import br.gov.sibbr.api.db.DatabaseAuth;
 import br.gov.sibbr.api.db.Utils;
 
+/**
+ * Service class for all authentication related methods
+ * @author Pedro Guimarães
+ *
+ */
 public class AuthService {
 
 	public static char[] hexDigit = "0123456789abcdef".toCharArray();
@@ -104,6 +124,38 @@ public class AuthService {
 			}
 		}
 		return "Invalid e-mail address.";
+	}
+	
+	/**
+	 * Check if the provided token is valid and not expired.
+	 * @param token
+	 * @return error messages or null if the token is valid.
+	 */
+	public String checkToken(String token) {
+		ResultSet rs = dba.queryToken(token);
+		if (rs != null) {
+			HashMap<String, Object> hashMap = processApiToken(rs);
+			if (hashMap.size() > 0) {
+				token = (String) hashMap.get("token");
+				// Get date string:
+				Timestamp tokenTime = (Timestamp) hashMap.get("created_at");
+				// Get current date:
+				Date currentTime = Calendar.getInstance().getTime();
+				// Check if the token has more than 7 days from creation to
+				// now, being therefore, expired
+				long diff = Math.abs(currentTime.getTime() - tokenTime.getTime());
+				long diffInMinutes = diff / (60 * 1000);
+				// Amount of minutes in one week
+				long weekInMinutes = 60 * 24 * 7;
+				// If the token is one week + old, generate a new token
+				if (diffInMinutes > weekInMinutes) {
+					return "Expired token. Please login and fetch a new token.";
+				}
+				// Valid and non expired token:
+				return null;
+			}
+		}
+		return "Invalid token.";
 	}
 
 	/**
