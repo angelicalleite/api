@@ -17,6 +17,7 @@ package br.gov.sibbr.api.db;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 public class Utils {
 
@@ -35,7 +36,7 @@ public class Utils {
 	}
 	
 	/**
-	 * Auxiliary method to avoid 0.0 values for double fields when field value
+	 * Auxiliary method to avoid problems with null values
 	 * is null
 	 * 
 	 * @param rs
@@ -45,6 +46,18 @@ public class Utils {
 	 */
 	public static String getString (ResultSet rs, String strColName) throws SQLException {
 		String value = rs.getString(strColName);
+		return rs.wasNull() ? null : value;
+	}
+	
+	/**
+	 * Auxiliary method to avoid problems with null timestamp values
+	 * @param rs
+	 * @param strColName
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Timestamp getTimestamp (ResultSet rs, String strColName) throws SQLException {
+		Timestamp value = rs.getTimestamp(strColName);
 		return rs.wasNull() ? null : value;
 	}
 }

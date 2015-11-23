@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.gov.sibbr.api.Application;
 import br.gov.sibbr.api.model.OccurrenceResult;
 import br.gov.sibbr.api.model.Resource;
 import br.gov.sibbr.api.model.ResourceResult;

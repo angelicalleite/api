@@ -4,7 +4,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 import br.gov.sibbr.api.db.DatabaseAuth;
 import br.gov.sibbr.api.db.Utils;
@@ -73,7 +77,7 @@ public class AuthService {
 	public String checkPassword(String email, String password) {
 		// Turn the provided form password into a hash
 		String passwordHash = hash(password, SHA256);
-		ResultSet rs = dba.queryApiUser(email, password);
+		ResultSet rs = dba.queryApiUser(email);
 		// Check if there is at least one result
 		if (rs != null) {
 			HashMap<String, String> hashMap = processApiUser(rs);
@@ -94,11 +98,59 @@ public class AuthService {
 						return null;
 					return "Wrong password.";
 				}
-				// This should not happen, salt should be always created upon new api user
+				// This should not happen, salt should be always created upon
+				// new api user
 				return "No salt for this email address.";
 			}
 		}
 		return "Invalid e-mail address.";
+	}
+
+	/**
+	 * Returns the user a valid token. If the current token is expired,
+	 * generates a new one and updates the database. It supposes the email is a
+	 * valid user.
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public String fetchToken(String email) {
+		ResultSet rs = null;
+		String token = null;
+		rs = dba.queryApiUserTokenId(email);
+		long token_id = processTokenId(rs);
+		// If this query is null, the long equals 0. if that is the case, there
+		// was no token found to be associated to this user and, therefore, a
+		// new token should be generated.
+		if (token_id != 0L) {
+			rs = dba.queryTokenById(token_id);
+			// If there is a valid token:
+			if (rs != null) {
+				HashMap<String, Object> hashMap = processApiToken(rs);
+				if (hashMap.size() > 0) {
+					token = (String) hashMap.get("token");
+					// Get date string:
+					Timestamp tokenTime = (Timestamp) hashMap.get("created_at");
+					// Get current date:
+					Date currentTime = Calendar.getInstance().getTime();
+					// Check if the token has more than 7 days from creation to
+					// now, being therefore, expired
+					long diff = Math.abs(currentTime.getTime() - tokenTime.getTime());
+					long diffInMinutes = diff / (60 * 1000);
+					// Amount of minutes in one week
+					long weekInMinutes = 60 * 24 * 7;
+					// If the token is one week + old, generate a new token
+					if (diffInMinutes > weekInMinutes) {
+						token = generateNewToken(email);
+					}
+				}
+			}
+		}
+		// There is no generated token to the user (first access)
+		else {
+			token = generateNewToken(email);
+		}
+		return token;
 	}
 
 	/**
@@ -124,5 +176,94 @@ public class AuthService {
 			e.printStackTrace();
 		}
 		return hashMap;
+	}
+
+	/**
+	 * Processes resultSet to retrieve password and salt information from query
+	 * in the form of a hashmap
+	 * 
+	 * @param rs
+	 *            database query from DatabaseAuth.queryApiUser()
+	 * @return
+	 */
+	public long processTokenId(ResultSet rs) {
+		long token_id = 0;
+		try {
+			while (rs.next()) {
+				token_id = rs.getLong("token_id");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return token_id;
+	}
+
+	/**
+	 * Processes resultSet to retrieve password and salt information from query
+	 * in the form of a hashmap
+	 * 
+	 * @param rs
+	 *            database query from DatabaseAuth.queryApiUser()
+	 * @return
+	 */
+	public HashMap<String, Object> processApiToken(ResultSet rs) {
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		try {
+			while (rs.next()) {
+				String auto_id = Utils.getString(rs, "auto_id");
+				String token = Utils.getString(rs, "token");
+				Date createdAt = Utils.getTimestamp(rs, "created_at");
+				hashMap.put("auto_id", auto_id);
+				hashMap.put("token", token);
+				hashMap.put("created_at", createdAt);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return hashMap;
+	}
+
+	/**
+	 * generates a new token hash, inserts it into the api_token table and
+	 * updates the api_user table to point to the token record's foreign key
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public String generateNewToken(String email) {
+		long random = new Random().nextLong();
+		String token = hash(Long.toString(System.currentTimeMillis()) + Long.toString(random), SHA256);
+		// Inserts the new token to the api_token table
+		ResultSet rs = dba.generateNewToken(email, token);
+		if (rs != null) {
+			long auto_id = processTokenAutoId(rs);
+			int updated = dba.updateApiUserToken(email, auto_id);
+			// Api user has been updated with the token id
+			if (updated != 0) {
+				return token;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Receives a resultset to fetch and return the auto_id from a api_token
+	 * record
+	 * 
+	 * @param rs
+	 * @return
+	 */
+	public Long processTokenAutoId(ResultSet rs) {
+		Long auto_id = null;
+		if (rs != null) {
+			try {
+				while (rs.next()) {
+					auto_id = rs.getLong("auto_id");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return auto_id;
 	}
 }

@@ -5,6 +5,21 @@
         <title>Login page</title>
     </head>
     <body>
-    	Login success.
+    	<h2>Português</h2>
+    	<p><b>Login realizado com sucesso.</b></p>
+    	<b>Token de acesso:
+    		<p th:text="${token}"/>
+    	</b>
+    	<p>Use este token como o parâmetro <b>apiKey</b> em cada requisição à API.</p>
+    	<p><b>Nota:</b> Não compartilhe este token com outros, pois ele representa os acessos realizados à API pelo seu usuário. Este token é válido por <b>7 dias.</b></p>
+    	<p>Depois deste período, você deve se identificar novamente para receber um novo token.</p> 
+    	<h2>English</h2>
+    	<p><b>Login success.</b></p>
+    	<b>Access token:
+    		<p th:text="${token}"/>
+    	</b>
+    	<p>Use this token as the <b>apiKey</b> parameter in every API request.</p>
+    	<p><b>Note:</b> Do not share this token with others, as it represents the accesses your user makes to the API. This token is valid for <b>7 days.</b></p>
+    	<p>After that period, you should login once again in order to fetch a new token.</p>
     </body>
 </html>

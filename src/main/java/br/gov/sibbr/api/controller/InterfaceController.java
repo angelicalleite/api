@@ -48,7 +48,12 @@ public class InterfaceController implements ErrorController {
 		if (email != null && password != null) {
 			String message = authService.checkPassword(email, password);
 			if (message == null) {
-				return "login_success";
+				// Successful authentication with valid credentials, fetch user token:
+				String token = authService.fetchToken(email);
+				if (token != null) {
+					model.addAttribute("token", token);
+					return "login_success";
+				}
 			}
 			model.addAttribute("message", message);
 		}
