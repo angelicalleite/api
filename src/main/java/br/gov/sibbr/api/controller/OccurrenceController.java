@@ -78,6 +78,6 @@ public class OccurrenceController {
 		// The user has bad token authentication, display error message:
 		else {
 			return new ErrorResult(tokenCheck);
-		}	
+		}
 	}
 }

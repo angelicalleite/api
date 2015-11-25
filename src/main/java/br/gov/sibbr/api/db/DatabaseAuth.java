@@ -32,10 +32,12 @@ public class DatabaseAuth {
 	private Connection conn = null;
 
 	public static final String API_USER_TABLE = "api_user";
+	public static final String API_USER_AUTO_ID = "auto_id";
 	public static final String API_USER_EMAIL = "email";
 	public static final String API_USER_PASSWORD = "password";
 	public static final String API_USER_SALT = "salt";
 	public static final String API_USER_TOKEN_ID = "token_id";
+	public static final String API_USER_AUTHORIZED = "authorized";
 
 	public static final String API_TOKEN_TABLE = "api_token";
 	public static final String API_TOKEN_AUTO_ID = "auto_id";
@@ -56,11 +58,9 @@ public class DatabaseAuth {
 	}
 
 	/**
-	 * Fetches records from dataportal schema, returning different sets of
-	 * fields from occurrence table that match the given scientificname;
-	 * 
-	 * @param scientificname
-	 * @return
+	 * Fetches a token record from api_token table based on the token
+	 * @param token the token from an api_token record
+	 * @return the resultSet
 	 */
 	public ResultSet queryToken(String token) {
 		ResultSet resultSet = null;
@@ -76,10 +76,9 @@ public class DatabaseAuth {
 	}
 
 	/**
-	 * Fetches records from dataportal schema, returning different sets of
-	 * fields from occurrence table that match the given scientificname;
+	 * Fetches records from api_user by user provided email
 	 * 
-	 * @param scientificname
+	 * @param email user email
 	 * @return
 	 */
 	public ResultSet queryApiUser(String email) {
@@ -88,6 +87,43 @@ public class DatabaseAuth {
 		try {
 			statement = conn.createStatement();
 			resultSet = statement.executeQuery("SELECT * FROM " + API_USER_TABLE + " WHERE " + API_USER_EMAIL + " = \'" + email + "\'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Fetches records from api_user by user provided auto_id
+	 * 
+	 * @param id user auto_id
+	 * @return
+	 */
+	public ResultSet queryApiUser(Long id) {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery("SELECT * FROM " + API_USER_TABLE + " WHERE " + API_USER_AUTO_ID + " = \'" + id + "\'");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Fetches records from dataportal schema, returning different sets of
+	 * fields from occurrence table that match the given scientificname;
+	 * 
+	 * @param scientificname
+	 * @return
+	 */
+	public ResultSet queryApiUsers() {
+		ResultSet resultSet = null;
+		Statement statement = null;
+		try {
+			statement = conn.createStatement();
+			resultSet = statement.executeQuery("SELECT * FROM " + API_USER_TABLE);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -216,6 +252,26 @@ public class DatabaseAuth {
 			statement = conn.createStatement();
 			String sql = "UPDATE " + API_USER_TABLE + " SET " + API_USER_PASSWORD + " = \'" + password + "\', "
 					+ API_USER_SALT + " = \'" + salt + "\' WHERE " + API_USER_EMAIL + " = \'" + email + "\'";
+			result = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * This method updates the authorized field of an api user record to true 
+	 * @param auto_id the api user auto_id
+	 * @return 0 if error or N for the number of updated records
+	 */
+	public int habilitateApiUser(Long auto_id) {
+		Statement statement = null;
+		ResultSet rs = null;
+		int result = 0;
+		// New user, insert into the database
+		try {
+			statement = conn.createStatement();
+			String sql = "UPDATE " + API_USER_TABLE + " SET " + API_USER_AUTHORIZED + " = true WHERE " + API_USER_AUTO_ID + " = " + auto_id;
 			result = statement.executeUpdate(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();

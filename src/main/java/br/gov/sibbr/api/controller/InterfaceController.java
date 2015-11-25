@@ -38,6 +38,8 @@ public class InterfaceController implements ErrorController {
 
 	private AuthService authService = new AuthService();
 
+	/* POST methods: */
+	
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public String login(LoginForm loginForm, Model model) {
@@ -50,8 +52,8 @@ public class InterfaceController implements ErrorController {
 
 				} else {
 					// Successful authentication with valid credentials, fetch
-					// user
-					// token:
+					// user token:
+					// TODO: admin password is not working after password change
 					String token = authService.fetchToken(email);
 					if (token != null) {
 						model.addAttribute("token", token);
@@ -150,6 +152,8 @@ public class InterfaceController implements ErrorController {
 		return "admin_password_change";
 	}
 
+	/* GET methods */
+	
 	// Method responsible for calling the documentation on admin operations
 	@RequestMapping(value = "/admin/", method = RequestMethod.GET)
 	public String admin(@RequestParam(value = "token", defaultValue = "null") String token, Model model) {
@@ -162,6 +166,7 @@ public class InterfaceController implements ErrorController {
 		return "admin";
 	}
 
+	// Method responsible for calling the basic api documentation
 	@RequestMapping("/")
 	public String greeting(Model model) {
 		return "index";
@@ -173,24 +178,25 @@ public class InterfaceController implements ErrorController {
 		return "login";
 	}
 
-	// Method responsible for calling the registration template
+	// Method responsible for calling the user registration template
 	@RequestMapping(value = "/register", method = RequestMethod.GET)
 	public String register() {
 		return "register";
 	}
 
-	// Method responsible for calling the admin change password template
+	// Method responsible for calling the admin password change template
 	@RequestMapping(value = "/admin/changePassword", method = RequestMethod.GET)
 	public String adminPasswordChange() {
 		return "admin_password_change";
 	}
 
-	// Method responsible for managing occurrence requests
+	// Method responsible for displaying statistics documentation
 	@RequestMapping(value = "/stats", method = RequestMethod.GET)
 	public String stats() {
 		return "stats";
 	}
 
+	// Default error page
 	@RequestMapping(value = ERROR_PATH)
 	public String error() {
 		return "error";

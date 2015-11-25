@@ -1,50 +1,27 @@
 package br.gov.sibbr.api.model;
 
+import java.util.ArrayList;
+
 /**
- * Class to model a POJO for an api_user instance
+ * Class to model a POJO for a user list response in the JSON format
  * 
  * @author Pedro Guimarães
  *
  */
 public class ApiUserResult {
 
-	private Long auto_id;
-	private String email;
-	private Boolean authorized;
+	private ArrayList<ApiUser> users;
 	
-	/**
-	 * Default class constructor
-	 * @param auto_id
-	 * @param email
-	 * @param authorized
-	 */
-	public ApiUserResult(Long auto_id, String email, Boolean authorized) {
-		this.auto_id = auto_id;
-		this.email = email;
-		this.authorized = authorized;
+	public ApiUserResult(ArrayList<ApiUser> users) {
+		this.users = users;
 	}
 
-	public Long getAuto_id() {
-		return auto_id;
+	public ArrayList<ApiUser> getUsers() {
+		return users;
 	}
 
-	public void setAuto_id(Long auto_id) {
-		this.auto_id = auto_id;
+	public void setUsers(ArrayList<ApiUser> users) {
+		this.users = users;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Boolean getAuthorized() {
-		return authorized;
-	}
-
-	public void setAuthorized(Boolean authorized) {
-		this.authorized = authorized;
-	}
 }

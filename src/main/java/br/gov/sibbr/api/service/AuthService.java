@@ -20,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ import java.util.Random;
 
 import br.gov.sibbr.api.db.DatabaseAuth;
 import br.gov.sibbr.api.db.Utils;
+import br.gov.sibbr.api.model.ApiUser;
+import br.gov.sibbr.api.model.ApiUserResult;
 
 /**
  * Service class for all authentication related methods
@@ -379,7 +382,7 @@ public class AuthService {
 			String databaseEmail = (String) hashMap.get("email");
 			if (databaseEmail != null) {
 				if (databaseEmail.equalsIgnoreCase(email)) {
-					return "Error. User already registered to the database.";
+					return "User already registered to the database.";
 				}
 			}
 		}
@@ -422,5 +425,101 @@ public class AuthService {
 			return "Error updating user information.";
 		}
 		return "Password successfully updated.";
+	}
+
+	/**
+	 * Responsible for fetching user list and returning as an ApiUserResult
+	 * 
+	 * @return ApiUserResult with the list of users
+	 */
+	public ApiUserResult fetchApiUsers() {
+		ResultSet rs = dba.queryApiUsers();
+		ArrayList<ApiUser> users = new ArrayList<ApiUser>();
+		try {
+			while (rs.next()) {
+				Long auto_id = rs.getLong("auto_id");
+				String email = Utils.getString(rs, "email");
+				Boolean authorized = rs.getBoolean("authorized");
+				users.add(new ApiUser(auto_id, email, authorized));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return new ApiUserResult(users);
+	}
+
+	/**
+	 * Responsible for fetching user list and removing all unauthorized users,
+	 * leaving only the authorized userlist as an ApiUserResult
+	 * 
+	 * @return ApiUserResult with the list of users
+	 */
+	public ApiUserResult fetchApiAuthorizedUsers() {
+		ApiUserResult users = fetchApiUsers();
+		ArrayList<ApiUser> filteredUsers = new ArrayList<ApiUser>();
+		for (ApiUser u : users.getUsers()) {
+			// User is not authorized
+			if (u.getAuthorized()) {
+				// Remove from the user list
+				filteredUsers.add(u);
+			}
+		}
+		// Set the new subset of users
+		users.setUsers(filteredUsers);
+		// Return result
+		return users;
+	}
+
+	/**
+	 * Responsible for fetching user list and removing all authorized users,
+	 * leaving only the unauthorized userlist as an ApiUserResult
+	 * 
+	 * @return ApiUserResult with the list of users
+	 */
+	public ApiUserResult fetchApiUnauthorizedUsers() {
+		ApiUserResult users = fetchApiUsers();
+		ArrayList<ApiUser> filteredUsers = new ArrayList<ApiUser>();
+		for (ApiUser u : users.getUsers()) {
+			// User is not authorized
+			if (!u.getAuthorized()) {
+				// Remove from the user list
+				filteredUsers.add(u);
+			}
+		}
+		// Set the new subset of users
+		users.setUsers(filteredUsers);
+		// Return result
+		return users;
+	}
+
+	/**
+	 * This method calls the database to update the authorized field of a given
+	 * user to true.
+	 * 
+	 * @param id
+	 *            the auto_id of the api user to be updated
+	 * @return Error message or success message
+	 */
+	public String habilitateApiUser(Long id) {
+		int result = dba.habilitateApiUser(id);
+		if (result == 0) {
+			return "Could not habilitate user.";
+		}
+		return "User successfully authorized.";
+	}
+
+	public String checkApiUser(Long id) {
+		ResultSet rs = dba.queryApiUser(id);
+		if (rs != null) {
+			try {
+				while (rs.next()) {
+					String email = Utils.getString(rs, "email");
+					return email;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }
