@@ -30,6 +30,7 @@ import br.gov.sibbr.api.db.Utils;
 
 /**
  * Service class for all authentication related methods
+ * 
  * @author Pedro Guimarães
  *
  */
@@ -100,34 +101,42 @@ public class AuthService {
 		ResultSet rs = dba.queryApiUser(email);
 		// Check if there is at least one result
 		if (rs != null) {
-			HashMap<String, String> hashMap = processApiUser(rs);
-			String databasePassword = hashMap.get("password");
-			String databaseSalt = hashMap.get("salt");
-			String databaseEmail = hashMap.get("email");
+			HashMap<String, Object> hashMap = processApiUser(rs);
+			String databasePassword = (String) hashMap.get("password");
+			String databaseSalt = (String) hashMap.get("salt");
+			String databaseEmail = (String) hashMap.get("email");
+			Boolean authorized = (Boolean) hashMap.get("authorized");
 			// The user has been found on the system
 			if (databaseEmail != null) {
-				// There is valid salt
-				if (databaseSalt != null) {
-					// Concatenate user provided hashed password with salt:
-					String saltedPassword = passwordHash + databaseSalt;
-					// Rehash hashed password now concatenated with salt:
-					String saltedPasswordHash = hash(saltedPassword, SHA256);
-					// Compare the provided hashed password with the database
-					// password
-					if (databasePassword.equalsIgnoreCase(saltedPasswordHash))
-						return null;
-					return "Wrong password.";
+				// The user is authorized
+				if (authorized) {
+					// There is valid salt
+					if (databaseSalt != null) {
+						// Concatenate user provided hashed password with salt:
+						String saltedPassword = passwordHash + databaseSalt;
+						// Rehash hashed password now concatenated with salt:
+						String saltedPasswordHash = hash(saltedPassword, SHA256);
+						// Compare the provided hashed password with the
+						// database
+						// password
+						if (databasePassword.equalsIgnoreCase(saltedPasswordHash))
+							return null;
+						return "Wrong password.";
+					}
+					// This should not happen, salt should be always created
+					// upon
+					// new api user
+					return "No salt for this email address.";
 				}
-				// This should not happen, salt should be always created upon
-				// new api user
-				return "No salt for this email address.";
+				return "Unauthorized user. API admin must authorize your account in order to enable your access to tokens.";
 			}
 		}
 		return "Invalid e-mail address.";
 	}
-	
+
 	/**
 	 * Check if the provided token is valid and not expired.
+	 * 
 	 * @param token
 	 * @return error messages or null if the token is valid.
 	 */
@@ -213,16 +222,18 @@ public class AuthService {
 	 *            database query from DatabaseAuth.queryApiUser()
 	 * @return
 	 */
-	public HashMap<String, String> processApiUser(ResultSet rs) {
-		HashMap<String, String> hashMap = new HashMap<String, String>();
+	public HashMap<String, Object> processApiUser(ResultSet rs) {
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		try {
 			while (rs.next()) {
 				String password = Utils.getString(rs, "password");
 				String salt = Utils.getString(rs, "salt");
 				String email = Utils.getString(rs, "email");
+				Boolean authorized = rs.getBoolean("authorized");
 				hashMap.put("password", password);
 				hashMap.put("salt", salt);
 				hashMap.put("email", email);
+				hashMap.put("authorized", authorized);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -276,7 +287,7 @@ public class AuthService {
 	}
 
 	/**
-	 * generates a new token hash, inserts it into the api_token table and
+	 * Generates a new token hash, inserts it into the api_token table and
 	 * updates the api_user table to point to the token record's foreign key
 	 * 
 	 * @param email
@@ -299,6 +310,19 @@ public class AuthService {
 	}
 
 	/**
+	 * Generates a new md5 hash to be the user account password salteign key
+	 * 
+	 * @param email
+	 * @return
+	 */
+	public String generateSalt() {
+		long random = new Random().nextLong();
+		// Generate a pseudorandom hash for the salt
+		String hash = hash(Long.toString(System.currentTimeMillis()) + Long.toString(random), MD5);
+		return hash;
+	}
+
+	/**
 	 * Receives a resultset to fetch and return the auto_id from a api_token
 	 * record
 	 * 
@@ -317,5 +341,34 @@ public class AuthService {
 			}
 		}
 		return auto_id;
+	}
+
+	public String createAccount(String email, String password) {
+		// Check if user already exists in the database:
+		ResultSet rs = dba.queryApiUser(email);
+		if (rs != null) {
+			HashMap<String, Object> hashMap = processApiUser(rs);
+			String databaseEmail = (String)hashMap.get("email");
+			if (databaseEmail != null) {
+				if (databaseEmail.equalsIgnoreCase(email)) {
+					return "Error. User already registered to the database.";
+				}
+			}
+		}
+		// New valid email user, carry on:
+		// Generate salt for the user account
+		String salt = generateSalt();
+		// Turn the provided form password into a hash
+		String passwordHash = hash(password, SHA256);
+		// Concatenate user provided hashed password with salt:
+		String saltedPassword = passwordHash + salt;
+		// Rehash hashed password now concatenated with salt:
+		String saltedPasswordHash = hash(saltedPassword, SHA256);
+		int result = dba.createApiUser(email, saltedPasswordHash, salt);
+		if (result == 0) {
+			return "Error inserting user to the database.";
+		}
+		return "New account created successfully to the user " + email
+				+ ". Once the admin authorizes your account you will receive a valid token upon login.";
 	}
 }

@@ -41,6 +41,8 @@ public class DatabaseAuth {
 	public static final String API_TOKEN_AUTO_ID = "auto_id";
 	public static final String API_TOKEN_TOKEN = "token";
 
+	public static final int USER_EXISTS = -2;
+
 	/**
 	 * Default class constructor, creates a new connection to the database
 	 */
@@ -85,8 +87,7 @@ public class DatabaseAuth {
 		Statement statement = null;
 		try {
 			statement = conn.createStatement();
-			resultSet = statement.executeQuery("SELECT " + API_USER_PASSWORD + ", " + API_USER_EMAIL + ", "
-					+ API_USER_SALT + " FROM " + API_USER_TABLE + " WHERE " + API_USER_EMAIL + " = \'" + email + "\'");
+			resultSet = statement.executeQuery("SELECT * FROM " + API_USER_TABLE + " WHERE " + API_USER_EMAIL + " = \'" + email + "\'");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -170,5 +171,20 @@ public class DatabaseAuth {
 			e.printStackTrace();
 		}
 		return update;
+	}
+
+	public int createApiUser(String email, String password, String salt) {
+		Statement statement = null;
+		int result = 0;
+		// New user, insert into the database
+		try {
+			statement = conn.createStatement();
+			String sql = "INSERT INTO " + API_USER_TABLE + " (" + API_USER_EMAIL + ", " + API_USER_PASSWORD + ", "
+					+ API_USER_SALT + ") values (\'" + email + "\', \'" + password + "\', \'" + salt + "\')";
+			result = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

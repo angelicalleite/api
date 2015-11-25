@@ -16,7 +16,7 @@
 package br.gov.sibbr.api.model;
 
 /**
- * POJO that encapsulates login form data
+ * POJO that encapsulates login and register form data
  * 
  * @author Pedro Guimarães
  *
@@ -25,6 +25,7 @@ public class LoginForm {
 
 	private String email;
 	private String password;
+	private String passwordCheck;
 
 	public String getEmail() {
 		return email;
@@ -40,5 +41,13 @@ public class LoginForm {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getPasswordCheck() {
+		return passwordCheck;
+	}
+
+	public void setPasswordCheck(String passwordCheck) {
+		this.passwordCheck = passwordCheck;
 	}
 }

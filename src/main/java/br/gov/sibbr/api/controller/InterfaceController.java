@@ -59,6 +59,44 @@ public class InterfaceController implements ErrorController {
 	}
 
 	// Method responsible for managing occurrence requests
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	public String register(LoginForm loginForm, Model model) {
+		String email = loginForm.getEmail();
+		String password = loginForm.getPassword();
+		String passwordCheck = loginForm.getPasswordCheck();
+		if (password != null || passwordCheck != null) {
+			if (email == null || email.contains("@")) {
+				// Check if both passwords are equal:
+				if (password.equalsIgnoreCase(passwordCheck)) {
+					if (password.length() >= 8) {
+						String message = authService.createAccount(email, password);
+						model.addAttribute("success", message);
+					}
+					// Password too small:
+					else {
+						model.addAttribute("error",
+								"Password too small. Password must be at least 5 characters long, with a valid address.");
+					}
+				}
+				// Passwords don't match
+				else {
+					model.addAttribute("error",
+							"The passwords don't match. Try again, and make sure the same password is entered in both password and password verification fields.");
+				}
+			}
+			// Invalid e-mail information
+			else {
+				model.addAttribute("error", "Invalid e-mail. Try again, with a valid address.");
+			}
+		}
+		// One of the fields was left blank:
+		else { 
+			model.addAttribute("error", "You must provide a valid password and repeat it on the Veirification field. Please, try again.");
+		}
+		return "register";
+	}
+
+	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/admin", method = RequestMethod.POST)
 	public String admin(LoginForm loginForm, Model model) {
 		String email = loginForm.getEmail();
@@ -88,6 +126,12 @@ public class InterfaceController implements ErrorController {
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "login";
+	}
+
+	// Method responsible for calling the registration template
+	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	public String register() {
+		return "register";
 	}
 
 	// Method responsible for calling the login template
