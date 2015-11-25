@@ -24,6 +24,7 @@ package br.gov.sibbr.api.model;
 public class LoginForm {
 
 	private String email;
+	private String token;
 	private String password;
 	private String passwordCheck;
 
@@ -49,5 +50,13 @@ public class LoginForm {
 
 	public void setPasswordCheck(String passwordCheck) {
 		this.passwordCheck = passwordCheck;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

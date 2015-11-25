@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import br.gov.sibbr.api.model.LoginForm;
 import br.gov.sibbr.api.service.AuthService;
@@ -45,12 +46,17 @@ public class InterfaceController implements ErrorController {
 		if (email != null && password != null) {
 			String message = authService.checkPassword(email, password);
 			if (message == null) {
-				// Successful authentication with valid credentials, fetch user
-				// token:
-				String token = authService.fetchToken(email);
-				if (token != null) {
-					model.addAttribute("token", token);
-					return "login_success";
+				if (email.equalsIgnoreCase(AuthService.ADMIN_EMAIL)) {
+
+				} else {
+					// Successful authentication with valid credentials, fetch
+					// user
+					// token:
+					String token = authService.fetchToken(email);
+					if (token != null) {
+						model.addAttribute("token", token);
+						return "login_success";
+					}
 				}
 			}
 			model.addAttribute("message", message);
@@ -90,31 +96,70 @@ public class InterfaceController implements ErrorController {
 			}
 		}
 		// One of the fields was left blank:
-		else { 
-			model.addAttribute("error", "You must provide a valid password and repeat it on the Veirification field. Please, try again.");
+		else {
+			model.addAttribute("error",
+					"You must provide a valid password and repeat it on the Veirification field. Please, try again.");
 		}
 		return "register";
 	}
 
-	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/admin", method = RequestMethod.POST)
-	public String admin(LoginForm loginForm, Model model) {
-		String email = loginForm.getEmail();
+	// Method responsible for managing admin password change
+	@RequestMapping(value = "/admin/changePassword", method = RequestMethod.POST)
+	public String adminChangePassword(LoginForm loginForm, Model model) {
+		String token = loginForm.getToken();
 		String password = loginForm.getPassword();
-		if (email != null && password != null) {
-			String message = authService.checkPassword(email, password);
-			if (message == null) {
-				// Successful authentication with valid credentials, fetch user
-				// token:
-				String token = authService.fetchToken(email);
-				if (token != null) {
-					model.addAttribute("token", token);
-					return "admin_login_success";
+		String passwordCheck = loginForm.getPasswordCheck();
+		if (password != null && passwordCheck != null) {
+			if (token != null) {
+				// Check if token is valid for admin:
+				String tokenCheck = authService.checkTokenAdmin(token);
+				// Token is valid for user admin, authorize operation to continue:
+				if (tokenCheck == null) {
+					// Check if both passwords are equal:
+					if (password.equalsIgnoreCase(passwordCheck)) {
+						if (password.length() >= 8) {
+							String message = authService.updateAdminPassword(password);
+							model.addAttribute("success", message);
+						}
+						// Password too small:
+						else {
+							model.addAttribute("error",
+									"Password too small. Password must be at least 5 characters long, with a valid address.");
+						}
+					}
+					// Passwords don't match
+					else {
+						model.addAttribute("error",
+								"The passwords don't match. Try again, and make sure the same password is entered in both password and password verification fields.");
+					}
+				}
+				else {
+					model.addAttribute("error", tokenCheck);
 				}
 			}
-			model.addAttribute("message", message);
+			// Token not provided
+			else {
+				model.addAttribute("error", "You must provide a valid token. Please, try again.");
+			}
 		}
-		return "admin_login_fail";
+		// Invalid e-mail information
+		else {
+			model.addAttribute("error",
+					"You must provide a valid password and repeat it on the Veirification field. Please, try again.");
+		}
+		return "admin_password_change";
+	}
+
+	// Method responsible for calling the documentation on admin operations
+	@RequestMapping(value = "/admin/", method = RequestMethod.GET)
+	public String admin(@RequestParam(value = "token", defaultValue = "null") String token, Model model) {
+		String message = authService.checkTokenAdmin(token);
+		// Something went wrong. Display error message.
+		if (message != null) {
+			model.addAttribute("error", message);
+		}
+		// Proper admin identification, display
+		return "admin";
 	}
 
 	@RequestMapping("/")
@@ -134,10 +179,10 @@ public class InterfaceController implements ErrorController {
 		return "register";
 	}
 
-	// Method responsible for calling the login template
-	@RequestMapping(value = "/admin", method = RequestMethod.GET)
-	public String admin() {
-		return "admin";
+	// Method responsible for calling the admin change password template
+	@RequestMapping(value = "/admin/changePassword", method = RequestMethod.GET)
+	public String adminPasswordChange() {
+		return "admin_password_change";
 	}
 
 	// Method responsible for managing occurrence requests

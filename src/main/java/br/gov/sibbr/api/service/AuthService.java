@@ -40,6 +40,9 @@ public class AuthService {
 	public static String SHA256 = "SHA-256";
 	public static String MD5 = "MD5";
 
+	// This is the default e-mail user for the system administer
+	public static String ADMIN_EMAIL = "admin@sibbr.gov.br";
+
 	DatabaseAuth dba = null;
 
 	public AuthService() {
@@ -168,6 +171,29 @@ public class AuthService {
 	}
 
 	/**
+	 * Check if the provided token is a valid admin token
+	 * 
+	 * @param token
+	 * @return Error strings or null if the token is valid
+	 */
+	public String checkTokenAdmin(String token) {
+		String message = checkToken(token);
+		// This is a valid token
+		if (message == null) {
+			// Check if it belongs to the admin
+			String databaseToken = fetchToken(ADMIN_EMAIL);
+			if (token.equalsIgnoreCase(databaseToken)) {
+				message = null;
+			}
+			// Provided token does not match the current valid admin token
+			else {
+				message = "Invalid token. Make sure you have an unexpired admin token.";
+			}
+		}
+		return message;
+	}
+
+	/**
 	 * Returns the user a valid token. If the current token is expired,
 	 * generates a new one and updates the database. It supposes the email is a
 	 * valid user.
@@ -229,10 +255,12 @@ public class AuthService {
 				String password = Utils.getString(rs, "password");
 				String salt = Utils.getString(rs, "salt");
 				String email = Utils.getString(rs, "email");
+				Long token_id = rs.getLong("token_id");
 				Boolean authorized = rs.getBoolean("authorized");
 				hashMap.put("password", password);
 				hashMap.put("salt", salt);
 				hashMap.put("email", email);
+				hashMap.put("token_id", token_id);
 				hashMap.put("authorized", authorized);
 			}
 		} catch (SQLException e) {
@@ -300,7 +328,7 @@ public class AuthService {
 		ResultSet rs = dba.generateNewToken(email, token);
 		if (rs != null) {
 			long auto_id = processTokenAutoId(rs);
-			int updated = dba.updateApiUserToken(email, auto_id);
+			int updated = dba.updateApiUserTokenId(email, auto_id);
 			// Api user has been updated with the token id
 			if (updated != 0) {
 				return token;
@@ -348,7 +376,7 @@ public class AuthService {
 		ResultSet rs = dba.queryApiUser(email);
 		if (rs != null) {
 			HashMap<String, Object> hashMap = processApiUser(rs);
-			String databaseEmail = (String)hashMap.get("email");
+			String databaseEmail = (String) hashMap.get("email");
 			if (databaseEmail != null) {
 				if (databaseEmail.equalsIgnoreCase(email)) {
 					return "Error. User already registered to the database.";
@@ -370,5 +398,29 @@ public class AuthService {
 		}
 		return "New account created successfully to the user " + email
 				+ ". Once the admin authorizes your account you will receive a valid token upon login.";
+	}
+
+	/**
+	 * This method is responsible for hashing the admin password, generating a
+	 * new salt for the admin account and updating the admin information in the
+	 * database
+	 * 
+	 * @param password
+	 *            the non hashed new password provided by the user for the admin
+	 *            account
+	 * @return Error message or null if everything went well.
+	 */
+	public String updateAdminPassword(String password) {
+		String newSalt = generateSalt();
+		String passwordHash = hash(password, SHA256);
+		// Concatenate user provided hashed password with salt:
+		String saltedPassword = passwordHash + newSalt;
+		// Rehash hashed password now concatenated with salt:
+		String saltedPasswordHash = hash(saltedPassword, SHA256);
+		int result = dba.updateApiUser(ADMIN_EMAIL, saltedPasswordHash, newSalt);
+		if (result == 0) {
+			return "Error updating user information.";
+		}
+		return "Password successfully updated.";
 	}
 }

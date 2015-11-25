@@ -160,7 +160,13 @@ public class DatabaseAuth {
 		return resultSet;
 	}
 
-	public int updateApiUserToken(String email, Long auto_id) {
+	/**
+	 * Updates the api_user table so that the token_id points to the provided auto_id
+	 * @param email the user account
+	 * @param auto_id the unique identifier of an api_token record
+	 * @return update an integer indicating 0 error or N the amount of updated records
+	 */
+	public int updateApiUserTokenId(String email, Long auto_id) {
 		Statement statement = null;
 		int update = 0;
 		try {
@@ -173,6 +179,13 @@ public class DatabaseAuth {
 		return update;
 	}
 
+	/**
+	 * Auxiliary method to create a new user in the database with the given provided paramenters
+	 * @param email valid user email account
+	 * @param password hashed password
+	 * @param salt md5 password hash
+	 * @return result an integer indicating 0 error or N the amount of updated records
+	 */
 	public int createApiUser(String email, String password, String salt) {
 		Statement statement = null;
 		int result = 0;
@@ -181,6 +194,28 @@ public class DatabaseAuth {
 			statement = conn.createStatement();
 			String sql = "INSERT INTO " + API_USER_TABLE + " (" + API_USER_EMAIL + ", " + API_USER_PASSWORD + ", "
 					+ API_USER_SALT + ") values (\'" + email + "\', \'" + password + "\', \'" + salt + "\')";
+			result = statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+	/**
+	 * Update an api user record with provided password and salt
+	 * @param email valid user email account
+	 * @param password hashed password
+	 * @param salt md5 password hash
+	 * @return result an integer indicating 0 error or N the amount of updated records
+	 */
+	public int updateApiUser(String email, String password, String salt) {
+		Statement statement = null;
+		int result = 0;
+		// New user, insert into the database
+		try {
+			statement = conn.createStatement();
+			String sql = "UPDATE " + API_USER_TABLE + " SET " + API_USER_PASSWORD + " = \'" + password + "\', "
+					+ API_USER_SALT + " = \'" + salt + "\' WHERE " + API_USER_EMAIL + " = \'" + email + "\'";
 			result = statement.executeUpdate(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
