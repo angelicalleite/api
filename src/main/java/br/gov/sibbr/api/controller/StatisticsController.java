@@ -39,7 +39,7 @@ public class StatisticsController {
 	AuthService authService = new AuthService();
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalRegistros", method = RequestMethod.GET)
+	@RequestMapping(value = "/statisticas/totalRegistros", method = RequestMethod.GET)
 	@Cacheable("total_records")
 	public Object fetchTotalRecords(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -52,7 +52,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalRegistrosGeorreferenciados", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalRegistrosGeorreferenciados", method = RequestMethod.GET)
 	@Cacheable("total_geo_records")
 	public Object fetchTotalGeoRecords(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -65,7 +65,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalRegistrosRepatriados", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalRegistrosRepatriados", method = RequestMethod.GET)
 	@Cacheable("total_repatriados")
 	public Object fetchTotalRepatriatedRecords(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -78,7 +78,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalPublicadores", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalPublicadores", method = RequestMethod.GET)
 	public Object fetchTotalPublishers(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
 		String tokenCheck = authService.checkToken(token);
@@ -90,7 +90,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalRecursos", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalRecursos", method = RequestMethod.GET)
 	public Object fetchTotalResources(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
 		String tokenCheck = authService.checkToken(token);
@@ -102,7 +102,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalEspecies", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalEspecies", method = RequestMethod.GET)
 	@Cacheable("total_species")
 	public Object fetchTotalSpecies(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -115,7 +115,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalFilo", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalFilo", method = RequestMethod.GET)
 	@Cacheable("total_phylum")
 	public Object fetchTotalPhylum(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -128,7 +128,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalClasse", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalClasse", method = RequestMethod.GET)
 	@Cacheable("total_class")
 	public Object fetchTotalClass(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -141,7 +141,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalOrdem", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalOrdem", method = RequestMethod.GET)
 	@Cacheable("total_order")
 	public Object fetchTotalOrder(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -154,7 +154,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalGenero", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalGenero", method = RequestMethod.GET)
 	@Cacheable("total_genus")
 	public Object fetchTotalGenus(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token
@@ -167,7 +167,7 @@ public class StatisticsController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/stats/totalFamilia", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalFamilia", method = RequestMethod.GET)
 	@Cacheable("total_family")
 	public Object fetchTotalFamily(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token

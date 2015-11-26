@@ -61,7 +61,7 @@ public class InterfaceController implements ErrorController {
 	}
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
+	@RequestMapping(value = "/registrar", method = RequestMethod.POST)
 	public String register(LoginForm loginForm, Model model) {
 		String email = loginForm.getEmail();
 		String password = loginForm.getPassword();
@@ -99,17 +99,17 @@ public class InterfaceController implements ErrorController {
 		return "register";
 	}
 
-	// Method responsible for managing admin password change
-	@RequestMapping(value = "/admin/changePassword", method = RequestMethod.POST)
-	public String adminChangePassword(LoginForm loginForm, Model model) {
+	// Method responsible for managing user password changes
+	@RequestMapping(value = "/alterarSenha", method = RequestMethod.POST)
+	public String changePassword(LoginForm loginForm, Model model) {
 		String token = loginForm.getToken();
 		String password = loginForm.getPassword();
 		String passwordCheck = loginForm.getPasswordCheck();
 		if (password != null && passwordCheck != null) {
 			if (token != null) {
 				// Check if token is valid for admin:
-				String tokenCheck = authService.checkTokenAdmin(token);
-				// Token is valid for user admin, authorize operation to continue:
+				String tokenCheck = authService.checkToken(token);
+				// Token is valid for user, authorize operation to continue:
 				if (tokenCheck == null) {
 					// Check if both passwords are equal:
 					if (password.equalsIgnoreCase(passwordCheck)) {
@@ -143,20 +143,14 @@ public class InterfaceController implements ErrorController {
 			model.addAttribute("error",
 					"You must provide a valid password and repeat it on the Veirification field. Please, try again.");
 		}
-		return "admin_password_change";
+		return "password_change";
 	}
-
+	
 	/* GET methods */
 	
 	// Method responsible for calling the documentation on admin operations
-	@RequestMapping(value = "/admin/", method = RequestMethod.GET)
-	public String admin(@RequestParam(value = "token", defaultValue = "null") String token, Model model) {
-		String message = authService.checkTokenAdmin(token);
-		// Something went wrong. Display error message.
-		if (message != null) {
-			model.addAttribute("error", message);
-		}
-		// Proper admin identification, display
+	@RequestMapping(value = "/admin", method = RequestMethod.GET)
+	public String admin() {
 		return "admin";
 	}
 
@@ -167,25 +161,31 @@ public class InterfaceController implements ErrorController {
 	}
 
 	// Method responsible for calling the login template
+		@RequestMapping(value = "/ocorrencia", method = RequestMethod.GET)
+		public String occurrences() {
+			return "occurrences";
+		}
+		
+	// Method responsible for calling the login template
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login() {
 		return "login";
 	}
 
 	// Method responsible for calling the user registration template
-	@RequestMapping(value = "/register", method = RequestMethod.GET)
+	@RequestMapping(value = "/registrar", method = RequestMethod.GET)
 	public String register() {
 		return "register";
 	}
 
-	// Method responsible for calling the admin password change template
-	@RequestMapping(value = "/admin/changePassword", method = RequestMethod.GET)
-	public String adminPasswordChange() {
-		return "admin_password_change";
+	// Method responsible for calling the user password change template
+	@RequestMapping(value = "/alterarSenha", method = RequestMethod.GET)
+	public String changePassword() {
+		return "password_change";
 	}
 
 	// Method responsible for displaying statistics documentation
-	@RequestMapping(value = "/stats", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas", method = RequestMethod.GET)
 	public String stats() {
 		return "stats";
 	}

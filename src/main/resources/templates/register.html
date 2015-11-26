@@ -3,13 +3,14 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
     <head>
         <title>Registration page</title>
+        <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
     </head>
     <body>
     	<div th:if="${error != null}" th:text="'Error: ' + ${error}"></div>
     	<div th:if="${success != null}" th:text="${success}"></div>
     	<div th:if="${success == null}">
    	    	<p>Please provide a valid e-mail account and a password with at least 8 characters to create your account:</p>
-	        <form th:action="@{/register}" method="post">
+	        <form th:action="@{/registrar}" method="post">
 	            <div><label> E-mail: <input type="text" name="email"/> </label></div>
 	            <div><label> Password: <input type="password" name="password"/> </label></div>
 	            <div><label> Verify password: <input type="password" name="passwordCheck"/> </label></div>
