@@ -1,9 +1,13 @@
-## api - version 1.0
+## api - version 1.2
 
 This is a small public api service that allows the users to query against the SiBBr's occurrence data portal information.
 
 Basic queries implemented:
 - Occurrence search given a scientific name
+- Occurrence search filtered by resource given a scientific name
+- Statistics
+- Administrative user management
+- Login
 
 Information returned:
 - List of all occurrences that match the filters, with only three fields for every record: an internal identifier (auto_id), that leads to the occurrence page in the [explorer](https://github.com/sibbr/explorador); decimallatitude (latitude), and decimal longitude (decimallongitude);
