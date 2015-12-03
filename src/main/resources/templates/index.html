@@ -4,71 +4,150 @@
 <title>Interface: SiBBr API</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+	$(function() {
+		$("#tabs").tabs({
+			collapsible : false
+		});
+	});
+</script>
 </head>
 <body>
 	<h1>SiBBr API - v1.2</h1>
-	<p>
-		<b>* * * Português * * * </b>
-	</p>
-	<p>Esta interface permite o acesso aos dados de registros de
-		ocorrências de espécies do explorador do SiBBr. Para realizar
-		consultas à interface, siga as orientações abaixo.</p>
-	<h3>Autenticação e autorização</h3>
-	<p>
-		Para ter acesso aos dados, é necessário ter um usuário cadastrado no
-		sistema com <b>e-mail e senha</b>. Qualquer pessoa pode realizar o
-		cadastro <a href="./registrar" target="_blank">aqui</a>.
-	</p>
-	<p>
-		Após o cadastro, o usuário é criado no sistema e permanece como um
-		usuário <b>não autorizado</b> até que um administrador autorize o seu
-		acesso através das <a href="./admin" target="_blank">operações
-			administrativas</a>.
-	</p>
-	<p>
-		Os usuários podem se identificar no sistema através da página de <a
-			href="./login" target="_blank">login</a>.
-	</p>
-	<p>
-		Ao se identificarem corretamente, recebem um <b>token válido</b>, que
-		deve ser utilizado em todas as chamadas a consultas de dados da API.
-	</p>
-	<p>Este token não deve ser compartilhado com outros usuários, uma
-		vez que representa a identificação do acesso autorizado do usuário ao
-		consumo dos dados.</p>
-	<p>A restrição de acesso às operações se aplica a ambos o usuário
-		comum e o usuário administrador.</p>
-	<p>
-		O token possui uma <b>validade de 7 dias</b> a partir de sua criação.
-		Após este período, ele perde a validade e o usuário recebe a notificação de que precisa realizar
-		um novo login, para receber um novo token e poder seguir realizando consultas.
-	</p>
-	<h3>Operações</h3>
-	<ul>
-		<li>1. <a href="./admin" target="_self">/admin</a> - <b>Operações
-				administrativas:</b> Gestão de usuários
-		</li>
-		<li>2. <a href="./login" target="_self">/login</a> - <b>Login:</b>
-			Identificação no sistema para visualização do token necessário para
-			acesso aos dados
-		</li>
-		<li>3. <a href="./registrar" target="_self">/registrar</a> - <b>Registrar
-				no sistema:</b> Usuários podem criar contas para utilizar o sistema
-		</li>
-		<li>4. <a href="./alterarSenha" target="_self">/alterarSenha</a>
-			- <b>Alteração de senhas:</b> Usuários podem alterar as senhas das
-			suas contas
-		</li>
-		<li>5. <a href="./recursos" target="_self">/recursos</a> - <b>Recursos:</b>
-			Listagem de recursos, busca de ocorrências por recurso
-		</li>
-		<li>6. <a href="./ocorrencia" target="_self">/ocorrencia</a> - <b>Registros
-				de ocorrência:</b> Busca por registros de ocorrência com aplicação de
-			filtros
-		</li>
-		<li>7. <a href="./estatisticas" target="_self">/estatisticas</a>
-			- <b>Estatísticas:</b> Visualização de estatísticas dos dados
-		</li>
-	</ul>
+	<div id="tabs">
+		<ul>
+			<li><a href="#portuguese">Português</a></li>
+			<li><a href="#english">English</a></li>
+		</ul>
+		<div id="portuguese">
+			<br/>
+			<p>Esta interface permite o acesso aos dados de registros de
+				ocorrências de espécies do explorador do SiBBr. Para realizar
+				consultas à interface, siga as orientações abaixo.</p>
+			<p>Para maiores informações, por gentileza, acesse a <a href="https://github.com/sibbr/api/wiki" target="_blank">Wiki do projeto no GitHub.</a></p>	
+			<h3>Autenticação e autorização</h3>
+			<p>
+				Para ter acesso aos dados, é necessário ter um usuário cadastrado no
+				sistema com <b>e-mail e senha</b>. Qualquer pessoa pode realizar o
+				cadastro <a href="./registrar" target="_blank">aqui</a>.
+			</p>
+			<p>
+				Após o cadastro, o usuário é criado no sistema e permanece como um
+				usuário <b>não autorizado</b> até que um administrador autorize o
+				seu acesso através das <a href="./admin" target="_blank">operações
+					administrativas</a>.
+			</p>
+			<p>
+				Os usuários podem se identificar no sistema através da página de <a
+					href="./login" target="_blank">login</a>.
+			</p>
+			<p>
+				Ao se identificarem corretamente, recebem um <b>token válido</b>,
+				que deve ser utilizado em todas as chamadas a consultas de dados da
+				API.
+			</p>
+			<p>Este token não deve ser compartilhado com outros usuários, uma
+				vez que representa a identificação do acesso autorizado do usuário
+				ao consumo dos dados.</p>
+			<p>A restrição de acesso às operações se aplica a ambos o usuário
+				comum e o usuário administrador.</p>
+			<p>
+				O token possui uma <b>validade de 7 dias</b> a partir de sua
+				criação. Após este período, ele perde a validade e o usuário recebe
+				a notificação de que precisa realizar um novo login, para receber um
+				novo token e poder seguir realizando consultas.
+			</p>
+			<h3>Operações</h3>
+			<ul>
+				<li>1. <a href="./admin" target="_self">/admin</a> - <b>Operações
+						administrativas:</b> Gestão de usuários
+				</li>
+				<li>2. <a href="./login" target="_self">/login</a> - <b>Login:</b>
+					Identificação no sistema para visualização do token necessário para
+					acesso aos dados
+				</li>
+				<li>3. <a href="./registrar" target="_self">/registrar</a> - <b>Registrar
+						no sistema:</b> Usuários podem criar contas para utilizar o sistema
+				</li>
+				<li>4. <a href="./alterarSenha" target="_self">/alterarSenha</a>
+					- <b>Alteração de senhas:</b> Usuários podem alterar as senhas das
+					suas contas
+				</li>
+				<li>5. <a href="./recurso" target="_self">/recursos</a> - <b>Recursos:</b>
+					Listagem de recursos, busca de ocorrências por recurso
+				</li>
+				<li>6. <a href="./ocorrencia" target="_self">/ocorrencia</a> -
+					<b>Registros de ocorrência:</b> Busca por registros de ocorrência
+					com aplicação de filtros
+				</li>
+				<li>7. <a href="./estatisticas" target="_self">/estatisticas</a>
+					- <b>Estatísticas:</b> Visualização de estatísticas dos dados
+				</li>
+			</ul>
+		</div>
+		<div id="english">
+			<br/>		
+			<p>This interface allows access to the occurrence records data
+				from SiBBr's explorer. To make queries to the interface, follow the
+				instructions bellow.</p>
+			<p>For further information, please, accesse the project <a href="https://github.com/sibbr/api/wiki" target="_blank">Wiki on GitHub.</a></p>
+			<h3>Authentication and authorization</h3>
+			<p>
+				To have access to data, it is required to have a registered user in
+				the system with <b>e-mail and password</b>. Any person can register
+				<a href="./registrar" target="_blank">here</a>.
+			</p>
+			<p>
+				After registration, the user is created in the system and remains as
+				an <b>unauthorized user</b> until the administer grants access to
+				the account through the <a href="./admin" target="_blank">
+					administrative operations</a>.
+			</p>
+			<p>
+				Users can log onto the system through the <a href="./login"
+					target="_blank">login</a> page.
+			</p>
+			<p>
+				After proper login, the accounts receive a <b>valid token</b>, that
+				must be used in all calls to API queries.
+			</p>
+			<p>This token must not be shared with other users, since it
+				represents the identification of the users's authorized access to
+				data consumption.</p>
+			<p>The access restriction to the operations applies to both the
+				regular and administer users.</p>
+			<p>
+				The token is valid for <b>7 days</b> from its creation. After that,
+				expires and the user receives a notification about having to login
+				again in order to receive a new token and be able to resume queries.
+			</p>
+			<h3>Operations</h3>
+			<ul>
+				<li>1. <a href="./admin" target="_self">/admin</a> - <b>Aadministrative
+						operations:</b> User management
+				</li>
+				<li>2. <a href="./login" target="_self">/login</a> - <b>Login:</b>
+					System logon to visualize the data access token
+				</li>
+				<li>3. <a href="./registrar" target="_self">/registrar</a> - <b>Register
+						on the system:</b> Users may create accounts to use the system
+				</li>
+				<li>4. <a href="./alterarSenha" target="_self">/alterarSenha</a>
+					- <b>Password change:</b> Users may change their account password
+				</li>
+				<li>5. <a href="./recurso" target="_self">/recursos</a> - <b>Resources:</b>
+					Resource list, occurrence search by resource
+				</li>
+				<li>6. <a href="./ocorrencia" target="_self">/ocorrencia</a> -
+					<b>Ocurrence records:</b> Search for occurrence records with filters
+				</li>
+				<li>7. <a href="./estatisticas" target="_self">/estatisticas</a>
+					- <b>Statistics:</b> Data visualization statistics
+				</li>
+			</ul>
+		</div>
+	</div>
 </body>
 </html>

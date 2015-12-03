@@ -1,16 +1,52 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Login page</title>
-        <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />        
-    </head>
-    <body>
-    	Login in order to request and verify your API access token:
-        <form th:action="@{/login}" method="post">
-            <div><label> E-mail: <input type="text" name="email"/> </label></div>
-            <div><label> Password: <input type="password" name="password"/> </label></div>
-            <div><input type="submit" value="Sign In"/></div>
-        </form>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Login page</title>
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+	$(function() {
+		$("#tabs").tabs({
+			collapsible : false
+		});
+	});
+</script>
+</head>
+<body>
+	<div class="loginbox">
+		<div id="tabs">
+			<ul>
+				<li><a href="#portuguese">Português</a></li>
+				<li><a href="#english">English</a></li>
+			</ul>
+			<div id="portuguese">
+			<br/>
+				<p>Identifique-se para visualizar o seu token de acesso à API:</p>
+			</div>
+			<div id="english">
+				<br/>
+				<p>Login in order to visualize your API access token:</p>
+			</div>
+		</div>
+		<form th:action="@{/login}" method="post">
+			<div class="fieldcenter">
+				<p>
+					<label> <b>E-mail:</b> <input type="text" name="email" />
+					</label>
+				</p>
+				<p>
+					<label> <b>Password:</b> <input type="password"
+						name="password" />
+					</label>
+				</p>
+				<p>
+					<input type="submit" value="Sign In" class="submit" />
+				</p>
+			</div>
+		</form>
+	</div>
+</body>
 </html>

@@ -1,21 +1,63 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <title>Registration page</title>
-        <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
-    </head>
-    <body>
-    	<div th:if="${error != null}" th:text="'Error: ' + ${error}"></div>
-    	<div th:if="${success != null}" th:text="${success}"></div>
-    	<div th:if="${success == null}">
-   	    	<p>Please provide a valid e-mail account and a password with at least 8 characters to create your account:</p>
-	        <form th:action="@{/registrar}" method="post">
-	            <div><label> E-mail: <input type="text" name="email"/> </label></div>
-	            <div><label> Password: <input type="password" name="password"/> </label></div>
-	            <div><label> Verify password: <input type="password" name="passwordCheck"/> </label></div>
-	            <div><input type="submit" value="Create account"/></div>
-	        </form>
-        </div>
-    </body>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Registration page</title>
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+	$(function() {
+		$("#tabs").tabs({
+			collapsible : false
+		});
+	});
+</script>
+</head>
+<body>
+	<div class="loginbox">
+		<div th:if="${error != null}" th:text="'Error: ' + ${error}"></div>
+		<div th:if="${success != null}" th:text="${success}"></div>
+		<div th:if="${success == null}">
+			<div id="tabs">
+				<ul>
+					<li><a href="#portuguese">Português</a></li>
+					<li><a href="#english">English</a></li>
+				</ul>
+				<div id="portuguese">
+					<br/>
+					<p>Por favor, forneça uma conta de e-mail válida e uma senha
+						com pelo menos 8 caracterees para criar a sua conta:</p>
+				</div>
+				<div id="english">
+					<br/>
+					<p>Please provide a valid e-mail account and a password with at
+						least 8 characters to create your account:</p>
+				</div>
+			</div>	
+				<form th:action="@{/registrar}" method="post">
+					<div class="fieldcenter">
+						<p>
+							<label> <b>E-mail:</b> <input type="text" name="email" />
+							</label>
+						</p>
+						<p>
+							<label> <b>Password:</b> <input type="password"
+								name="password" />
+							</label>
+						</p>
+						<p>
+							<label> <b>Repeat password:</b> <input type="password"
+								name="passwordCheck" />
+							</label>
+						</p>
+						<p>
+							<input type="submit" value="Create account" />
+						</p>
+					</div>
+				</form>
+			</div>
+		</div>
+</body>
 </html>

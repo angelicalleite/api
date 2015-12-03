@@ -32,6 +32,7 @@ public class DatabaseConnection {
 	public static String dataUrl = "jdbc:postgresql://localhost/dataportal";
 	public static String dataUser = "dbadmin";
 	public static String dataPassword = "dbadmin";
+
 	// DB Connection configuration for authentication access:
 	public static String authUrl = "jdbc:postgresql://localhost/dataportal_auth";
 	public static String authUser = "dbadmin";

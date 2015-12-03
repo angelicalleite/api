@@ -39,7 +39,7 @@ public class StatisticsController {
 	AuthService authService = new AuthService();
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/statisticas/totalRegistros", method = RequestMethod.GET)
+	@RequestMapping(value = "/estatisticas/totalRegistros", method = RequestMethod.GET)
 	@Cacheable("total_records")
 	public Object fetchTotalRecords(@RequestParam(value = "token", defaultValue = "null") String token) {
 		// Check of the user has proper access grant token

@@ -411,7 +411,7 @@ public class DatabaseQueries {
 		try {
 			statement = conn.createStatement();
 			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalspecies FROM "
-					+ OCCURRENCE_TABLE + " where taxonrank in ('espécie', 'EspÈcie', 'SPECIES','ESPECIE')");
+					+ OCCURRENCE_TABLE + " where taxonrank in ('espécie', 'EspÈcie', 'SPECIES','ESPECIE', 'species')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -501,7 +501,7 @@ public class DatabaseQueries {
 		try {
 			statement = conn.createStatement();
 			resultSet = statement.executeQuery("SELECT count(distinct(scientificname)) as totalgenus FROM "
-					+ OCCURRENCE_TABLE + " where taxonrank in ('GENUS', 'GÍnero', 'gênero')");
+					+ OCCURRENCE_TABLE + " where taxonrank in ('GENUS', 'GÍnero', 'gênero', 'genus')");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

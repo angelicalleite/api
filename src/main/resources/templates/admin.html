@@ -4,105 +4,125 @@
 <title>Interface: SiBBr API - Administrative operations</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+	$(function() {
+		$("#tabs").tabs({
+			collapsible : false
+		});
+	});
+</script>
 </head>
 <body>
-	<h1>Interface - v1.2</h1>
-	<p>
-		<b>* * * Português * * * </b>
-	</p>
-	<h2>
-		3. <i>/admin</i> - Painel administrativo
-	</h2>
-	<p>Esta interface permite a realização de operações administrativas
-		para a gestão da API.</p>
-	<p>
-		<b>Nota: Todas as consultas administrativas - com exceção da página raiz de documentação - devem fornecer um token de administrador válido como parâmetro da consulta</b>
-	</p>
-	<h3>Consultas</h3>
-	<ul>
-		<li><b>/admin/</b> - Exibe esta página de documentação sobre as
-			operações administrativas disponíveis.</li>
-		<p>
-			Ex.: <i><a href="http://gbif.sibbr.gov.br/api/v1.2/admin?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users</b> - Exibe a lista de todos os usuários do
-			sistema.</li>
-		<p>
-			Ex.: <i><a href="http://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users/authorized</b> - Exibe a lista de todos os
-			usuários autorizados do sistema.</li>
-		<p>
-			Ex.: <i><a
-				href="http://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users/unauthorized</b> - Exibe a lista de todos os
-			usuários não autorizados do sistema.</li>
-		<p>
-			Ex.: <i><a
-				href="http://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users/{id}/authorize</b> - Altera o usuário para
-			autorizado, permitindo que esta conta passe a ter permissão de acesso
-			às operações básicas utilizando tokens de identificação.</li>
-		<p>
-			Ex.: <i><a
-				href="http://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users/12/authorize?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-	</ul>
-
-	<p>
-		<b>* * * English * * * </b>
-	</p>
-	<h2>
-		3. <i>/admin</i> - Administrative dashboard
-	</h2>
-	<p>This interface allows administrative operations to the API
-		management.</p>
-	<p>
-		<b>Note: All administrative queries - except the admin root documentation - must provide a valid admin
-			token as a query parameter </b>
-	</p>
-	<h3>Queries</h3>
-	<ul>
-		<li><b>/admin/</b> - Displays this documentation page about
-			available administrative operations.</li>
-		<p>
-			Ex.: <i><a href="http://gbif.sibbr.gov.br/api/v1.2/admin?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users</b> - Displays a list of all system users.</li>
-		<p>
-			Ex.: <i><a href="http://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users/authorized</b> - Displays a list of all
-			authorized system users.</li>
-		<p>
-			Ex.: <i><a
-				href="http://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users/unauthorized</b> - Displays a list of all
-			unauthorized system users.</li>
-		<p>
-			Ex.: <i><a
-				href="http://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-		<li><b>/admin/users/{id}/authorize</b> - Changes the user to
-			authorized, allowing this account to have access permissino to basic
-			operations using identification tokens.</li>
-		<p>
-			Ex.: <i><a
-				href="http://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
-				target="blank">http://gbif.sibbr.gov.br/api/v1.2/admin/users/12/authorize?token=VALID_ADMIN_TOKEN</a></i>
-		</p>
-	</ul>
+	<h1>API SiBBr - v1.2</h1>
+	<div id="tabs">
+		<ul>
+			<li><a href="#portuguese">Português</a></li>
+			<li><a href="#english">English</a></li>
+		</ul>
+		<div id="portuguese">
+			<br />
+			<h2>
+				<i>/admin</i> - Painel administrativo
+			</h2>
+			<p>Esta interface permite a realização de operações
+				administrativas para a gestão da API.</p>
+			<p>
+				<b>Nota: Todas as consultas administrativas - com exceção da
+					página raiz de documentação - devem fornecer um token de
+					administrador válido como parâmetro da consulta</b>
+			</p>
+			<h3>Consultas</h3>
+			<ul>
+				<li><b>/admin/</b> - Exibe esta página de documentação sobre as
+					operações administrativas disponíveis.</li>
+				<p>
+					Ex.: <i><a href="https://gbif.sibbr.gov.br/api/v1.2/admin"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin</a></i>
+				</p>
+				<li><b>/admin/users</b> - Exibe a lista de todos os usuários do
+					sistema.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+				<li><b>/admin/users/authorized</b> - Exibe a lista de todos os
+					usuários autorizados do sistema.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+				<li><b>/admin/users/unauthorized</b> - Exibe a lista de todos
+					os usuários não autorizados do sistema.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+				<li><b>/admin/users/{id}/authorize</b> - Altera o usuário para
+					autorizado, permitindo que esta conta passe a ter permissão de
+					acesso às operações básicas utilizando tokens de identificação.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users/12/authorize?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+			</ul>
+		</div>
+		<div id="english">
+			<br />
+			<h2>
+				<i>/admin</i> - Administrative dashboard
+			</h2>
+			<p>This interface allows administrative operations to the API
+				management.</p>
+			<p>
+				<b>Note: All administrative queries - except the admin root
+					documentation - must provide a valid admin token as a query
+					parameter </b>
+			</p>
+			<h3>Queries</h3>
+			<ul>
+				<li><b>/admin/</b> - Displays this documentation page about
+					available administrative operations.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin</a></i>
+				</p>
+				<li><b>/admin/users</b> - Displays a list of all system users.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+				<li><b>/admin/users/authorized</b> - Displays a list of all
+					authorized system users.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users/authorized?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+				<li><b>/admin/users/unauthorized</b> - Displays a list of all
+					unauthorized system users.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+				<li><b>/admin/users/{id}/authorize</b> - Changes the user to
+					authorized, allowing this account to have access permissino to
+					basic operations using identification tokens.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/admin/users/unauthorized?token=VALID_ADMIN_TOKEN"
+						target="blank">https://gbif.sibbr.gov.br/api/v1.2/admin/users/12/authorize?token=VALID_ADMIN_TOKEN</a></i>
+				</p>
+			</ul>
+		</div>
+	</div>
 </body>
 </html>

@@ -4,423 +4,488 @@
 <title>Interface: SiBBr API</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+	$(function() {
+		$("#tabs").tabs({
+			collapsible : false
+		});
+	});
+</script>
 </head>
 <body>
-	<h1>Interface - v1.1</h1>
-	<p>
-		<b>* * * Português * * * </b>
-	</p>
-	<p>Esta interface permite o acesso aos dados de registros de
-		ocorrências de espécies do explorador do SiBBr. Para realizar
-		consultas à interface, siga as orientações abaixo.</p>
-
-	<h2>
-		<i>/recursos</i> - Recursos
-	</h2>
-	<p>Esta consulta permite a listagem dos recursos disponíveis e a
-		filtragem de ocorrências por recurso.</p>
-	<p>Os resultados serão exibidos no formato JSON, com os seguintes
-		campos:</p>
-	<ul>
-		<li><b>count</b> - Número total de recursos disponíveis.</li>
-		<li><b>resources</b> - Lista de recursos, com os seguintes
-			campos:</li>
+	<h1>Interface - v1.2</h1>
+	<div id="tabs">
 		<ul>
-			<li><b>id</b> - Identificador único de um recurso dentro do
-				sistema do <a href="http://gbif.sibbr.gov.br/explorador"
-				target="_blank">explorador de dados de biodiversidade</a>.</li>
-			<li><b>name</b> - Nome do recurso.</li>
-			<li><b>archiveurl</b> - O link do DwC-A na instalação de IPT
-				(Integrated Publishing Toolkit) que está servindo o recurso na
-				internet.</li>
-			<li><b>gbifpackageid</b> - Identificador único do recurso no
-				GBIF (Global Biodiversity Information Facility), caso exista, ou
-				algum identificador alternativo para o recurso
-				(alternateIdentifier).</li>
-			<li><b>recordcount</b> - Número de registros de ocorrência
-				pertencentes ao recurso no sistema.</li>
-			<li><b>publisherid</b> - Identificador único do publicador do
-				recuso dentro do sistema.</li>
+			<li><a href="#portuguese">Português</a></li>
+			<li><a href="#english">English</a></li>
 		</ul>
-	</ul>
-	<h3>Parâmetros</h3>
-	<ul>
-		<li><i>Listar os recursos disponíveis:</i></li>
-		<p>
-			Uso: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos</i>
-		</p>
-		<li><i>Filtrar registros de ocorrência de um dado recurso,
-				utilizando parâmetros análogos aos da consulta de ocorrências:</i></li>
-		<p>
-			Uso: <b>http://gbif.sibbr.gov.br/api/v1.1/recursos/{id_do_recurso}/ocorrencias</b>
-		</p>
-		<li><b>scientificname</b> - Nome científico do taxon a ser
-			procurado. (Valor padrão é vazio(""). Observe que é comum registros
-			sem nenhum valor para este campo.)</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/12/ocorrencias?scientificname=Speothos
-				venaticus</i>
-		</p>
-		<li><b>fields</b> - Indica o conjunto de campos a serem
-			retornados. O valor 1 retorna todos os campos disponíveis, enquanto o
-			valor 0 retorna apenas o subconjunto de campos {auto_id,
-			decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i>
-		</p>
-		<li><b>ignoreNullCoordinates</b> - Filtrar registros que não
-			possuam informação sobre as coordenadas (Valor padrão é <b>false</b>).</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/20/ocorrencias?scientificname=Verbena
-				lobata&amp;ignoreNullCoordinates=true</i>
-		</p>
-		<li><b>limit</b> - Limitar o número máximo de resultados
-			retornados pela consulta (Valor padrão é sem limites). Este campo
-			aceita apenas números naturais.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i>
-		</p>
-	</ul>
+		<div id="portuguese">
+			<br />
+			<p>Esta interface permite o acesso aos dados de registros de
+				ocorrências de espécies do explorador do SiBBr. Para realizar
+				consultas à interface, siga as orientações abaixo.</p>
 
-	<p>
-		Estas consultas permitem buscar registros de ocorrência de um dado
-		recurso a partir da aplicação do filtro nome científico (<b>scientificname</b>).
-	</p>
-	<p>Os resultados serão exibidos no formato JSON, com os seguintes
-		campos:</p>
-	<ul>
-		<li><b>count</b> - Número de registros retornados pela constula.</li>
-		<li><b>occurrences</b> - Lista de registros retornados pela
-			consulta, com os seguintes campos:</li>
-		<ul>
-			<li><b>auto_id</b> - Identificador único de uma ocorrência
-				dentro do sistema do <a href="http://gbif.sibbr.gov.br/explorador"
-				target="_blank">explorador de dados de biodiversidade</a>.</li>
-			<li><b>resourcename</b> - Nome do recurso ao qual a ocorrência
-				pertence.</li>
-			<li><b>publishername</b> - Nome do publicador ao qual a
-				ocorrência pertence.</li>
-			<li><b>kingdom</b> - O nome científico completo do reino em que
-				o táxon é classificado.</li>
-			<li><b>phylum</b> - O nome científico completo do filo em que o
-				táxon é classificado.</li>
-			<li><b>_class</b> - O nome científico completo da classe em que
-				o táxon está classificado.</li>
-			<li><b>_order</b> - O nome científico completo da ordem em que o
-				táxon está classificado.</li>
-			<li><b>family</b> - O nome científico completo da família em que
-				o táxon é classificado.</li>
-			<li><b>genus</b> - O nome científico completo do gênero em que o
-				táxon está classificado.</li>
-			<li><b>specificepithet</b> - O nome do epíteto específico do
-				scientificName.</li>
-			<li><b>infraspecificepithet</b> - O nome do epíteto de menor
-				categoria ou hierarquia do scientificName, excluindo qualquer
-				designação de categoria taxonômica.</li>
-			<li><b>species</b> - Nome taxonômico completo da espécie à qual
-				o registro de ocorrência pertence.</li>
-			<li><b>scientificname</b> - O nome científico completo, com
-				autoria e informações atualizadas se conhecido. Ao formar parte de
-				uma identificação, este deve ser o nome em nível mais baixo da
-				classificação taxonômica que pode ser determinado. Este termo não
-				deve conter qualificações de identificação, que devem antes ser
-				fornecidos no termo IdentificationQualifier.</li>
-			<li><b>taxonrank</b> - O nível taxonômico do nome mais
-				específico em scientificName. A prática recomendada é a utilização
-				de um vocabulário controlado.</li>
-			<li><b>typestatus</b> - Uma lista de tipos nomenclaturais
-				(concatenada e separada) (status do tipo, nome científico
-				tipificado, publicação) aplicada ao espécime.</li>
-			<li><b>recordedby</b> - Uma lista de nomes de pessoas, grupos ou
-				organizações (concatenados e separados) responsáveis ​​pelo registro
-				da ocorrência original. O coletor ou observador primário,
-				especialmente aquele que dá um identificador pessoal (recordNumber),
-				deve ser o primeiro da lista.</li>
-			<li><b>eventdate</b> - A data ou intervalo durante o qual
-				ocorreu um evento. Para ocorrências, esta é a data quando o evento
-				foi registrado. Não é adequado para um tempo em um contexto
-				geológico. A prática recomendada é a utilização de um esquema de
-				codificação, como a ISO 8601:2004 (E).</li>
-			<li><b>continent</b> -O nome do continente em que a localização
-				ocorre. A prática recomendada é a utilização de um vocabulário
-				controlado, como o Getty Thesaurus of Geographic Names ou o código
-				ISO 3166 Continent.</li>
-			<li><b>country</b> - O nome do país ou maior unidade
-				administrativa em que o local ocorre. A prática recomendada é a
-				utilização de um vocabulário controlado, como o Getty Thesaurus of
-				Geographic Names.</li>
-			<li><b>stateprovince</b> - O nome da região administrativa menor
-				do que país (estado, província, cantão, departamento, região, etc),
-				em que ocorrre a localização.</li>
-			<li><b>municipality</b> - O nome completo e não abreviado da
-				próxima região administrativa menor do county (cidade, município,
-				etc), em que a localização ocorre. Não use este termo para um
-				incluir um nome de um lugar próximo que não contém a localização
-				real.</li>
-			<li><b>county</b> - O nome completo e não abreviado da próxima
-				região administrativa menor do county (cidade, município, etc), em
-				que a localização ocorre. Não use este termo para um incluir um nome
-				de um lugar próximo que não contém a localização real.</li>
-			<li><b>minimumelevationinmeters</b> - O limite inferior do
-				intervalo de elevação (altitude, geralmente acima do nível do mar),
-				em metros.</li>
-			<li><b>maximumelevationinmeters</b> - O limite superior do
-				intervalo de elevação (altitude, geralmente acima do nível do mar),
-				em metros.</li>
-			<li><b>hascoordinates</b> - Indica se o registro de ocorrência
-				possui ou não coordenadas.</li>
-			<li><b>decimallatitude</b> - A latitude geográfica (em graus
-				decimais, utilizando o sistema de referência espacial dado em
-				geodeticDatum) do centro geográfico de uma localização. Os valores
-				positivos são ao norte do Equador, os valores negativos são ao sul.
-				Os valores corretos ficam entre -90 e 90.</li>
-			<li><b>decimallongitude</b> - A longitude geográfica (em graus
-				decimais, utilizando o sistema de referência espacial dada em
-				geodeticDatum) do centro geográfico de uma localização. Os valores
-				positivos estão a leste do meridiano de Greenwich, valores negativos
-				são a oeste dela. Os valores legais encontram-se entre -180 e 180.</li>
-			<li><b>hasmedia</b> - Indica se o registro possui ou não dados
-				multimedia.</li>
-			<li><b>associatedmedia</b> - Uma lista de identificadores
-				(concatenados e separados) (publicação, identificador único global,
-				URI) da mídia associada com a ocorrência.</li>
-		</ul>
-		<li><b>scientificName</b> - Nome utilizado como filtro para
-			consulta.</li>
-		<li><b>queryLength</b> - Duração, em milissegundos, do tempo
-			necessário para realizar a consulta.</li>
-	</ul>
+			<h2>
+				<i>/recursos</i> - Recursos
+			</h2>
+			<p>Esta consulta permite a listagem dos recursos disponíveis e a
+				filtragem de ocorrências por recurso.</p>
+			<p>Os resultados serão exibidos no formato JSON, com os seguintes
+				campos:</p>
+			<ul>
+				<li><b>count</b> - Número total de recursos disponíveis.</li>
+				<li><b>resources</b> - Lista de recursos, com os seguintes
+					campos:</li>
+				<ul>
+					<li><b>id</b> - Identificador único de um recurso dentro do
+						sistema do <a href="http://gbif.sibbr.gov.br/explorador"
+						target="_blank">explorador de dados de biodiversidade</a>.</li>
+					<li><b>name</b> - Nome do recurso.</li>
+					<li><b>archiveurl</b> - O link do DwC-A na instalação de IPT
+						(Integrated Publishing Toolkit) que está servindo o recurso na
+						internet.</li>
+					<li><b>gbifpackageid</b> - Identificador único do recurso no
+						GBIF (Global Biodiversity Information Facility), caso exista, ou
+						algum identificador alternativo para o recurso
+						(alternateIdentifier).</li>
+					<li><b>recordcount</b> - Número de registros de ocorrência
+						pertencentes ao recurso no sistema.</li>
+					<li><b>publisherid</b> - Identificador único do publicador do
+						recuso dentro do sistema.</li>
+				</ul>
+			</ul>
+			<h3>Parâmetros</h3>
+			<ul>
+				<li><i>Listar os recursos disponíveis:</i></li>
+				<p>
+					Uso: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}</a></i>
+				</p>
+				<li><i>Filtrar registros de ocorrência de um dado recurso,
+						utilizando parâmetros análogos aos da consulta de ocorrências:</i></li>
+				<p>
+					Uso: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>scientificname</b> - Nome científico do taxon a ser
+					procurado. (Valor padrão é vazio(""). Observe que é comum registros
+					sem nenhum valor para este campo.)</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/12/ocorrencias?scientificname=Speothos
+				venaticus&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/12/ocorrencias?scientificname=Speothos
+							venaticus&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>fields</b> - Indica o conjunto de campos a serem
+					retornados. O valor 1 retorna todos os campos disponíveis, enquanto
+					o valor 0 retorna apenas o subconjunto de campos {auto_id,
+					decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>ignoreNullCoordinates</b> - Filtrar registros que não
+					possuam informação sobre as coordenadas (Valor padrão é <b>false</b>).</li>
+				<p>
+					Ex.: <i><a href="https://gbif.sibbr.gov.br/api/v1.2/recursos/20/ocorrencias?scientificname=Verbena
+						lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}" target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/20/ocorrencias?scientificname=Verbena
+						lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>limit</b> - Limitar o número máximo de resultados
+					retornados pela consulta (Valor padrão é sem limites). Este campo
+					aceita apenas números naturais.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}</a></i>
+				</p>
+			</ul>
 
-	<h3>Parâmetros</h3>
-	<ul>
-		<li><b>scientificname</b> - Nome científico do taxon a ser
-			procurado. (Valor padrão é vazio. Observe que é comum registros sem
-			nenhum valor para este campo.)</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Speothos
-				venaticus</i>
-		</p>
-		<li><b>fields</b> - Indica o conjunto de campos a serem
-			retornados. O valor 1 retorna todos os campos disponíveis, enquanto o
-			valor 0 retorna apenas o subconjunto de campos {auto_id,
-			decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i>
-		</p>
-		<li><b>ignoreNullCoordinates</b> - Filtrar registros que não
-			possuam informação sobre as coordenadas (Valor padrão é <b>false</b>).</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Verbena
-				lobata&amp;ignoreNullCoordinates=true</i>
-		</p>
-		<li><b>limit</b> - Limitar o número máximo de resultados
-			retornados pela consulta (Valor padrão é sem limites). Este campo
-			aceita apenas números naturais.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i>
-		</p>
-	</ul>
+			<p>
+				Estas consultas permitem buscar registros de ocorrência de um dado
+				recurso a partir da aplicação do filtro nome científico (<b>scientificname</b>).
+			</p>
+			<p>Os resultados serão exibidos no formato JSON, com os seguintes
+				campos:</p>
+			<ul>
+				<li><b>count</b> - Número de registros retornados pela
+					constula.</li>
+				<li><b>occurrences</b> - Lista de registros retornados pela
+					consulta, com os seguintes campos:</li>
+				<ul>
+					<li><b>auto_id</b> - Identificador único de uma ocorrência
+						dentro do sistema do <a href="http://gbif.sibbr.gov.br/explorador"
+						target="_blank">explorador de dados de biodiversidade</a>.</li>
+					<li><b>resourcename</b> - Nome do recurso ao qual a ocorrência
+						pertence.</li>
+					<li><b>publishername</b> - Nome do publicador ao qual a
+						ocorrência pertence.</li>
+					<li><b>kingdom</b> - O nome científico completo do reino em
+						que o táxon é classificado.</li>
+					<li><b>phylum</b> - O nome científico completo do filo em que
+						o táxon é classificado.</li>
+					<li><b>_class</b> - O nome científico completo da classe em
+						que o táxon está classificado.</li>
+					<li><b>_order</b> - O nome científico completo da ordem em que
+						o táxon está classificado.</li>
+					<li><b>family</b> - O nome científico completo da família em
+						que o táxon é classificado.</li>
+					<li><b>genus</b> - O nome científico completo do gênero em que
+						o táxon está classificado.</li>
+					<li><b>specificepithet</b> - O nome do epíteto específico do
+						scientificName.</li>
+					<li><b>infraspecificepithet</b> - O nome do epíteto de menor
+						categoria ou hierarquia do scientificName, excluindo qualquer
+						designação de categoria taxonômica.</li>
+					<li><b>species</b> - Nome taxonômico completo da espécie à
+						qual o registro de ocorrência pertence.</li>
+					<li><b>scientificname</b> - O nome científico completo, com
+						autoria e informações atualizadas se conhecido. Ao formar parte de
+						uma identificação, este deve ser o nome em nível mais baixo da
+						classificação taxonômica que pode ser determinado. Este termo não
+						deve conter qualificações de identificação, que devem antes ser
+						fornecidos no termo IdentificationQualifier.</li>
+					<li><b>taxonrank</b> - O nível taxonômico do nome mais
+						específico em scientificName. A prática recomendada é a utilização
+						de um vocabulário controlado.</li>
+					<li><b>typestatus</b> - Uma lista de tipos nomenclaturais
+						(concatenada e separada) (status do tipo, nome científico
+						tipificado, publicação) aplicada ao espécime.</li>
+					<li><b>recordedby</b> - Uma lista de nomes de pessoas, grupos
+						ou organizações (concatenados e separados) responsáveis ​​pelo
+						registro da ocorrência original. O coletor ou observador primário,
+						especialmente aquele que dá um identificador pessoal
+						(recordNumber), deve ser o primeiro da lista.</li>
+					<li><b>eventdate</b> - A data ou intervalo durante o qual
+						ocorreu um evento. Para ocorrências, esta é a data quando o evento
+						foi registrado. Não é adequado para um tempo em um contexto
+						geológico. A prática recomendada é a utilização de um esquema de
+						codificação, como a ISO 8601:2004 (E).</li>
+					<li><b>continent</b> -O nome do continente em que a
+						localização ocorre. A prática recomendada é a utilização de um
+						vocabulário controlado, como o Getty Thesaurus of Geographic Names
+						ou o código ISO 3166 Continent.</li>
+					<li><b>country</b> - O nome do país ou maior unidade
+						administrativa em que o local ocorre. A prática recomendada é a
+						utilização de um vocabulário controlado, como o Getty Thesaurus of
+						Geographic Names.</li>
+					<li><b>stateprovince</b> - O nome da região administrativa
+						menor do que país (estado, província, cantão, departamento,
+						região, etc), em que ocorrre a localização.</li>
+					<li><b>municipality</b> - O nome completo e não abreviado da
+						próxima região administrativa menor do county (cidade, município,
+						etc), em que a localização ocorre. Não use este termo para um
+						incluir um nome de um lugar próximo que não contém a localização
+						real.</li>
+					<li><b>county</b> - O nome completo e não abreviado da próxima
+						região administrativa menor do county (cidade, município, etc), em
+						que a localização ocorre. Não use este termo para um incluir um
+						nome de um lugar próximo que não contém a localização real.</li>
+					<li><b>minimumelevationinmeters</b> - O limite inferior do
+						intervalo de elevação (altitude, geralmente acima do nível do
+						mar), em metros.</li>
+					<li><b>maximumelevationinmeters</b> - O limite superior do
+						intervalo de elevação (altitude, geralmente acima do nível do
+						mar), em metros.</li>
+					<li><b>hascoordinates</b> - Indica se o registro de ocorrência
+						possui ou não coordenadas.</li>
+					<li><b>decimallatitude</b> - A latitude geográfica (em graus
+						decimais, utilizando o sistema de referência espacial dado em
+						geodeticDatum) do centro geográfico de uma localização. Os valores
+						positivos são ao norte do Equador, os valores negativos são ao
+						sul. Os valores corretos ficam entre -90 e 90.</li>
+					<li><b>decimallongitude</b> - A longitude geográfica (em graus
+						decimais, utilizando o sistema de referência espacial dada em
+						geodeticDatum) do centro geográfico de uma localização. Os valores
+						positivos estão a leste do meridiano de Greenwich, valores
+						negativos são a oeste dela. Os valores legais encontram-se entre
+						-180 e 180.</li>
+					<li><b>hasmedia</b> - Indica se o registro possui ou não dados
+						multimedia.</li>
+					<li><b>associatedmedia</b> - Uma lista de identificadores
+						(concatenados e separados) (publicação, identificador único
+						global, URI) da mídia associada com a ocorrência.</li>
+				</ul>
+				<li><b>scientificName</b> - Nome utilizado como filtro para
+					consulta.</li>
+				<li><b>queryLength</b> - Duração, em milissegundos, do tempo
+					necessário para realizar a consulta.</li>
+			</ul>
 
-	<p>
-		<b>* * * English * * * </b>
-	</p>
-	<p>This interface allows access to species occurrence data records
-		from the SiBBr explorer. To query the interface, please follow the
-		instructions:</p>
-	<h2>
-		<i>/recursos</i> - Resources
-	</h2>
-	<p>This query allows the listing of the available resources.</p>
-	<p>Results will be returned in the JSON format, with the following
-		fields:</p>
-	<ul>
-		<li><b>count</b> - Total number of available resources.</li>
-		<li><b>resources</b> - List of resources, with the following
-			fields:</li>
-		<ul>
-			<li><b>id</b> - Unique identifier to a resource inside the <a
-				href="http://gbif.sibbr.gov.br/explorador" target="_blank">biodiversity
-					data explorer</a>.</li>
-			<li><b>name</b> - Resource name.</li>
-			<li><b>archiveurl</b> - The DwC-A link in the IPT (Integrated
-				Publishing Toolkit) installation that is serving the resource on the
-				internet.</li>
-			<li><b>gbifpackageid</b> - Unique identifier to the resource in
-				GBIF (Global Biodiversity Information Facility), when it exists, or
-				some alternate identifier to the resource (alternateIdentifier).</li>
-			<li><b>recordcount</b> - Number of occurrence records in the
-				system that belong to this resource.</li>
-			<li><b>publisherid</b> - Unique identifier to the resource's
-				publisher whithin the system.</li>
-		</ul>
-	</ul>
-	<h3>Parameters</h3>
-	<ul>
-		<li><i>List available resources:</i></li>
-		<p>
-			Usage: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos</i>
-		</p>
-		<li><i>Filter occurrence records from a given resource, with
-				analogous parameters to the occurrence search:</i></li>
-		<p>
-			Usage: <b>http://gbif.sibbr.gov.br/api/v1.1/recursos/{id_do_recurso}/ocorrencias</b>
-		</p>
-		<li><b>scientificname</b> - Scientific name of the taxon to be
-			queried.(Default is null. Observe that it is not unusual to have
-			records without a value for this field.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/12/ocorrencias?scientificname=Speothos
-				venaticus</i>
-		</p>
-		<li><b>fields</b> - Indicates the set of fields to be returned.
-			Value 1 retorns all available fields, while value 0 returns only the
-			subset of fields {auto_id, decimalLatitude, decimallongitude}. <b>(Default
-				value is 0)</b>.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i>
-		</p>
-		<li><b>ignoreNullCoordinates</b> - Filter records that do not
-			possess coordinate information (Default value is <b>false</b>).</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/20/ocorrencias?scientificname=Verbena
-				lobata&amp;ignoreNullCoordinates=true</i>
-		</p>
-		<li><b>limit</b> - Limit the maximum amount of results returned
-			by the query (Default value is without limit). This field supports
-			only natural numbers.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i>
-		</p>
-	</ul>
-	<p>
-		These queries allow the search for occurrence records based on the
-		usage of the scientific name filter (<b>scientificname</b>).
-	</p>
-	<p>Results will be returned in the JSON format, with the following
-		fields:</p>
-	<ul>
-		<li><b>count</b> - Amount of records returned by the query.</li>
-		<li><b>occurrences</b> - List of records returned by the query,
-			with the following fields:</li>
-		<ul>
-			<li><b>auto_id</b> - Unique identifier of an occurrence within
-				the <a href="http://gbif.sibbr.gov.br/explorador" target="_blank">biodiversity
-					data explorer</a>.</li>
-			<li><b>resourcename</b> - Name of the resource to which the
-				occurrence belongs.</li>
-			<li><b>publishername</b> - name of the publisher to which the
-				occurrence belongs.</li>
-			<li><b>kingdom</b> - The full scientific name of the kingdom in
-				which the taxon is classified.</li>
-			<li><b>phylum</b> - The full scientific name of the phylum or
-				division in which the taxon is classified.</li>
-			<li><b>_class</b> - The full scientific name of the class in
-				which the taxon is classified.</li>
-			<li><b>_order</b> - The full scientific name of the order in
-				which the taxon is classified.</li>
-			<li><b>family</b> - The full scientific name of the family in
-				which the taxon is classified.</li>
-			<li><b>genus</b> - The full scientific name of the genus in
-				which the taxon is classified.</li>
-			<li><b>specificepithet</b> - The name of the first or species
-				epithet of the scientificName.</li>
-			<li><b>infraspecificepithet</b> - The name of the lowest or
-				terminal infraspecific epithet of the scientificName, excluding any
-				rank designation.</li>
-			<li><b>species</b> - The complete scientific name of the species
-				which the the taxon is classified.</li>
-			<li><b>scientificname</b> - The full scientific name, with
-				authorship and date information if known. When forming part of an
-				Identification, this should be the name in lowest level taxonomic
-				rank that can be determined. This term should not contain
-				identification qualifications, which should instead be supplied in
-				the IdentificationQualifier term.</li>
-			<li><b>taxonrank</b> - The taxonomic rank of the most specific
-				name in the scientificName. Recommended best practice is to use a
-				controlled vocabulary.</li>
-			<li><b>typestatus</b> - A list (concatenated and separated) of
-				nomenclatural types (type status, typified scientific name,
-				publication) applied to the subject.</li>
-			<li><b>recordedby</b> - The number of individuals represented
-				present at the time of the Occurrence.</li>
-			<li><b>eventdate</b> - The date-time or interval during which an
-				Event occurred. For occurrences, this is the date-time when the
-				event was recorded. Not suitable for a time in a geological context.
-				Recommended best practice is to use an encoding scheme, such as ISO
-				8601:2004(E).</li>
-			<li><b>continent</b> - The name of the continent in which the
-				Location occurs. Recommended best practice is to use a controlled
-				vocabulary such as the Getty Thesaurus of Geographic Names.</li>
-			<li><b>country</b> - The name of the country or major
-				administrative unit in which the Location occurs. Recommended best
-				practice is to use a controlled vocabulary such as the Getty
-				Thesaurus of Geographic Names.</li>
-			<li><b>stateprovince</b> - The name of the next smaller
-				administrative region than country (state, province, canton,
-				department, region, etc.) in which the Location occurs.</li>
-			<li><b>municipality</b> - The full, unabbreviated name of the
-				next smaller administrative region than county (city, municipality,
-				etc.) in which the Location occurs. Do not use this term for a
-				nearby named place that does not contain the actual location.</li>
-			<li><b>county</b> - The full, unabbreviated name of the next
-				smaller administrative region than stateProvince (county, shire,
-				department, etc.) in which the Location occurs.</li>
-			<li><b>minimumelevationinmeters</b> - The lower limit of the
-				range of elevation (altitude, usually above sea level), in meters.</li>
-			<li><b>maximumelevationinmeters</b> - The upper limit of the
-				range of elevation (altitude, usually above sea level), in meters.</li>
-			<li><b>hascoordinates</b> - Indicates weather the occurrence
-				record has coordinates or not.</li>
-			<li><b>decimallatitude</b> - The geographic latitude (in decimal
-				degrees, using the spatial reference system given in geodeticDatum)
-				of the geographic center of a Location. Positive values are north of
-				the Equator, negative values are south of it. Legal values lie
-				between -90 and 90, inclusive.</li>
-			<li><b>decimallongitude</b> - The geographic longitude (in
-				decimal degrees, using the spatial reference system given in
-				geodeticDatum) of the geographic center of a Location. Positive
-				values are east of the Greenwich Meridian, negative values are west
-				of it. Legal values lie between -180 and 180, inclusive.</li>
-			<li><b>hasmedia</b> - indicates if the record has or not
-				multimedia information.</li>
-			<li><b>associatedmedia</b> - A list (concatenated and separated)
-				of identifiers (publication, global unique identifier, URI) of media
-				associated with the Occurrence.</li>
-		</ul>
-		<li><b>scientificName</b> - The name that was used as the query
-			filter.</li>
-		<li><b>queryLength</b> - Length, in milliseconds, of the amount
-			of time required to fetch the results.</li>
-	</ul>
-	<h3>Parameters</h3>
-	<ul>
-		<li><b>scientificname</b> - Scientific name of the taxon to be
-			queried.(Default is null. Observe that it is not unusual to have
-			records without a value for this field.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Speothos
-				venaticus</i>
-		</p>
-		<li><b>fields</b> - Indicates the set of fields to be returned.
-			Value 1 retorns all available fields, while value 0 returns only the
-			subset of fields {auto_id, decimalLatitude, decimallongitude}. <b>(Default
-				value is 0)</b>.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1</i>
-		</p>
-		<li><b>ignoreNullCoordinates</b> - Filter records that do not
-			possess coordinate information (Default value is <b>false</b>).</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Verbena
-				lobata&amp;ignoreNullCoordinates=true</i>
-		</p>
-		<li><b>limit</b> - Limit the maximum amount of results returned
-			by the query (Default value is without limit). This field supports
-			only natural numbers.</li>
-		<p>
-			Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/ocorrencias?scientificname=Aeschynomene
-				falcata&amp;ignoreNullCoordinates=true&amp;limit=50</i>
-		</p>
-	</ul>
+			<h3>Parâmetros</h3>
+			<ul>
+				<li><b>scientificname</b> - Nome científico do taxon a ser
+					procurado. (Valor padrão é vazio. Observe que é comum registros sem
+					nenhum valor para este campo.)</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Speothos
+				venaticus&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Speothos
+							venaticus&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>fields</b> - Indica o conjunto de campos a serem
+					retornados. O valor 1 retorna todos os campos disponíveis, enquanto
+					o valor 0 retorna apenas o subconjunto de campos {auto_id,
+					decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>ignoreNullCoordinates</b> - Filtrar registros que não
+					possuam informação sobre as coordenadas (Valor padrão é <b>false</b>).</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Verbena
+				lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Verbena
+							lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>limit</b> - Limitar o número máximo de resultados
+					retornados pela consulta (Valor padrão é sem limites). Este campo
+					aceita apenas números naturais.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}</a></i>
+				</p>
+			</ul>
+		</div>
+		<div id="english">
+			<br />
+			<p>This interface allows access to species occurrence data
+				records from the SiBBr explorer. To query the interface, please
+				follow the instructions:</p>
+			<h2>
+				<i>/recursos</i> - Resources
+			</h2>
+			<p>This query allows the listing of the available resources.</p>
+			<p>Results will be returned in the JSON format, with the
+				following fields:</p>
+			<ul>
+				<li><b>count</b> - Total number of available resources.</li>
+				<li><b>resources</b> - List of resources, with the following
+					fields:</li>
+				<ul>
+					<li><b>id</b> - Unique identifier to a resource inside the <a
+						href="http://gbif.sibbr.gov.br/explorador" target="_blank">biodiversity
+							data explorer</a>.</li>
+					<li><b>name</b> - Resource name.</li>
+					<li><b>archiveurl</b> - The DwC-A link in the IPT (Integrated
+						Publishing Toolkit) installation that is serving the resource on
+						the internet.</li>
+					<li><b>gbifpackageid</b> - Unique identifier to the resource
+						in GBIF (Global Biodiversity Information Facility), when it
+						exists, or some alternate identifier to the resource
+						(alternateIdentifier).</li>
+					<li><b>recordcount</b> - Number of occurrence records in the
+						system that belong to this resource.</li>
+					<li><b>publisherid</b> - Unique identifier to the resource's
+						publisher whithin the system.</li>
+				</ul>
+			</ul>
+			<h3>Parameters</h3>
+			<ul>
+				<li><i>List available resources:</i></li>
+				<p>
+					Usage: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}</a></i>
+				</p>
+				<li><i>Filter occurrence records from a given resource,
+						with analogous parameters to the occurrence search:</i></li>
+				<p>
+					Usage: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>scientificname</b> - Scientific name of the taxon to be
+					queried.(Default is null. Observe that it is not unusual to have
+					records without a value for this field.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/12/ocorrencias?scientificname=Speothos
+				venaticus&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/12/ocorrencias?scientificname=Speothos
+							venaticus&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>fields</b> - Indicates the set of fields to be returned.
+					Value 1 retorns all available fields, while value 0 returns only
+					the subset of fields {auto_id, decimalLatitude, decimallongitude}.
+					<b>(Default value is 0)</b>.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/3/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>ignoreNullCoordinates</b> - Filter records that do not
+					possess coordinate information (Default value is <b>false</b>).</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/20/ocorrencias?scientificname=Verbena
+					lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/20/ocorrencias?scientificname=Verbena
+							lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>limit</b> - Limit the maximum amount of results returned
+					by the query (Default value is without limit). This field supports
+					only natural numbers.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}</a></i>
+				</p>
+			</ul>
+			<p>
+				These queries allow the search for occurrence records based on the
+				usage of the scientific name filter (<b>scientificname</b>).
+			</p>
+			<p>Results will be returned in the JSON format, with the
+				following fields:</p>
+			<ul>
+				<li><b>count</b> - Amount of records returned by the query.</li>
+				<li><b>occurrences</b> - List of records returned by the query,
+					with the following fields:</li>
+				<ul>
+					<li><b>auto_id</b> - Unique identifier of an occurrence within
+						the <a href="http://gbif.sibbr.gov.br/explorador" target="_blank">biodiversity
+							data explorer</a>.</li>
+					<li><b>resourcename</b> - Name of the resource to which the
+						occurrence belongs.</li>
+					<li><b>publishername</b> - name of the publisher to which the
+						occurrence belongs.</li>
+					<li><b>kingdom</b> - The full scientific name of the kingdom
+						in which the taxon is classified.</li>
+					<li><b>phylum</b> - The full scientific name of the phylum or
+						division in which the taxon is classified.</li>
+					<li><b>_class</b> - The full scientific name of the class in
+						which the taxon is classified.</li>
+					<li><b>_order</b> - The full scientific name of the order in
+						which the taxon is classified.</li>
+					<li><b>family</b> - The full scientific name of the family in
+						which the taxon is classified.</li>
+					<li><b>genus</b> - The full scientific name of the genus in
+						which the taxon is classified.</li>
+					<li><b>specificepithet</b> - The name of the first or species
+						epithet of the scientificName.</li>
+					<li><b>infraspecificepithet</b> - The name of the lowest or
+						terminal infraspecific epithet of the scientificName, excluding
+						any rank designation.</li>
+					<li><b>species</b> - The complete scientific name of the
+						species which the the taxon is classified.</li>
+					<li><b>scientificname</b> - The full scientific name, with
+						authorship and date information if known. When forming part of an
+						Identification, this should be the name in lowest level taxonomic
+						rank that can be determined. This term should not contain
+						identification qualifications, which should instead be supplied in
+						the IdentificationQualifier term.</li>
+					<li><b>taxonrank</b> - The taxonomic rank of the most specific
+						name in the scientificName. Recommended best practice is to use a
+						controlled vocabulary.</li>
+					<li><b>typestatus</b> - A list (concatenated and separated) of
+						nomenclatural types (type status, typified scientific name,
+						publication) applied to the subject.</li>
+					<li><b>recordedby</b> - The number of individuals represented
+						present at the time of the Occurrence.</li>
+					<li><b>eventdate</b> - The date-time or interval during which
+						an Event occurred. For occurrences, this is the date-time when the
+						event was recorded. Not suitable for a time in a geological
+						context. Recommended best practice is to use an encoding scheme,
+						such as ISO 8601:2004(E).</li>
+					<li><b>continent</b> - The name of the continent in which the
+						Location occurs. Recommended best practice is to use a controlled
+						vocabulary such as the Getty Thesaurus of Geographic Names.</li>
+					<li><b>country</b> - The name of the country or major
+						administrative unit in which the Location occurs. Recommended best
+						practice is to use a controlled vocabulary such as the Getty
+						Thesaurus of Geographic Names.</li>
+					<li><b>stateprovince</b> - The name of the next smaller
+						administrative region than country (state, province, canton,
+						department, region, etc.) in which the Location occurs.</li>
+					<li><b>municipality</b> - The full, unabbreviated name of the
+						next smaller administrative region than county (city,
+						municipality, etc.) in which the Location occurs. Do not use this
+						term for a nearby named place that does not contain the actual
+						location.</li>
+					<li><b>county</b> - The full, unabbreviated name of the next
+						smaller administrative region than stateProvince (county, shire,
+						department, etc.) in which the Location occurs.</li>
+					<li><b>minimumelevationinmeters</b> - The lower limit of the
+						range of elevation (altitude, usually above sea level), in meters.</li>
+					<li><b>maximumelevationinmeters</b> - The upper limit of the
+						range of elevation (altitude, usually above sea level), in meters.</li>
+					<li><b>hascoordinates</b> - Indicates weather the occurrence
+						record has coordinates or not.</li>
+					<li><b>decimallatitude</b> - The geographic latitude (in
+						decimal degrees, using the spatial reference system given in
+						geodeticDatum) of the geographic center of a Location. Positive
+						values are north of the Equator, negative values are south of it.
+						Legal values lie between -90 and 90, inclusive.</li>
+					<li><b>decimallongitude</b> - The geographic longitude (in
+						decimal degrees, using the spatial reference system given in
+						geodeticDatum) of the geographic center of a Location. Positive
+						values are east of the Greenwich Meridian, negative values are
+						west of it. Legal values lie between -180 and 180, inclusive.</li>
+					<li><b>hasmedia</b> - indicates if the record has or not
+						multimedia information.</li>
+					<li><b>associatedmedia</b> - A list (concatenated and
+						separated) of identifiers (publication, global unique identifier,
+						URI) of media associated with the Occurrence.</li>
+				</ul>
+				<li><b>scientificName</b> - The name that was used as the query
+					filter.</li>
+				<li><b>queryLength</b> - Length, in milliseconds, of the amount
+					of time required to fetch the results.</li>
+			</ul>
+			<h3>Parameters</h3>
+			<ul>
+				<li><b>scientificname</b> - Scientific name of the taxon to be
+					queried.(Default is null. Observe that it is not unusual to have
+					records without a value for this field.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Speothos
+				venaticus&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Speothos
+							venaticus&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>fields</b> - Indicates the set of fields to be returned.
+					Value 1 retorns all available fields, while value 0 returns only
+					the subset of fields {auto_id, decimalLatitude, decimallongitude}.
+					<b>(Default value is 0)</b>.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>ignoreNullCoordinates</b> - Filter records that do not
+					possess coordinate information (Default value is <b>false</b>).</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Verbena
+				lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Verbena
+							lobata&amp;ignoreNullCoordinates=true&amp;token={VALID_TOKEN}</a></i>
+				</p>
+				<li><b>limit</b> - Limit the maximum amount of results returned
+					by the query (Default value is without limit). This field supports
+					only natural numbers.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Aeschynomene
+				falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource_id}/ocorrencias?scientificname=Aeschynomene
+							falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}</a></i>
+				</p>
+			</ul>
+		</div>
+	</div>
 </body>
 </html>
