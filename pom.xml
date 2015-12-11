@@ -4,7 +4,7 @@
 
 	<groupId>br.gov.sibbr</groupId>
 	<artifactId>api</artifactId>
-	<version>1.1</version>
+	<version>1.2</version>
 	<name>API</name>
 	<description>A simple java api to provide access to liger-data-access tables</description>
 
@@ -61,24 +61,24 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<repositories>
 		<repository>
 			<id>spring-releases</id>
 			<url>https://repo.spring.io/libs-release</url>
 		</repository>
-			<repository>
+		<repository>
 			<id>spring-milestone</id>
 			<url>https://repo.spring.io/libs-release</url>
 		</repository>
 	</repositories>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>spring-releases</id>
 			<url>https://repo.spring.io/libs-release</url>
 		</pluginRepository>
-				<pluginRepository>
+		<pluginRepository>
 			<id>spring-milestone</id>
 			<url>https://repo.spring.io/libs-release</url>
 		</pluginRepository>

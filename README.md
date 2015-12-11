@@ -1,4 +1,4 @@
-## api - version 1.1
+## api - version 1.2
 
 This is a small public api service that allows the users to query against the SiBBr's occurrence data portal information.
 
@@ -10,6 +10,10 @@ Basic queries implemented:
    - limit: define max. number of records to be returned by the query.
 - Search occurrences by resource
 - List available resources
+- Occurrence search filtered by resource given a scientific name
+- Statistics
+- Administrative user management
+- Login
 
 Information returned:
 - List of all occurrences that match the filters, amount of records returned, the amount of time it took the query to complete and the scientificname used as filter to the query;

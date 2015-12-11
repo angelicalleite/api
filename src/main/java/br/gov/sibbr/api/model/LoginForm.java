@@ -16,40 +16,47 @@
 package br.gov.sibbr.api.model;
 
 /**
- * This class should model an api result to be mapped into a json object,
- * including arbitrary headers. This result represents the current status of the database.
+ * POJO that encapsulates login and register form data
  * 
  * @author Pedro Guimarães
  *
  */
+public class LoginForm {
 
-public class StatsResult {
-	
-	private Integer amount;
-	
-	// The amount of time that took the query in milliseconds
-	private Long queryLength;
-	
-	/**
-	 * Default class constructor
-	 */
-	public StatsResult(Integer amount, Long queryLength) {
-		this.amount = amount;
-		this.queryLength = queryLength;
-	}
-	
-	public Integer getAmount() {
-		return amount;
-	}
-	public void setAmount(Integer amount) {
-		this.amount = amount;
+	private String email;
+	private String token;
+	private String password;
+	private String passwordCheck;
+
+	public String getEmail() {
+		return email;
 	}
 
-	public Long getQueryLength() {
-		return queryLength;
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
-	public void setQueryLength(Long queryLength) {
-		this.queryLength = queryLength;
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPasswordCheck() {
+		return passwordCheck;
+	}
+
+	public void setPasswordCheck(String passwordCheck) {
+		this.passwordCheck = passwordCheck;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

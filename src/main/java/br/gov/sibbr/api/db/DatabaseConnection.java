@@ -26,7 +26,17 @@ import java.sql.SQLException;
  * @author Pedro Guimarães
  *
  */
-public final class DatabaseConnection {
+public class DatabaseConnection {
+
+	// DB Connection configuration for data access:
+	public static String dataUrl = "jdbc:postgresql://localhost/dataportal";
+	public static String dataUser = "dbadmin";
+	public static String dataPassword = "dbadmin";
+
+	// DB Connection configuration for authentication access:
+	public static String authUrl = "jdbc:postgresql://localhost/dataportal_auth";
+	public static String authUser = "dbadmin";
+	public static String authPassword = "dbadmin";
 
 	/**
 	 * Singleton to connect to database
@@ -58,10 +68,11 @@ public final class DatabaseConnection {
 	 * @return
 	 */
 	public static Connection getConnection() {
-		String url = "jdbc:postgresql://localhost/dataportal";
-		String username = "dbadmin";
-		String password = "dbadmin";
-		return getConnection(url, username, password);
+		return getConnection(dataUrl, dataUser, dataPassword);
+	}
+
+	public static Connection getAuthConnection() {
+		return getConnection(authUrl, authUser, authPassword);
 	}
 
 	/**

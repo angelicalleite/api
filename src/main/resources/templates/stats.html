@@ -1,75 +1,210 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<title>Interface: SiBBr API</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	</head>
-	<body>
-		<h1>Interface - v1.1</h1>
-		<p><b>* * * Português * * * </b></p>
-		<h2>3. <i>/stats</i> - Estatísticas</h2>
-		<p> Esta interface permite a consulta de estatísticas numéricas da base de dados</p>
-		<p>Os resultados serão exibidos no formato JSON, com os seguintes campos:</p>
+<head>
+<title>Interface: SiBBr API</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+	$(function() {
+		$("#tabs").tabs({
+			collapsible : false
+		});
+	});
+</script>
+</head>
+<body>
+	<h1>Interface - v1.2</h1>
+	<div id="tabs">
 		<ul>
-			<li><b>amount</b> - Número que representa o total contabilizado para a consulta.</li>
+			<li><a href="#portuguese">Português</a></li>
+			<li><a href="#english">English</a></li>
 		</ul>
-		<h3>Consultas</h3>
-		<ul>
-			<li><b>/stats/totalRegistros</b> - Total de registros de ocorrência na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRegistros</i></p>
-			<li><b>/stats/totalRegistrosGeorreferenciados</b> - Total de registros de ocorrência georreferenciados na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRegistrosGeorreferenciados</i></p>
-			<li><b>/stats/totalRegistrosRepatriados</b> - Total de registros de ocorrência repatriados na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRegistrosRepatriados</i></p>
-			<li><b>/stats/totalPublicadores</b> - Total de publicadores na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalPublicadores</i></p>
-			<li><b>/stats/totalRecursos</b> - Total de recursos na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRecursos</i></p>
-			<li><b>/stats/totalEspecies</b> - Total de espécies na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalEspecies</i></p>
-			<li><b>/stats/totalFilo</b> - Total de filos na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalFilo</i></p>
-			<li><b>/stats/totalClasse</b> - Total de classes na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalClasse</i></p>
-			<li><b>/stats/totalOrdem</b> - Total de ordens na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalOrdem</i></p>
-			<li><b>/stats/totalGenero</b> - Total de gêneros na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalGenero</i></p>
-			<li><b>/stats/totalFamilia</b> - Total de famílias na base de dados.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalFamilia</i></p>
-		</ul>
-		
-		<p><b>* * * English * * * </b></p>
-		<h2>3. <i>/stats</i> - Statistics</h2>
-		<p>This interface allows querying of number statistics of the database</p>
-		<p>Results are presented on JSON format, with the following fields:</p>
-		<ul>
-			<li><b>amount</b> - Represents the total account for the query.</li>
-		</ul>
-		<h3>Queries</h3>
-		<ul>
-			<li><b>/stats/totalRegistros</b> - Total occurrence records in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRegistros</i></p>
-			<li><b>/stats/totalRegistrosGeorreferenciados</b> - Total georeferenced occurrence records in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRegistrosGeorreferenciados</i></p>
-			<li><b>/stats/totalRegistrosRepatriados</b> - Total repatriated occurrence records in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRegistrosRepatriados</i></p>
-			<li><b>/stats/totalPublicadores</b> - Total amount of publishers in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalPublicadores</i></p>
-			<li><b>/stats/totalRecursos</b> - Total amount of resources in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalRecursos</i></p>
-			<li><b>/stats/totalEspecies</b> - Total species in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalEspecies</i></p>
-			<li><b>/stats/totalFilo</b> - Total amount of phylum in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalFilo</i></p>
-			<li><b>/stats/totalClasse</b> - Total amount of classes in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalClasse</i></p>
-			<li><b>/stats/totalOrdem</b> - Total amount of orders in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalOrdem</i></p>
-			<li><b>/stats/totalGenero</b> - Total amount of genus in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalGenero</i></p>
-			<li><b>/stats/totalFamilia</b> - Total amount of families in the database.</li>
-			<p>Ex.: <i>http://gbif.sibbr.gov.br/api/v1.1/stats/totalFamilia</i></p>
-		</ul>
-	</body>
+		<div id="portuguese">
+			<br />
+			<h2>3. /stats - Estatísticas</h2>
+			<p>Esta interface permite a consulta de estatísticas numéricas da
+				base de dados</p>
+			<p>Os resultados serão exibidos no formato JSON, com os seguintes
+				campos:</p>
+			<ul>
+				<li><b>amount</b> - Número que representa o total contabilizado
+					para a consulta.</li>
+			</ul>
+			<h3>Consultas</h3>
+			<ul>
+				<li><b>/estatisticas/totalRegistros</b> - Total de registros de
+					ocorrência na base de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistros?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistros?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalRegistrosGeorreferenciados</b> -
+					Total de registros de ocorrência georreferenciados na base de
+					dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosGeorreferenciados?token=VALID_TOKEN"
+						tarde="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosGeorreferenciados?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalRegistrosRepatriados</b> - Total de
+					registros de ocorrência repatriados na base de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosRepatriados?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosRepatriados?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalPublicadores</b> - Total de
+					publicadores na base de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalPublicadores?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalPublicadores?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalRecursos</b> - Total de recursos na
+					base de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRecursos?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRecursos?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalEspecies</b> - Total de espécies na
+					base de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalEspecies?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalEspecies?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalFilo</b> - Total de filos na base de
+					dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFilo?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFilo?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalClasse</b> - Total de classes na base
+					de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalClasse?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalClasse?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalOrdem</b> - Total de ordens na base
+					de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalOrdem?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalOrdem?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalGenero</b> - Total de gêneros na base
+					de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalGenero?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalGenero?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalFamilia</b> - Total de famílias na
+					base de dados.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFamilia?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFamilia?token=VALID_TOKEN</a></i>
+				</p>
+			</ul>
+		</div>
+		<div id="english">
+			<br />
+			<h2>3. /stats - Statistics</h2>
+			<p>This interface allows querying of number statistics of the
+				database</p>
+			<p>Results are presented on JSON format, with the following
+				fields:</p>
+			<ul>
+				<li><b>amount</b> - Represents the total account for the query.</li>
+			</ul>
+			<h3>Queries</h3>
+			<ul>
+				<li><b>/estatisticas/totalRegistros</b> - Total occurrence
+					records in the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistros?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistros?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalRegistrosGeorreferenciados</b> -
+					Total georeferenced occurrence records in the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosGeorreferenciados?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosGeorreferenciados?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalRegistrosRepatriados</b> - Total
+					repatriated occurrence records in the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosRepatriados?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRegistrosRepatriados?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalPublicadores</b> - Total amount of
+					publishers in the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalPublicadores?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalPublicadores?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalRecursos</b> - Total amount of
+					resources in the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRecursos?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalRecursos?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalEspecies</b> - Total species in the
+					database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalEspecies?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalEspecies?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalFilo</b> - Total amount of phylum in
+					the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFilo?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFilo?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalClasse</b> - Total amount of classes
+					in the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalClasse?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalClasse?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalOrdem</b> - Total amount of orders in
+					the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalOrdem?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalOrdem?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalGenero</b> - Total amount of genus in
+					the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalGenero?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalGenero?token=VALID_TOKEN</a></i>
+				</p>
+				<li><b>/estatisticas/totalFamilia</b> - Total amount of
+					families in the database.</li>
+				<p>
+					Ex.: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFamilia?token=VALID_TOKEN"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/estatisticas/totalFamilia?token=VALID_TOKEN</a></i>
+				</p>
+			</ul>
+		</div>
+	</div>
+</body>
 </html>

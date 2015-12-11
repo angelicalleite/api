@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Login fail</title>
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+</head>
+<body>
+	<div class="loginbox">
+		<b> Login fail.
+			<p th:text="${message}" /> Please try again:
+		</b>
+		<form th:action="@{/login}" method="post">
+			<div class="fieldcenter">
+				<p>
+					<label> <b>E-mail:</b> <input type="text" name="email" />
+					</label>
+				</p>
+				<p>
+					<label><b>Password:</b> <input type="password"
+						name="password" /> </label>
+				</p>
+				<p>
+					<input type="submit" value="Sign In" class="submit" />
+				</p>
+			</div>
+		</form>
+	</div>
+</body>
+</html>
