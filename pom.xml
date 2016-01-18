@@ -18,9 +18,24 @@
 		<spring-data-jpa.version>1.8.2.RELEASE</spring-data-jpa.version>
 		<servlet.version>3.1.0</servlet.version>
 		<ehcache.version>2.6.10</ehcache.version>
-		<rootLoggerPriority>info</rootLoggerPriority>
-		<isdebug>false</isdebug>
+		<rootLoggerPriority>DEBUG</rootLoggerPriority>
+		<isdebug>true</isdebug>
 	</properties>
+	
+	<profiles>
+		<profile>
+			<id>producao</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<artifact.name>api#v1.2</artifact.name>
+				<isdebug>false</isdebug>
+				<rootLoggerPriority>INFO</rootLoggerPriority>
+			</properties>
+		</profile>
+		
+	</profiles>
 
 	<dependencies>
 		<dependency>
@@ -319,6 +334,7 @@
  			<resource>
 				<directory>src/main/resources</directory>
 				<targetPath>${project.build.directory}/${artifact.name}/WEB-INF/classes</targetPath>
+				<filtering>true</filtering>
 				<excludes>
 					<exclude>database/**</exclude>
 					<exclude>templates/**</exclude>

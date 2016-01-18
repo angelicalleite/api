@@ -12,24 +12,24 @@
 		</Console>
 	</Appenders>
 	<Loggers>
-		<Logger name="br.gov.sibbr" level="DEBUG">
+		<Logger name="br.gov.sibbr" level="${rootLoggerPriority}">
 			<AppenderRef ref="LogFile" />
 		</Logger>
-		<Logger name="org.thymeleaf.spring4" level="DEBUG">
+		<Logger name="org.thymeleaf.spring4" level="${rootLoggerPriority}">
 			<AppenderRef ref="LogFile" />
 		</Logger>
-		<Logger name="org.springframework" level="DEBUG">
+		<Logger name="org.springframework" level="${rootLoggerPriority}">
 			<AppenderRef ref="LogFile" />
 		</Logger>
 		<Logger name="org.apache" level="INFO" >
 			<AppenderRef ref="LogFile" />
 		</Logger>
 
-		<Logger name="net.sf.ehcache" level="WARN" >
+		<Logger name="net.sf.ehcache" level="INFO" >
 			<AppenderRef ref="LogFile" />
 		</Logger>
 
-		<Root level="DEBUG" >
+		<Root level="${rootLoggerPriority}" >
 			<AppenderRef ref="STDOUT" />
 			<AppenderRef ref="LogFile" />
 		</Root>
