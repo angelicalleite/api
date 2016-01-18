@@ -64,6 +64,56 @@
 						href="https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}"
 						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}</a></i>
 				</p>
+				<li><i>Listar os taxa existentes no recurso:</i></li>
+				<p>
+					Uso: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id do recurso}/sdata?type={taxon}&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id
+							do recurso}/sdata?type={taxon}&amp;token={VALID_TOKEN}</a></i> <br />
+							<br />
+					<b>taxon</b> : Nome em latim do Taxon presente no recurso a se consultar com a id.
+					<br/>
+					Valores válidos:
+					<ul>
+							<li>
+								<b>regio&nbsp;</b>:&nbsp;Domínios
+							</li>
+							<li>
+								<b>regnum&nbsp;</b>:&nbsp;Reinos
+							</li>
+							<li>
+								<b>phylum&nbsp;</b>:&nbsp;Filo
+							</li>
+							<li>
+								<b>classis&nbsp;</b>:&nbsp;Classe
+							</li>
+							<li>
+								<b>ordo&nbsp;</b>:&nbsp;Ordem
+							</li>
+							<li>
+								<b>familia&nbsp;</b>:&nbsp;Família
+							</li>
+							<li>
+								<b>genus&nbsp;</b>:&nbsp;Gênero
+							</li>
+							<li>
+								<b>subgenus&nbsp;</b>:&nbsp;Sub-gênero
+							</li>
+							<li>
+								<b>species&nbsp;</b>:&nbsp;Espécie
+							</li>
+							<li>
+								<b>subspecies&nbsp;</b>:&nbsp;Sub-espécie
+							</li>
+							<li>
+								<b>varietate&nbsp;</b>:&nbsp;Variedade
+							</li>
+							<li>
+								<b>subvarietate&nbsp;</b>:&nbsp;Sub-variedade
+							</li>
+					</ul>
+				</p>
+
 				<li><i>Filtrar registros de ocorrência de um dado recurso,
 						utilizando parâmetros análogos aos da consulta de ocorrências:</i></li>
 				<p>
@@ -72,7 +122,7 @@
 						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias&amp;token={VALID_TOKEN}</a></i>
 				</p>
 				<li><b>scientificname</b> - Nome científico do taxon a ser
-					procurado. (Valor padrão é vazio(""). Observe que é comum registros
+					procurado, preferencialmente obtido da consulta anterior. (Valor padrão é vazio(""). Observe que é comum registros
 					sem nenhum valor para este campo.)</li>
 				<p>
 					Ex.: <i><a
@@ -298,6 +348,54 @@
 					Usage: <i><a
 						href="https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}"
 						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}</a></i>
+				</p>
+				<li><i>List the existend taxa on the resource:</i></li>
+				<p>
+					Uso: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource id}/sdata?type={taxon}&amp;token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{resource id}/sdata?type={taxon}&amp;token={VALID_TOKEN}</a></i> <br />
+							<br />
+					<b>taxon</b> : Taxon's latin representation to search on the resource identified in the query.
+					<br/>
+					Valid entries:
+					<ul>
+							<li>
+								<b>regio&nbsp;</b>:&nbsp;Domain
+							</li>
+							<li>
+								<b>regnum&nbsp;</b>:&nbsp;Kingdom
+							</li>
+							<li>
+								<b>phylum&nbsp;</b>:&nbsp;Phylum
+							</li>
+							<li>
+								<b>classis&nbsp;</b>:&nbsp;Class
+							</li>
+							<li>
+								<b>ordo&nbsp;</b>:&nbsp;Order
+							</li>
+							<li>
+								<b>familia&nbsp;</b>:&nbsp;Family
+							</li>
+							<li>
+								<b>genus&nbsp;</b>:&nbsp;Genus
+							</li>
+							<li>
+								<b>subgenus&nbsp;</b>:&nbsp;Sub-genus
+							</li>
+							<li>
+								<b>species&nbsp;</b>:&nbsp;Species
+							</li>
+							<li>
+								<b>subspecies&nbsp;</b>:&nbsp;Sub-species
+							</li>
+							<li>
+								<b>varietate&nbsp;</b>:&nbsp;Variety
+							</li>
+							<li>
+								<b>subvarietate&nbsp;</b>:&nbsp;Sub-variety
+							</li>
+					</ul>
 				</p>
 				<li><i>Filter occurrence records from a given resource,
 						with analogous parameters to the occurrence search:</i></li>
