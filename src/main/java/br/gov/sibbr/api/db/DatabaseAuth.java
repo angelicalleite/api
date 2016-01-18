@@ -20,6 +20,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
 /**
  * This class is responsible for providing database access methods to query the
  * authentication database
@@ -27,9 +33,8 @@ import java.sql.Statement;
  * @author pedro
  *
  */
+@Component
 public class DatabaseAuth {
-
-	private Connection conn = null;
 
 	public static final String API_USER_TABLE = "api_user";
 	public static final String API_USER_AUTO_ID = "auto_id";
@@ -42,21 +47,18 @@ public class DatabaseAuth {
 	public static final String API_TOKEN_TABLE = "api_token";
 	public static final String API_TOKEN_AUTO_ID = "auto_id";
 	public static final String API_TOKEN_TOKEN = "token";
+	public static final String API_TOKEN_QUERY="SELECT * FROM " + API_TOKEN_TABLE + " WHERE " + API_TOKEN_TOKEN + " = '%s'";
+	
 
 	public static final int USER_EXISTS = -2;
+	
+	@Autowired(required=true)
+	@Qualifier("authconex")
+	private Connection connection;
 
-	/**
-	 * Default class constructor, creates a new connection to the database
-	 */
-	public DatabaseAuth() throws Exception {
-		Connection connection = DatabaseConnection.getAuthConnection();
-		if (connection != null) {
-			this.conn = connection;
-		} else {
-			throw new Exception("Failled attempt to connect to authentication database.");
-		}
+	public DatabaseAuth(){
+		
 	}
-
 	/**
 	 * Fetches a token record from api_token table based on the token
 	 * @param token the token from an api_token record
@@ -66,9 +68,8 @@ public class DatabaseAuth {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
-			statement = conn.createStatement();
-			resultSet = statement.executeQuery(
-					"SELECT * FROM " + API_TOKEN_TABLE + " WHERE " + API_TOKEN_TOKEN + " = \'" + token + "\'");
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery(String.format(API_TOKEN_QUERY, token));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -85,7 +86,7 @@ public class DatabaseAuth {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			resultSet = statement.executeQuery("SELECT * FROM " + API_USER_TABLE + " WHERE " + API_USER_EMAIL + " = \'" + email + "\'");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -103,7 +104,7 @@ public class DatabaseAuth {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			resultSet = statement.executeQuery("SELECT * FROM " + API_USER_TABLE + " WHERE " + API_USER_AUTO_ID + " = \'" + id + "\'");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -122,7 +123,7 @@ public class DatabaseAuth {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			resultSet = statement.executeQuery("SELECT * FROM " + API_USER_TABLE);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -142,7 +143,7 @@ public class DatabaseAuth {
 		String sql = "SELECT " + API_USER_TOKEN_ID + " FROM " + API_USER_TABLE + " WHERE " + API_USER_EMAIL + " = \'"
 				+ email + "\'";
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			resultSet = statement.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -161,7 +162,7 @@ public class DatabaseAuth {
 		Statement statement = null;
 		String sql = "SELECT * FROM " + API_TOKEN_TABLE + " WHERE " + API_TOKEN_AUTO_ID + " = " + token_id.toString();
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			resultSet = statement.executeQuery(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -180,13 +181,13 @@ public class DatabaseAuth {
 		ResultSet resultSet = null;
 		Statement statement = null;
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			int inserted = statement.executeUpdate("INSERT INTO " + API_TOKEN_TABLE + " (token, created_at) values (\'"
 					+ token + "\', current_timestamp)");
 			// If the record was inserted properly, update api_user with token
 			// id and return
 			if (inserted != 0) {
-				statement = conn.createStatement();
+				statement = connection.createStatement();
 				resultSet = statement.executeQuery("SELECT " + API_TOKEN_AUTO_ID + " FROM " + API_TOKEN_TABLE
 						+ " WHERE " + API_TOKEN_TOKEN + " = \'" + token + "\'");
 			}
@@ -206,7 +207,7 @@ public class DatabaseAuth {
 		Statement statement = null;
 		int update = 0;
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			update = statement.executeUpdate("UPDATE " + API_USER_TABLE + " SET " + API_USER_TOKEN_ID + " = " + auto_id
 					+ " WHERE " + API_USER_EMAIL + " = \'" + email + "\'");
 		} catch (SQLException e) {
@@ -227,7 +228,7 @@ public class DatabaseAuth {
 		int result = 0;
 		// New user, insert into the database
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			String sql = "INSERT INTO " + API_USER_TABLE + " (" + API_USER_EMAIL + ", " + API_USER_PASSWORD + ", "
 					+ API_USER_SALT + ") values (\'" + email + "\', \'" + password + "\', \'" + salt + "\')";
 			result = statement.executeUpdate(sql);
@@ -249,7 +250,7 @@ public class DatabaseAuth {
 		int result = 0;
 		// New user, insert into the database
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			String sql = "UPDATE " + API_USER_TABLE + " SET " + API_USER_PASSWORD + " = \'" + password + "\', "
 					+ API_USER_SALT + " = \'" + salt + "\' WHERE " + API_USER_EMAIL + " = \'" + email + "\'";
 			result = statement.executeUpdate(sql);
@@ -266,11 +267,10 @@ public class DatabaseAuth {
 	 */
 	public int habilitateApiUser(Long auto_id) {
 		Statement statement = null;
-		ResultSet rs = null;
 		int result = 0;
 		// New user, insert into the database
 		try {
-			statement = conn.createStatement();
+			statement = connection.createStatement();
 			String sql = "UPDATE " + API_USER_TABLE + " SET " + API_USER_AUTHORIZED + " = true WHERE " + API_USER_AUTO_ID + " = " + auto_id;
 			result = statement.executeUpdate(sql);
 		} catch (SQLException e) {

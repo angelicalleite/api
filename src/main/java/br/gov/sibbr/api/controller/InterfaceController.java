@@ -15,38 +15,38 @@
 
 package br.gov.sibbr.api.controller;
 
-import org.springframework.boot.autoconfigure.web.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.sibbr.api.model.LoginForm;
-import br.gov.sibbr.api.service.AuthService;
 
 /**
  * Controller for the general html templates.
  * 
  * @author Pedro Guimarães
+ * @author Leonardo Trindade de Carvalho
  *
  */
 @Controller
-public class InterfaceController implements ErrorController {
+public class InterfaceController extends AbstractController {
 
 	private final String ERROR_PATH = "/erro";
-
-	private AuthService authService = new AuthService();
 
 	/* POST methods: */
 
 	// Method responsible for managing occurrence requests
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@RequestMapping(value = "login", method = RequestMethod.POST)
 	public String login(LoginForm loginForm, Model model) {
 		String email = loginForm.getEmail();
 		String password = loginForm.getPassword();
+		LOGGER.debug("Login de "+email);
 		if (email != null && password != null) {
 			String message = authService.checkPassword(email, password);
 			if (message == null) {
+				LOGGER.debug("Login Ok ! -- "+email);
 				// Successful authentication. Valid credentials, fetch user
 				// token:
 				String token = authService.fetchToken(email);
@@ -56,6 +56,7 @@ public class InterfaceController implements ErrorController {
 				}
 			}
 			model.addAttribute("message", message);
+			LOGGER.debug("Login de "+email+" com erro "+message);
 		}
 		return "login_fail";
 	}

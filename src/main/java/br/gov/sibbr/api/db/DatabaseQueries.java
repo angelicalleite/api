@@ -16,18 +16,34 @@
 package br.gov.sibbr.api.db;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import br.gov.sibbr.api.utils.TAXONOMIAS;
 
 /**
  * This class is responsible for providing access methods to the database through query implementations
  * @author Pedro Guimarães
  *
  */
+@Component
 public class DatabaseQueries {
 
-	private Connection conn = null;
+	@Autowired(required=true)
+	@Qualifier("ocorrenciasconex")
+	private Connection conn;
+	
+	protected final Logger LOGGER =  LoggerFactory.getLogger(DatabaseQueries.class);
 
 	public static final int RETURN_SOME_FIELDS = 0;
 	public static final int RETURN_ALL_FIELDS = 1;
@@ -38,36 +54,16 @@ public class DatabaseQueries {
 	public static final String SOME_OCCURRENCE_FIELDS = "auto_id, decimallatitude, decimallongitude";
 	public static final String OCCURRENCE_TABLE_RESOURCE_ID = "resource_id";
 	public static final String RESOURCE_FIELDS = "id, name, archive_url, gbif_package_id, record_count, publisher_fkey";
-
+	
+	
+	// Queries
+	public static final String QUERY_SCIENTIFIC_NAMES_RESOURCE = "SELECT distinct(occ.scientificname) FROM  occurrence occ, dwca_resource dcr where upper(occ.taxonrank) in (%) "+
+   " and occ.resource_id = dcr.id and dcr.id = ? and occ.scientificname is not null order by occ.scientificname";
+	
+	
 	/**
-	 * Default class constructor, creates a new connection to the database
-	 */
-	public DatabaseQueries() throws Exception {
-		Connection connection = DatabaseConnection.getConnection();
-		if (connection != null) {
-			this.conn = connection;
-		} else {
-			throw new Exception("Failled attempt to connect to database.");
-		}
-	}
-
-	/**
-	 * catch (SQLException e) { e.printStackTrace(); } return resultSet;
-	 * Constructor that receives a connection
-	 * 
-	 * @param connection
-	 */
-	public DatabaseQueries(Connection connection) throws Exception {
-		if (connection != null) {
-			this.conn = connection;
-		} else {
-			throw new Exception("Failled to connect to database. Null connection passed as argument.");
-		}
-	}
-
-	/**
-	 * Fetches records from dataportal schema, returning different sets of
-	 * fields from occurrence table that match the given scientificname;
+	 * Fetches records from data portal schema, returning different sets of
+	 * fields from occurrence table that match the given scientific name;
 	 * 
 	 * @param scientificname
 	 * @return
@@ -436,6 +432,7 @@ public class DatabaseQueries {
 		return resultSet;
 	}
 
+	
 	/**
 	 * Retrieve amount of classes, depending on taxon rank information.
 	 * 
@@ -508,7 +505,35 @@ public class DatabaseQueries {
 		return resultSet;
 	}
 
-	public void releaseConnection() {
-		DatabaseConnection.releaseConnection(conn);
+	/**
+	 * Retrieve amount of genders, depending on taxon rank information.
+	 * 
+	 * @return
+	 */
+	public ResultSet queryScienticNamesInaResource(TAXONOMIAS whichType, Long whichResource) {
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+		try {
+			statement = conn.prepareStatement(QUERY_SCIENTIFIC_NAMES_RESOURCE.replace("%", preparePlaceHolders(whichType.getSinonimos().length)));
+			statement.setLong(whichType.getSinonimos().length+1, whichResource);
+			LOGGER.debug("Query com : "+QUERY_SCIENTIFIC_NAMES_RESOURCE.replace("%", preparePlaceHolders(whichType.getSinonimos().length))+" e recurso id :"+whichResource);
+			setValues(statement,whichType.getSinonimos());
+			resultSet = statement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
 	}
+	
+	private static String preparePlaceHolders(int length) {
+	    return String.join(",", Collections.nCopies(length, "?"));
+	}
+	
+	private static void setValues(PreparedStatement preparedStatement, String... values) throws SQLException {
+	    for (int i = 0; i < values.length; i++) {
+	        preparedStatement.setObject(i + 1, values[i]);
+	    }
+	}
+	
 }
+

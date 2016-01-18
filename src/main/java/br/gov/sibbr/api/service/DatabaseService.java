@@ -18,15 +18,21 @@ package br.gov.sibbr.api.service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.annotation.PreDestroy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import br.gov.sibbr.api.db.DatabaseQueries;
 import br.gov.sibbr.api.db.Utils;
 import br.gov.sibbr.api.model.OccurrenceExpanded;
 import br.gov.sibbr.api.model.OccurrenceReduced;
 import br.gov.sibbr.api.model.Resource;
+import br.gov.sibbr.api.model.ScientificData;
 import br.gov.sibbr.api.model.StatsResult;
+import br.gov.sibbr.api.utils.TAXONOMIAS;
 
 /**
  * This class is responsible for communicating with the database to fetch
@@ -36,21 +42,13 @@ import br.gov.sibbr.api.model.StatsResult;
  * @author Pedro Guimarães
  *
  */
+@Component
 public class DatabaseService {
 
-	DatabaseQueries dbq = null;
+	@Autowired(required=true)
+	DatabaseQueries dbq;
 
-	/**
-	 * Default constructor, starts up a new connection to the database;
-	 */
-	public DatabaseService() {
-		try {
-			dbq = new DatabaseQueries();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	protected final Logger LOGGER =  LoggerFactory.getLogger(DatabaseService.class);
 	/**
 	 * Hits the db querying over table occurrence in search of matches for the
 	 * provided scientificname, returning a list of populated occurrence
@@ -582,12 +580,20 @@ public class DatabaseService {
 		return end-start;
 	}
 	
-	/**
-	 * Release database connection once the application stops running
-	 */
-	@PreDestroy
-	private void destroy() {
-		dbq.releaseConnection();
-		System.out.println("*** Destroying database connection [Clean up]");
+	public List<ScientificData> getScientifcDataOnResource(Long idResource, TAXONOMIAS tipoDado){
+		LOGGER.debug(String.format("Buscando por %s no Recurso %s..",tipoDado.getPortugues(), idResource));
+		ResultSet resultSet = null;
+		resultSet = dbq.queryScienticNamesInaResource(tipoDado, idResource);
+		List<ScientificData> output = new ArrayList<ScientificData>();
+		try {
+			while (resultSet.next()) {
+				output.add(new ScientificData(tipoDado, idResource, Utils.getString(resultSet, "scientificname")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		LOGGER.debug(String.format("Achados %s %s no Recurso %s..",output.size(),tipoDado.getPortugues(), idResource));
+		return output;
 	}
+
 }

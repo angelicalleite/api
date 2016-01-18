@@ -26,6 +26,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import br.gov.sibbr.api.db.DatabaseAuth;
 import br.gov.sibbr.api.db.Utils;
 import br.gov.sibbr.api.model.ApiUser;
@@ -37,6 +40,7 @@ import br.gov.sibbr.api.model.ApiUserResult;
  * @author Pedro Guimarães
  *
  */
+@Component
 public class AuthService {
 
 	public static char[] hexDigit = "0123456789abcdef".toCharArray();
@@ -46,15 +50,8 @@ public class AuthService {
 	// This is the default e-mail user for the system administer
 	public static String ADMIN_EMAIL = "admin@sibbr.gov.br";
 
-	DatabaseAuth dba = null;
-
-	public AuthService() {
-		try {
-			dba = new DatabaseAuth();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	@Autowired(required=true)
+	DatabaseAuth dba;
 
 	/**
 	 * Turn the plain text phrase into a hash, given the hash algorithm.

@@ -17,7 +17,9 @@ package br.gov.sibbr.api.controller;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +32,7 @@ import br.gov.sibbr.api.model.Resource;
 import br.gov.sibbr.api.model.ResourceResult;
 import br.gov.sibbr.api.service.AuthService;
 import br.gov.sibbr.api.service.DatabaseService;
+import br.gov.sibbr.api.utils.TAXONOMIAS;
 
 @RestController
 /**
@@ -37,11 +40,14 @@ import br.gov.sibbr.api.service.DatabaseService;
  * @author Pedro Guimarães
  *
  */
+@Component
 public class ResourceController {
 
-	// Auxiliary service class
-	DatabaseService databaseService = new DatabaseService();
-	AuthService authService = new AuthService();
+	@Autowired(required=true)
+	AuthService authService;
+	
+	@Autowired(required=true)
+	DatabaseService databaseService;
 
 	@RequestMapping(value = "/recursos", method = RequestMethod.GET)
 	public Object resources(@RequestParam(value = "token", defaultValue = "null") String token) {
@@ -95,4 +101,24 @@ public class ResourceController {
 		}
 		return new ErrorResult("No scientific name provided for the search");
 	}
+	
+	// Method responsible for returning the available scientific data within a resource
+		@RequestMapping(value = "/recursos/{id}/sdata", method = RequestMethod.GET)
+		public Object scientificDataByResource(@PathVariable String id,
+				@RequestParam(value = "token", defaultValue = "null") String token,
+				@RequestParam(value = "type", defaultValue = "genus") String theType
+				) {
+			Long intResourceId = Long.parseLong(id);
+			// Check of the user has proper access grant token
+			String tokenCheck = authService.checkToken(token);
+			// If user provided a valid token, proceed:
+			TAXONOMIAS theTax = TAXONOMIAS.getByLatinName(theType);
+			if (tokenCheck == null && theTax != null) {
+				return databaseService.getScientifcDataOnResource(intResourceId, theTax);
+			}
+			// The user has bad token authentication, display error message:
+			else {
+				return theTax == null ? new ErrorResult("Taxonomia Inválida") : new ErrorResult(tokenCheck) ;
+			}
+		}
 }

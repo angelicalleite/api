@@ -1,5 +1,6 @@
 package br.gov.sibbr.api.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,8 @@ import br.gov.sibbr.api.service.AuthService;
 public class AdminController {
 
 	// Service layer responsible for communicating with the database
-	AuthService authService = new AuthService();
+	@Autowired(required=true)
+	AuthService authService;
 
 	// Method responsible for providing the list of all users
 	@RequestMapping(value = "/admin/users", method = RequestMethod.GET)

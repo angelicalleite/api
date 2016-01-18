@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG" name="Explorer2">
+	<Appenders>
+		<RollingFile name="ErrorFile" fileName="logs/apiv12error.log" >
+			<PatternLayout pattern="%d - [%t] %-5p %c %x - %m%n" />
+		</RollingFile>
+		<RandomAccessFile name="LogFile" fileName="logs/apiv12.log" >
+			<PatternLayout pattern="%d - [%t] %-5p %c %x - %m%n" />
+		</RandomAccessFile>
+		<Console name="STDOUT" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d - [%t] %-5p %c %x - %m%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="br.gov.sibbr" level="DEBUG">
+			<AppenderRef ref="LogFile" />
+		</Logger>
+		<Logger name="org.thymeleaf.spring4" level="DEBUG">
+			<AppenderRef ref="LogFile" />
+		</Logger>
+		<Logger name="org.springframework" level="DEBUG">
+			<AppenderRef ref="LogFile" />
+		</Logger>
+		<Logger name="org.apache" level="INFO" >
+			<AppenderRef ref="LogFile" />
+		</Logger>
+
+		<Logger name="net.sf.ehcache" level="WARN" >
+			<AppenderRef ref="LogFile" />
+		</Logger>
+
+		<Root level="DEBUG" >
+			<AppenderRef ref="STDOUT" />
+			<AppenderRef ref="LogFile" />
+		</Root>
+		<Root level="ERROR" >
+			<AppenderRef ref="ErrorFile" />
+		</Root>		
+		
+	</Loggers>
+</Configuration>
