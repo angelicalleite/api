@@ -27,6 +27,8 @@ import org.springframework.stereotype.Component;
 
 import br.gov.sibbr.api.db.DatabaseQueries;
 import br.gov.sibbr.api.db.Utils;
+import br.gov.sibbr.api.model.Cidade;
+import br.gov.sibbr.api.model.Estado;
 import br.gov.sibbr.api.model.OccurrenceExpanded;
 import br.gov.sibbr.api.model.OccurrenceReduced;
 import br.gov.sibbr.api.model.Resource;
@@ -321,59 +323,22 @@ public class DatabaseService {
 	 * @return
 	 */
 	public ArrayList<?> processOccurrenceResultSet(ResultSet rs, int complete) {
-		ArrayList<OccurrenceExpanded> occurrencesExpanded = new ArrayList<OccurrenceExpanded>();
-		ArrayList<OccurrenceReduced> occurrencesReduced = new ArrayList<OccurrenceReduced>();
+		
 		if (complete == DatabaseQueries.RETURN_SOME_FIELDS) {
+			ArrayList<OccurrenceReduced> occurrencesReduced = new ArrayList<OccurrenceReduced>();
 			try {
 				while (rs.next()) {
-					Integer auto_id = Integer.parseInt(Utils.getString(rs, "auto_id"));
-					Double decimallatitude = Utils.getDouble(rs, "decimallatitude");
-					Double decimallongitude = Utils.getDouble(rs, "decimallongitude");
-					OccurrenceReduced occurrence = new OccurrenceReduced(auto_id, decimallatitude, decimallongitude);
-					occurrencesReduced.add(occurrence);
+					occurrencesReduced.add(new OccurrenceReduced(rs));
 				}
 				return occurrencesReduced;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		} else if (complete == DatabaseQueries.RETURN_ALL_FIELDS) {
+			ArrayList<OccurrenceExpanded> occurrencesExpanded = new ArrayList<OccurrenceExpanded>();
 			try {
 				while (rs.next()) {
-					Integer auto_id = Integer.parseInt(Utils.getString(rs, "auto_id"));
-					String resourcename = Utils.getString(rs, "resourcename");
-					String publishername = Utils.getString(rs, "publishername");
-					String kingdom = Utils.getString(rs, "kingdom");
-					String phylum = Utils.getString(rs, "phylum");
-					String _class = Utils.getString(rs, "_class");
-					String _order = Utils.getString(rs, "_order");
-					String family = Utils.getString(rs, "family");
-					String genus = Utils.getString(rs, "genus");
-					String specificepithet = Utils.getString(rs, "specificepithet");
-					String infraspecificepithet = Utils.getString(rs, "infraspecificepithet");
-					String species = Utils.getString(rs, "species");
-					String scientificname = Utils.getString(rs, "scientificname");
-					String taxonrank = Utils.getString(rs, "taxonrank");
-					String typestatus = Utils.getString(rs, "typestatus");
-					String recordedby = Utils.getString(rs, "recordedby");
-					String eventdate = Utils.getString(rs, "eventdate");
-					String continent = Utils.getString(rs, "continent");
-					String country = Utils.getString(rs, "country");
-					String stateprovince = Utils.getString(rs, "stateprovince");
-					String municipality = Utils.getString(rs, "municipality");
-					String county = Utils.getString(rs, "county");
-					Double minimumelevationinmeters = Utils.getDouble(rs, "minimumelevationinmeters");
-					Double maximumelevationinmeters = Utils.getDouble(rs, "maximumelevationinmeters");
-					Boolean hascoordinates = rs.getBoolean("hascoordinates");
-					Double decimallatitude = Utils.getDouble(rs, "decimallatitude");
-					Double decimallongitude = Utils.getDouble(rs, "decimallongitude");
-					Boolean hasmedia = rs.getBoolean("hasmedia");
-					String associatedmedia = Utils.getString(rs, "associatedmedia");
-					OccurrenceExpanded occurrence = new OccurrenceExpanded(auto_id, resourcename, publishername,
-							kingdom, phylum, _class, _order, family, genus, specificepithet, infraspecificepithet,
-							species, scientificname, taxonrank, typestatus, recordedby, eventdate, continent, country,
-							stateprovince, municipality, county, minimumelevationinmeters, maximumelevationinmeters,
-							hascoordinates, decimallatitude, decimallongitude, hasmedia, associatedmedia);
-					occurrencesExpanded.add(occurrence);
+					occurrencesExpanded.add(new OccurrenceExpanded(rs));
 				}
 				return occurrencesExpanded;
 			} catch (SQLException e) {
@@ -579,7 +544,7 @@ public class DatabaseService {
 	public Long calculateTimeLapse(Long start, Long end) {
 		return end-start;
 	}
-	
+
 	public List<ScientificData> getScientifcDataOnResource(Long idResource, TAXONOMIAS tipoDado){
 		LOGGER.debug(String.format("Buscando por %s no Recurso %s..",tipoDado.getPortugues(), idResource));
 		ResultSet resultSet = null;
@@ -595,5 +560,69 @@ public class DatabaseService {
 		LOGGER.debug(String.format("Achados %s %s no Recurso %s..",output.size(),tipoDado.getPortugues(), idResource));
 		return output;
 	}
+	
+	public List<Estado> getEstadosOnResource(Long idResource){
+		LOGGER.debug(String.format("Buscando por Estados no Recurso %s..",idResource));
+		ResultSet resultSet = null;
+		resultSet = dbq.queryStatesWithOcurrencesInaResource(idResource);
+		List<Estado> output = new ArrayList<Estado>();
+		try {
+			while (resultSet.next()) {
+				output.add(new Estado(resultSet.getLong(1), Utils.getString(resultSet, "sigla"), Utils.getString(resultSet, "nome")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		LOGGER.debug(String.format("Achados %s Estados no Recurso %s..",output.size(), idResource));
+		return output;
+	}
 
+	public List<Cidade> getCidadesOnResource(Long idResource){
+		LOGGER.debug(String.format("Buscando por Cidades no Recurso %s..",idResource));
+		ResultSet resultSet = null;
+		resultSet = dbq.queryCitiesWithOcurrencesInaResource(idResource);
+		List<Cidade> output = new ArrayList<Cidade>();
+		try {
+			while (resultSet.next()) {
+				output.add(new Cidade(resultSet.getLong(1), Utils.getString(resultSet, "nome")));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		LOGGER.debug(String.format("Achados %s Cidades no Recurso %s..",output.size(),idResource));
+		return output;
+	}
+	
+	public List<OccurrenceExpanded> getExtendedOcurrencesByResourceAndCity(Long idResource, Long idCity, Boolean ignoreNullGIS){
+		LOGGER.debug(String.format("Buscando por Ocorrências na Cidade de ID %s no Recurso %s..",idCity, idResource));
+		ResultSet resultSet = null;
+		resultSet = dbq.queryOcurrencesInaResourceInaCity(idResource, idCity, DatabaseQueries.RETURN_ALL_FIELDS, ignoreNullGIS);
+		List<OccurrenceExpanded> output = new ArrayList<OccurrenceExpanded>();
+		try {
+			while (resultSet.next()) {
+				output.add(new OccurrenceExpanded(resultSet));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		LOGGER.debug(String.format("Achados %s Ocorrências na Cidade %s no Recurso %s..",output.size(),idCity, idResource));
+		return output;
+	}
+	
+	public List<OccurrenceReduced> getReducedOcurrencesByResourceAndCity(Long idResource, Long idCity, Boolean ignoreNullGIS){
+		LOGGER.debug(String.format("Buscando por Ocorrências na Cidade de ID %s no Recurso %s..",idCity, idResource));
+		ResultSet resultSet = null;
+		resultSet = dbq.queryOcurrencesInaResourceInaCity(idResource, idCity, DatabaseQueries.RETURN_SOME_FIELDS, ignoreNullGIS);
+		List<OccurrenceReduced> output = new ArrayList<OccurrenceReduced>();
+		try {
+			while (resultSet.next()) {
+				output.add(new OccurrenceReduced(resultSet));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		LOGGER.debug(String.format("Achados %s Ocorrências na Cidade %s no Recurso %s..",output.size(),idCity, idResource));
+		return output;
+	}
+	
 }

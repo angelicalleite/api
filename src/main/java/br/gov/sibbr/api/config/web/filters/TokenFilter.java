@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.gov.sibbr.api.model.ErrorResult;
 import br.gov.sibbr.api.service.AuthService;
 
 @Component
@@ -40,20 +41,30 @@ public class TokenFilter implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
 		
+		
 		LOGGER.debug("preHandle() init - authService = "+authService);
+		
 		if (request.getParameter(TOKENPARAM) == null){
-			LOGGER.error("Token faltando, adieu");
-			return false;
-		}
-		String theToken = request.getParameter(TOKENPARAM).toString();
-		
-		if (theToken.isEmpty()){
+			request.setAttribute("terror", "Sem Token");
+			request.getRequestDispatcher("/unauth").forward(request, response);
 			LOGGER.error("Token vazio, adieu");
-			return false;
 		}
 		
+		String theToken = request.getParameter(TOKENPARAM).toString();
+		if (theToken.isEmpty()){
+			request.setAttribute("terror", "Sem Token");
+			request.getRequestDispatcher("/unauth").forward(request, response);
+			LOGGER.error("Token vazio, adieu");
+		}
 		
-		
+		String tokenCheck = authService.checkToken(theToken);
+		if (tokenCheck != null && ! tokenCheck.isEmpty()){
+			LOGGER.error("Token inválido : "+tokenCheck);
+			//request.getSession(true).setAttribute("terror", new ErrorResult(tokenCheck));
+			request.setAttribute("terror", tokenCheck);
+			request.getRequestDispatcher("/unauth").forward(request, response);
+		}
+
 		LOGGER.debug("preHandle() exit");
 		return true;
 	}

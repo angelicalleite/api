@@ -54,11 +54,22 @@ public class DatabaseQueries {
 	public static final String SOME_OCCURRENCE_FIELDS = "auto_id, decimallatitude, decimallongitude";
 	public static final String OCCURRENCE_TABLE_RESOURCE_ID = "resource_id";
 	public static final String RESOURCE_FIELDS = "id, name, archive_url, gbif_package_id, record_count, publisher_fkey";
+	public static final String NO_NULL_GIS = "and decimallatitude is not null and decimallatitude is not null";
+	
 	
 	
 	// Queries
-	public static final String QUERY_SCIENTIFIC_NAMES_RESOURCE = "SELECT distinct(occ.scientificname) FROM  occurrence occ, dwca_resource dcr where upper(occ.taxonrank) in (%) "+
+	private static final String QUERY_SCIENTIFIC_NAMES_RESOURCE = "SELECT distinct(occ.scientificname) FROM  occurrence occ, dwca_resource dcr where upper(occ.taxonrank) in (%) "+
    " and occ.resource_id = dcr.id and dcr.id = ? and occ.scientificname is not null order by occ.scientificname";
+	
+	private static final String QUERY_CITIES_OCURRENCE_RESOURCE = "SELECT distinct cdd.id, cdd.nome FROM  occurrence occ, cidades cdd where ( unaccent(upper(occ.county)) = cdd.nome_unaccent or "+
+	" unaccent(upper(occ.locality)) = cdd.nome_unaccent or unaccent(upper(occ.municipality)) = cdd.nome_unaccent) and occ.resource_id = ? order by cdd.nome";
+	
+	private static final String QUERY_OCURRENCES_CITY_RESOURCE = "SELECT % FROM  occurrence occ, cidades cdd where ( unaccent(upper(occ.county)) = cdd.nome_unaccent or "+
+			" unaccent(upper(occ.locality)) = cdd.nome_unaccent or unaccent(upper(occ.municipality)) = cdd.nome_unaccent) {OTHERAND}  and cdd.id = ? and occ.resource_id = ?";
+	
+	private static final String QUERY_STATES_OCURRENCE_RESOURCE = "SELECT distinct est.id, est.sigle, est.nome FROM  occurrence occ, estados est where ( unaccent(upper(occ.county)) = est.nome_unaccent or "+
+			" unaccent(upper(occ.locality)) = est.nome_unaccent or unaccent(upper(occ.municipality)) = est.nome_unaccent) and occ.resource_id = ? order by est.nome";
 	
 	
 	/**
@@ -506,7 +517,7 @@ public class DatabaseQueries {
 	}
 
 	/**
-	 * Retrieve amount of genders, depending on taxon rank information.
+	 * Retrieve the taxa data on as specific resource.
 	 * 
 	 * @return
 	 */
@@ -525,6 +536,69 @@ public class DatabaseQueries {
 		return resultSet;
 	}
 	
+	/**
+	 * Retrieve the Brazil's Cities with occurrences data on as specific resource.
+	 * 
+	 * @return
+	 */
+	public ResultSet queryCitiesWithOcurrencesInaResource(Long whichResource) {
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+		LOGGER.debug("Query com : "+QUERY_CITIES_OCURRENCE_RESOURCE.replace("?", String.valueOf(whichResource)));
+		try {
+			statement = conn.prepareStatement(QUERY_CITIES_OCURRENCE_RESOURCE);
+			statement.setLong(1, whichResource);
+			resultSet = statement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve the Brazil's States with occurrences data on as specific resource.
+	 * 
+	 * @return
+	 */
+	public ResultSet queryStatesWithOcurrencesInaResource(Long whichResource) {
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+		LOGGER.debug("Query com : "+QUERY_STATES_OCURRENCE_RESOURCE.replace("?", String.valueOf(whichResource)));
+		try {
+			statement = conn.prepareStatement(QUERY_STATES_OCURRENCE_RESOURCE);
+			statement.setLong(1, whichResource);
+			resultSet = statement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
+	/**
+	 * Retrieve the Brazil's States with occurrences data on as specific resource.
+	 * 
+	 * @return
+	 */
+	public ResultSet queryOcurrencesInaResourceInaCity(Long whichResource,Long whichCity,int todosRegistros, Boolean ignoreNullGIS) {
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+
+		LOGGER.debug("Query com : "+QUERY_OCURRENCES_CITY_RESOURCE.replace("%", RETURN_SOME_FIELDS == todosRegistros ? 
+				SOME_OCCURRENCE_FIELDS :ALL_OCCURRENCE_FIELDS ).replace("{OTHERAND}", ignoreNullGIS ? NO_NULL_GIS : "" ));
+		
+		try {
+			statement = conn.prepareStatement(QUERY_OCURRENCES_CITY_RESOURCE.replaceAll("%", RETURN_SOME_FIELDS == todosRegistros ? 
+					SOME_OCCURRENCE_FIELDS :ALL_OCCURRENCE_FIELDS ).replace("{OTHERAND}", ignoreNullGIS ? NO_NULL_GIS : "" ));
+			statement.setLong(1, whichCity);
+			statement.setLong(2, whichResource);
+			resultSet = statement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+
+	
 	private static String preparePlaceHolders(int length) {
 	    return String.join(",", Collections.nCopies(length, "?"));
 	}
@@ -534,6 +608,17 @@ public class DatabaseQueries {
 	        preparedStatement.setObject(i + 1, values[i]);
 	    }
 	}
+	
+	/**
+	 * SELECT count(occ.*) FROM  occurrence occ, cidades cdd
+where unaccent(upper(occ.county)) = cdd.nome_unaccent;
+
+SELECT COUNT(occ.*) FROM  occurrence occ, cidades cdd
+where unaccent(upper(occ.locality)) = cdd.nome_unaccent;
+
+SELECT count( occ.*) FROM  occurrence occ, cidades cdd
+where unaccent(upper(occ.municipality)) = cdd.nome_unaccent;
+	 */
 	
 }
 

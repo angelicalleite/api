@@ -73,52 +73,64 @@ public class ResourceController {
 			@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit,
-			@RequestParam(value = "fields", defaultValue = "0") String fields,
-			@RequestParam(value = "token", defaultValue = "null") String token) {
+			@RequestParam(value = "fields", defaultValue = "0") String fields) {
 		Long startTimeInMs = System.currentTimeMillis();
 		int intResourceId = Integer.parseInt(id);
 		int intLimit = Integer.parseInt(limit);
 		int intFields = Integer.parseInt(fields);
-		// Check of the user has proper access grant token
-		String tokenCheck = authService.checkToken(token);
-		// If user provided a valid token, proceed:
-		if (tokenCheck == null) {
-			if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-				ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, false, intLimit,
-						intFields, intResourceId);
-				Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
-				return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
-			} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-				ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, true, intLimit,
-						intFields, intResourceId);
-				Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
-				return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
-			}
+		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
+			ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, false, intLimit,
+					intFields, intResourceId);
+			Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+			return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
+		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
+			ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, true, intLimit,
+					intFields, intResourceId);
+			Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+			return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
 		}
-		// The user has bad token authentication, display error message:
-		else {
-			return new ErrorResult(tokenCheck);
-		}
+		
 		return new ErrorResult("No scientific name provided for the search");
 	}
 	
 	// Method responsible for returning the available scientific data within a resource
 		@RequestMapping(value = "/recursos/{id}/sdata", method = RequestMethod.GET)
 		public Object scientificDataByResource(@PathVariable String id,
-				@RequestParam(value = "token", defaultValue = "null") String token,
-				@RequestParam(value = "type", defaultValue = "genus") String theType
-				) {
-			Long intResourceId = Long.parseLong(id);
-			// Check of the user has proper access grant token
-			String tokenCheck = authService.checkToken(token);
-			// If user provided a valid token, proceed:
-			TAXONOMIAS theTax = TAXONOMIAS.getByLatinName(theType);
-			if (tokenCheck == null && theTax != null) {
+				@RequestParam(value = "type", defaultValue = "genus") String theType) {
+
+			if (id == null){
+				return new ErrorResult("Recurso Inválido");
+			}
+			if (theType != null && ! theType.isEmpty()) {
+				Long intResourceId = Long.parseLong(id);
+				TAXONOMIAS theTax = TAXONOMIAS.getByLatinName(theType);
 				return databaseService.getScientifcDataOnResource(intResourceId, theTax);
 			}
-			// The user has bad token authentication, display error message:
 			else {
-				return theTax == null ? new ErrorResult("Taxonomia Inválida") : new ErrorResult(tokenCheck) ;
+				return new ErrorResult("Taxonomia Inválida");
+			}
+		}
+		
+		@RequestMapping(value = "/recursos/{id}/estados", method = RequestMethod.GET)
+		public Object estadosByResource(@PathVariable String id) {
+			if (id != null) {
+				Long intResourceId = Long.parseLong(id);
+				return databaseService.getEstadosOnResource(intResourceId);
+			}
+			else {
+				return new ErrorResult("Recurso Inválido");
+			}
+		}
+		
+		@RequestMapping(value = "/recursos/{id}/cidades", method = RequestMethod.GET)
+		public Object cidadesByResource(@PathVariable String id) {
+			
+			if (id != null) {
+				Long intResourceId = Long.parseLong(id);
+				return databaseService.getCidadesOnResource(intResourceId);
+			}
+			else {
+				return new ErrorResult("Recurso Inválido");
 			}
 		}
 }

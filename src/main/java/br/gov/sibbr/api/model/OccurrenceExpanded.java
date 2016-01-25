@@ -15,6 +15,11 @@
 
 package br.gov.sibbr.api.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import br.gov.sibbr.api.db.Utils;
+
 /**
  * This class should model the subset of occurrence fields that will be
  * delivered in the output for each occurrence record that matches the queries
@@ -23,7 +28,7 @@ package br.gov.sibbr.api.model;
  *
  */
 public class OccurrenceExpanded {
-	public Integer auto_id;
+	public Long auto_id;
 	public String resourcename;
 	public String publishername;
 	public String kingdom;
@@ -85,7 +90,7 @@ public class OccurrenceExpanded {
 	 * @param hasmedia
 	 * @param associatedmedia
 	 */
-	public OccurrenceExpanded(Integer auto_id, String resourcename, String publishername, String kingdom, String phylum,
+	public OccurrenceExpanded(Long auto_id, String resourcename, String publishername, String kingdom, String phylum,
 			String _class, String _order, String family, String genus, String specificepithet,
 			String infraspecificepithet, String species, String scientificname, String taxonrank, String typestatus,
 			String recordedby, String eventdate, String continent, String country, String stateprovince,
@@ -122,6 +127,39 @@ public class OccurrenceExpanded {
 		this.hasmedia = hasmedia;
 		this.associatedmedia = associatedmedia;
 	}
+	
+	public OccurrenceExpanded(ResultSet rSet) throws SQLException {
+		this.auto_id = rSet.getLong(1);
+		this.resourcename = Utils.getString(rSet, "resourcename");
+		this.publishername = Utils.getString(rSet, "publishername");
+		this.kingdom = Utils.getString(rSet, "kingdom");
+		this.phylum = Utils.getString(rSet, "phylum");
+		this._class = Utils.getString(rSet, "_class");
+		this._order = Utils.getString(rSet, "_order");
+		this.family = Utils.getString(rSet, "family");
+		this.genus = Utils.getString(rSet, "genus");
+		this.specificepithet = Utils.getString(rSet, "specificepithet");
+		this.infraspecificepithet = Utils.getString(rSet, "infraspecificepithet");
+		this.species = Utils.getString(rSet, "species");
+		this.scientificname = Utils.getString(rSet, "scientificname");
+		this.taxonrank = Utils.getString(rSet, "taxonrank");
+		this.typestatus = Utils.getString(rSet, "typestatus");
+		this.recordedby = Utils.getString(rSet, "recordedby");
+		this.eventdate = Utils.getString(rSet, "eventdate");
+		this.continent = Utils.getString(rSet, "continent");
+		this.country = Utils.getString(rSet, "country");
+		this.stateprovince = Utils.getString(rSet, "stateprovince");
+		this.municipality = Utils.getString(rSet, "municipality");
+		this.county = Utils.getString(rSet, "county");
+		
+		this.minimumelevationinmeters = Utils.getDouble(rSet, "minimumelevationinmeters");
+		this.maximumelevationinmeters = Utils.getDouble(rSet, "maximumelevationinmeters");
+		this.hascoordinates = rSet.getBoolean("hascoordinates");
+		this.decimallatitude = Utils.getDouble(rSet, "decimallatitude");
+		this.decimallongitude = Utils.getDouble(rSet, "decimallongitude");
+		this.hasmedia = rSet.getBoolean("hasmedia");
+		this.associatedmedia = Utils.getString(rSet, "associatedmedia");
+	}
 
 	/**
 	 * Default constructor for some of the available filters for the API queries
@@ -129,13 +167,13 @@ public class OccurrenceExpanded {
 	 * @param decimallatitude
 	 * @param decimallongtude
 	 */
-	public OccurrenceExpanded(Integer auto_id, Double decimallatitude, Double decimallongtude) {
+	public OccurrenceExpanded(Long auto_id, Double decimallatitude, Double decimallongtude) {
 		this.auto_id = auto_id;
 		this.decimallatitude = decimallatitude;
 		this.decimallongitude = decimallongtude;
 	}
 
-	public Integer getAuto_id() {
+	public Long getAuto_id() {
 		return auto_id;
 	}
 
@@ -347,7 +385,7 @@ public class OccurrenceExpanded {
 		this.associatedmedia = associatedmedia;
 	}
 
-	public void setAuto_id(Integer auto_id) {
+	public void setAuto_id(Long auto_id) {
 		this.auto_id = auto_id;
 	}
 

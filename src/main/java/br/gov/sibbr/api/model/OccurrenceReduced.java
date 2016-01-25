@@ -15,6 +15,11 @@
 
 package br.gov.sibbr.api.model;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import br.gov.sibbr.api.db.Utils;
+
 /**
  * This class should model the subset of occurrence fields that will be
  * delivered in the output for each occurrence record that matches the queries
@@ -23,7 +28,7 @@ package br.gov.sibbr.api.model;
  *
  */
 public class OccurrenceReduced {
-	public Integer auto_id;
+	public Long auto_id;
 	public Double decimallatitude;
 	public Double decimallongitude;
 
@@ -33,17 +38,24 @@ public class OccurrenceReduced {
 	 * @param decimallatitude
 	 * @param decimallongtude
 	 */
-	public OccurrenceReduced(Integer auto_id, Double decimallatitude, Double decimallongtude) {
+	public OccurrenceReduced(Long auto_id, Double decimallatitude, Double decimallongtude) {
 		this.auto_id = auto_id;
 		this.decimallatitude = decimallatitude;
 		this.decimallongitude = decimallongtude;
 	}
+	
+	public OccurrenceReduced(ResultSet rSet) throws SQLException {
+		this.auto_id = rSet.getLong("auto_id");
+		this.decimallatitude = Utils.getDouble(rSet, "decimallatitude");
+		this.decimallongitude = Utils.getDouble(rSet, "decimallongitude");
 
-	public Integer getAuto_id() {
+	}
+
+	public Long getAuto_id() {
 		return auto_id;
 	}
 
-	public void setAuto_id(Integer auto_id) {
+	public void setAuto_id(Long auto_id) {
 		this.auto_id = auto_id;
 	}
 

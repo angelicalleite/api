@@ -205,4 +205,9 @@ public class InterfaceController extends AbstractController {
 	public String getErrorPath() {
 		return ERROR_PATH;
 	}
+	
+	@RequestMapping(value = "unauth")
+	public String unauth() {
+		return "unauth";
+	}
 }

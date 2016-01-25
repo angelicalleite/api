@@ -1,22 +1,22 @@
 package br.gov.sibbr.api.config;
 
-import org.springframework.context.MessageSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.web.AnnotationConfigWebContextLoader;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
+import br.gov.sibbr.api.config.web.filters.TokenFilter;
 
 @WebAppConfiguration
 @EnableWebMvc
@@ -27,6 +27,9 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 @ContextConfiguration(loader = AnnotationConfigWebContextLoader.class, classes = { ApplicationConfig.class })
 public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
+	@Autowired(required=true)
+	TokenFilter tFilter;
+	
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
@@ -65,6 +68,12 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 		return viewResolver;
 	}
 
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+	    registry.addInterceptor(tFilter).excludePathPatterns("/admin/**","/unauth",
+	    		"/alterarSenha","/login","/registrar","/estatisticas","/recurso","/ocorrencia","/erro");
+	}
+	
 /*	@Bean(name = "messageSource")
 	public MessageSource getMessageSource() {
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -73,4 +82,5 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 		return messageSource;
 	}
 */
+	
 }

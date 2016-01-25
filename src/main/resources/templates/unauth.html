@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Interface: SiBBr API</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+</head>
+<body>
+	<h1>Interface</h1>
+	<p th:text="'Você possui um erro na sua consulta. :'" />
+	<p th:text="${#httpServletRequest.getAttribute('terror')}" />
+	
+	<p> Você pode verificar a sintaxe e os parâmetros na <a href="https://gbif.sibbr.gov.br/api" target="_self">página inicial da interface</a></p>
+</body>
+</html>

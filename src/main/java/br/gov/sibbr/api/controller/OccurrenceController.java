@@ -17,7 +17,10 @@ package br.gov.sibbr.api.controller;
 
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,11 +39,14 @@ import br.gov.sibbr.api.service.DatabaseService;
  *
  */
 @RestController
+@Component
 public class OccurrenceController {
 
-	// Auxiliary service classes
-	DatabaseService databaseService = new DatabaseService();
-	AuthService authService = new AuthService();
+	@Autowired(required=true)
+	AuthService authService;
+	
+	@Autowired(required=true)
+	DatabaseService databaseService;
 
 	// Method responsible for managing occurrence requests
 	@Cacheable("occurrence")
@@ -49,35 +55,54 @@ public class OccurrenceController {
 			@RequestParam(value = "scientificname", defaultValue = "null") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") String limit,
-			@RequestParam(value = "fields", defaultValue = "0") String fields,
-			@RequestParam(value = "token", defaultValue = "null") String token) {
+			@RequestParam(value = "fields", defaultValue = "0") String fields) {
 		Long startTimeInMs = System.currentTimeMillis();
 		int intLimit = Integer.parseInt(limit);
 		int intFields = Integer.parseInt(fields);
-		// Check of the user has proper access grant token
-		String tokenCheck = authService.checkToken(token);
-		// If user provided a valid token, proceed:
-		if (tokenCheck == null) {
-			// Avoid returning all records when no filter is provided
-			if (!scientificname.equalsIgnoreCase("null")) {
-				if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-					ArrayList<?> occurrences = databaseService.fetchOccurrences(scientificname, false, intLimit,
-							intFields);
-					Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
-					return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
-				} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-					ArrayList<?> occurrences = databaseService.fetchOccurrences(scientificname, true, intLimit,
-							intFields);
-					Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
-					return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
-				}
+		// Avoid returning all records when no filter is provided
+		if (!scientificname.equalsIgnoreCase("null")) {
+			if (ignorenullcoordinates.equalsIgnoreCase("false")) {
+				ArrayList<?> occurrences = databaseService.fetchOccurrences(scientificname, false, intLimit,
+						intFields);
+				Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+				return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
+			} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
+				ArrayList<?> occurrences = databaseService.fetchOccurrences(scientificname, true, intLimit,
+						intFields);
+				Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+				return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
 			}
-			// No scientificname provided:
-			return new ErrorResult("No scientific name provided for the search");
 		}
-		// The user has bad token authentication, display error message:
-		else {
-			return new ErrorResult(tokenCheck);
-		}
+		// No scientificname provided:
+		return new ErrorResult("No scientific name provided for the search");
+
+	}
+	
+	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idc}/alldata", method = RequestMethod.GET)
+	public Object fullOccurrencesOnaCityOnaResource(@PathVariable("ido") String ido,@PathVariable("idc") String idc,
+			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates) {
+			Long resourceId = Long.parseLong(ido);
+			Long cityId = Long.parseLong(idc);
+				if (resourceId != null && cityId != null) {
+					return databaseService.getExtendedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"));
+				}	
+				
+				return resourceId == null ? new ErrorResult("No Resource Id provided for the search"):
+					new ErrorResult("No City Id provided for the search");
+				
+		
+	}
+	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idc}/somedata", method = RequestMethod.GET)
+	public Object partialOccurrencesOnaCityOnaResource(@PathVariable("ido") String ido,@PathVariable("idc") String idc,
+			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates) {
+			Long resourceId = Long.parseLong(ido);
+			Long cityId = Long.parseLong(idc);
+			if (resourceId != null && cityId != null) {
+				return databaseService.getReducedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"));
+			}	
+			
+			return resourceId == null ? new ErrorResult("No Resource Id provided for the search"):
+				new ErrorResult("No City Id provided for the search");
+
 	}
 }
