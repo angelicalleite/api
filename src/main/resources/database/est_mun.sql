@@ -18,5 +18,5 @@ create index cidades_nome_unacc_index on cidades (nome_unaccent);
 
 create index estados_id_index on estados (id);
 create index estados_nome_index on estados (nome);
-create index estados_nome_index on estados (nome_unaccent);
+create index estados_nome_index_unac on estados (nome_unaccent);
 

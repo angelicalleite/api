@@ -62,11 +62,7 @@ public class DatabaseService {
 	public ArrayList<?> fetchOccurrences(String scientificname, boolean ignoreNullCoordinates, int limit, int fields) {
 		ArrayList<?> occurrences = null;
 		ResultSet rs = null;
-		if (ignoreNullCoordinates) {
-			rs = dbq.queryOccurrencesIgnoreNullCoordinates(scientificname, limit, fields);
-		} else {
-			rs = dbq.queryOccurrences(scientificname, limit, fields);
-		}
+		rs = dbq.queryOccurrences(scientificname, limit, fields, ignoreNullCoordinates);
 		if (rs != null) {
 			occurrences = processOccurrenceResultSet(rs, fields);
 		}
@@ -90,12 +86,7 @@ public class DatabaseService {
 	public ArrayList<?> fetchOccurrencesByResource(String scientificname, boolean ignoreNullCoordinates, int limit,
 			int fields, int resourceId) {
 		ArrayList<?> occurrences = null;
-		ResultSet rs = null;
-		if (ignoreNullCoordinates) {
-			rs = dbq.queryOccurrencesIgnoreNullCoordinatesByResource(scientificname, limit, fields, resourceId);
-		} else {
-			rs = dbq.queryOccurrencesByResource(scientificname, limit, fields, resourceId);
-		}
+		ResultSet rs = dbq.queryOccurrencesByResource(scientificname, limit, fields, resourceId, ignoreNullCoordinates);
 		if (rs != null) {
 			occurrences = processOccurrenceResultSet(rs, fields);
 		}

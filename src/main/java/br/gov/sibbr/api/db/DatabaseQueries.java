@@ -20,7 +20,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Arrays;
 import java.util.Collections;
 
 import org.slf4j.Logger;
@@ -68,7 +67,7 @@ public class DatabaseQueries {
 	private static final String QUERY_OCURRENCES_CITY_RESOURCE = "SELECT % FROM  occurrence occ, cidades cdd where ( unaccent(upper(occ.county)) = cdd.nome_unaccent or "+
 			" unaccent(upper(occ.locality)) = cdd.nome_unaccent or unaccent(upper(occ.municipality)) = cdd.nome_unaccent) {OTHERAND}  and cdd.id = ? and occ.resource_id = ?";
 	
-	private static final String QUERY_STATES_OCURRENCE_RESOURCE = "SELECT distinct est.id, est.sigle, est.nome FROM  occurrence occ, estados est where ( unaccent(upper(occ.county)) = est.nome_unaccent or "+
+	private static final String QUERY_STATES_OCURRENCE_RESOURCE = "SELECT distinct est.id, est.sigla, est.nome FROM  occurrence occ, estados est where ( unaccent(upper(occ.county)) = est.nome_unaccent or "+
 			" unaccent(upper(occ.locality)) = est.nome_unaccent or unaccent(upper(occ.municipality)) = est.nome_unaccent) and occ.resource_id = ? order by est.nome";
 	
 	
@@ -79,33 +78,47 @@ public class DatabaseQueries {
 	 * @param scientificname
 	 * @return
 	 */
-	public ResultSet queryOccurrences(String scientificname, int limit, int fields) {
+	public ResultSet queryOccurrences(String scientificname, int limit, int fields, Boolean ignoreNullGIS) {
 		ResultSet resultSet = null;
-		Statement statement = null;
+		PreparedStatement statement = null;
+		StringBuffer theQuery = new StringBuffer("SELECT " );
 		try {
-			statement = conn.createStatement();
-			// Avoid limit values out of the appropriate range ( <= 0)
-			if (limit > 0) {
-				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname + "\' limit " + limit);
-				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname + "\' limit " + limit);
+			if (fields == RETURN_ALL_FIELDS) {
+				theQuery.append(ALL_OCCURRENCE_FIELDS );
+			} else {
+				theQuery.append(SOME_OCCURRENCE_FIELDS);
+			}
+			theQuery.append(" from ");
+			theQuery.append(OCCURRENCE_TABLE );
+			theQuery.append(" WHERE ");
+			
+			if (! (scientificname.isEmpty() || scientificname.equalsIgnoreCase("null"))) {
+				theQuery.append(" WHERE UPPER(scientificname) = UPPER(?) ");
+				if (ignoreNullGIS){
+					theQuery.append(" AND ");
 				}
 			}
-			// No limits required, return all records
-			else {
-				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname + "\'");
-				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname + "\'");
-				}
+			
+			if (ignoreNullGIS){
+				theQuery.append(" decimallatitude is not null and decimallatitude is not null");
 			}
+			
+			if (limit > 0){
+				theQuery.append(" limit  ? ");
+			}
+			
+			statement = conn.prepareStatement(theQuery.toString());
+
+			statement.setString(1, scientificname);
+			if (limit > 0){
+				statement.setInt(2, limit);
+			}
+
+			resultSet = statement.executeQuery();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			LOGGER.error("Query "+theQuery.toString()+" causou a exceção "+e.getMessage()+" ("+e.getErrorCode()+") ");
 		}
 		return resultSet;
 	}
@@ -118,184 +131,58 @@ public class DatabaseQueries {
 	 * @param scientificname
 	 * @return
 	 */
-	public ResultSet queryOccurrencesByResource(String scientificname, int limit, int fields, int resourceId) {
+	public ResultSet queryOccurrencesByResource(String scientificname, int limit, int fields, int resourceId, Boolean ignoreNullGIS) {
 		ResultSet resultSet = null;
-		Statement statement = null;
+		PreparedStatement statement = null;
+		StringBuffer theQuery = new StringBuffer("SELECT " );
 		try {
-			statement = conn.createStatement();
-			//
-			if (scientificname.equalsIgnoreCase("") || scientificname.equalsIgnoreCase("null")) {
-				// Avoid limit values out of the appropriate range ( <= 0)
-				if (limit > 0) {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement.executeQuery(
-								"SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE + " WHERE "
-										+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement.executeQuery(
-								"SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE + " WHERE "
-										+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					}
-				}
-				// No limits required, return all records
-				else {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE " + OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE " + OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					}
-				}
+			
+			if (fields == RETURN_ALL_FIELDS) {
+				theQuery.append(ALL_OCCURRENCE_FIELDS );
 			} else {
-				if (limit > 0) {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname + "\' AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname + "\' AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					}
-				}
-				// No limits required, return all records
-				else {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname + "\' AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname + "\' AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					}
+				theQuery.append(SOME_OCCURRENCE_FIELDS);
+			}
+			theQuery.append(" from ");
+			theQuery.append(OCCURRENCE_TABLE );
+			theQuery.append(" WHERE ");
+			theQuery.append(OCCURRENCE_TABLE_RESOURCE_ID);
+			theQuery.append("  = ? ");
+			
+			if (! (scientificname.isEmpty() || scientificname.equalsIgnoreCase("null"))) {
+				theQuery.append(" AND WHERE UPPER(scientificname) = UPPER(?) ");
+				if (ignoreNullGIS){
+					theQuery.append(" AND ");
 				}
 			}
+			
+			if (ignoreNullGIS){
+				theQuery.append(" decimallatitude is not null and decimallatitude is not null");
+			}
+			
+			if (limit > 0){
+				theQuery.append(" limit  ? ");
+			}
+			
+			statement = conn.prepareStatement(theQuery.toString());
+			
+			int pos = 1;
+			statement.setInt(pos, resourceId);
+			
+			if (! (scientificname.isEmpty() || scientificname.equalsIgnoreCase("null"))) {
+				pos = pos+1;
+				statement.setString(pos, scientificname);
+			}
+			
+			if (limit > 0){
+				pos = pos+1;
+				statement.setInt(pos, limit);
+			}
+			
+			resultSet = statement.executeQuery();
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-		return resultSet;
-	}
-
-	/**
-	 * Fetches records from dataportal schema, returning the auto_id,
-	 * decimallatitude and decmiallongitude fields from occurrence table that
-	 * match the given scientificname;
-	 * 
-	 * @param scientificname
-	 * @return
-	 */
-	public ResultSet queryOccurrencesIgnoreNullCoordinates(String scientificname, int limit, int fields) {
-		ResultSet resultSet = null;
-		Statement statement = null;
-		try {
-			statement = conn.createStatement();
-			// Avoid limit values out of the appropriate range ( <= 0)
-			if (limit > 0) {
-				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname
-							+ "\' and decimallatitude is not null and decimallatitude is not null limit " + limit);
-				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname
-							+ "\' and decimallatitude is not null and decimallatitude is not null limit " + limit);
-				}
-			}
-			// No limits required, return all records
-			else {
-				if (fields == RETURN_ALL_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname
-							+ "\' and decimallatitude is not null and decimallatitude is not null");
-				} else if (fields == RETURN_SOME_FIELDS) {
-					resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-							+ " WHERE scientificname = \'" + scientificname
-							+ "\' and decimallatitude is not null and decimallatitude is not null");
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return resultSet;
-	}
-
-	/**
-	 * Fetches records from dataportal schema, returning fields from occurrence
-	 * table that match the given scientificname and field set, filtering by
-	 * resource;
-	 * 
-	 * @param scientificname
-	 * @return
-	 */
-	public ResultSet queryOccurrencesIgnoreNullCoordinatesByResource(String scientificname, int limit, int fields,
-			int resourceId) {
-		ResultSet resultSet = null;
-		Statement statement = null;
-		try {
-			statement = conn.createStatement();
-			if (scientificname.equalsIgnoreCase("") || scientificname.equalsIgnoreCase("null")) {
-				// Avoid limit values out of the appropriate range ( <= 0)
-				if (limit > 0) {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement
-								.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-										+ " WHERE decimallatitude is not null and decimallatitude is not null AND "
-										+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement
-								.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-										+ " WHERE decimallatitude is not null and decimallatitude is not null AND "
-										+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					}
-				}
-				// No limits required, return all records
-				else {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement
-								.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-										+ " WHERE decimallatitude is not null and decimallatitude is not null AND "
-										+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement
-								.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM " + OCCURRENCE_TABLE
-										+ " WHERE decimallatitude is not null and decimallatitude is not null AND "
-										+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					}
-				}
-			} else {
-				// Avoid limit values out of the appropriate range ( <= 0)
-				if (limit > 0) {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname
-								+ "\' and decimallatitude is not null and decimallatitude is not null AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname
-								+ "\' and decimallatitude is not null and decimallatitude is not null AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId + " limit " + limit);
-					}
-				}
-				// No limits required, return all records
-				else {
-					if (fields == RETURN_ALL_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + ALL_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname
-								+ "\' and decimallatitude is not null and decimallatitude is not null AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					} else if (fields == RETURN_SOME_FIELDS) {
-						resultSet = statement.executeQuery("SELECT " + SOME_OCCURRENCE_FIELDS + " FROM "
-								+ OCCURRENCE_TABLE + " WHERE scientificname = \'" + scientificname
-								+ "\' and decimallatitude is not null and decimallatitude is not null AND "
-								+ OCCURRENCE_TABLE_RESOURCE_ID + " = " + resourceId);
-					}
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.error("Query "+theQuery.toString()+" causou a exceção "+e.getMessage()+" ("+e.getErrorCode()+") ");
 		}
 		return resultSet;
 	}
