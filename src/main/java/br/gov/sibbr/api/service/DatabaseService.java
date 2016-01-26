@@ -536,10 +536,10 @@ public class DatabaseService {
 		return end-start;
 	}
 
-	public List<ScientificData> getScientifcDataOnResource(Long idResource, TAXONOMIAS tipoDado){
+	public List<ScientificData> getScientifcDataOnResource(Long idResource, TAXONOMIAS tipoDado, int limit){
 		LOGGER.debug(String.format("Buscando por %s no Recurso %s..",tipoDado.getPortugues(), idResource));
 		ResultSet resultSet = null;
-		resultSet = dbq.queryScienticNamesInaResource(tipoDado, idResource);
+		resultSet = dbq.queryScienticNamesInaResource(tipoDado, idResource, limit);
 		List<ScientificData> output = new ArrayList<ScientificData>();
 		try {
 			while (resultSet.next()) {
@@ -584,10 +584,10 @@ public class DatabaseService {
 		return output;
 	}
 	
-	public List<OccurrenceExpanded> getExtendedOcurrencesByResourceAndCity(Long idResource, Long idCity, Boolean ignoreNullGIS){
+	public List<OccurrenceExpanded> getExtendedOcurrencesByResourceAndCity(Long idResource, Long idCity, Boolean ignoreNullGIS, int limit){
 		LOGGER.debug(String.format("Buscando por Ocorrências na Cidade de ID %s no Recurso %s..",idCity, idResource));
 		ResultSet resultSet = null;
-		resultSet = dbq.queryOcurrencesInaResourceInaCity(idResource, idCity, DatabaseQueries.RETURN_ALL_FIELDS, ignoreNullGIS);
+		resultSet = dbq.queryOcurrencesInaResourceInaCity(idResource, idCity, DatabaseQueries.RETURN_ALL_FIELDS, ignoreNullGIS, limit);
 		List<OccurrenceExpanded> output = new ArrayList<OccurrenceExpanded>();
 		try {
 			while (resultSet.next()) {
@@ -600,10 +600,10 @@ public class DatabaseService {
 		return output;
 	}
 	
-	public List<OccurrenceReduced> getReducedOcurrencesByResourceAndCity(Long idResource, Long idCity, Boolean ignoreNullGIS){
+	public List<OccurrenceReduced> getReducedOcurrencesByResourceAndCity(Long idResource, Long idCity, Boolean ignoreNullGIS, int limit){
 		LOGGER.debug(String.format("Buscando por Ocorrências na Cidade de ID %s no Recurso %s..",idCity, idResource));
 		ResultSet resultSet = null;
-		resultSet = dbq.queryOcurrencesInaResourceInaCity(idResource, idCity, DatabaseQueries.RETURN_SOME_FIELDS, ignoreNullGIS);
+		resultSet = dbq.queryOcurrencesInaResourceInaCity(idResource, idCity, DatabaseQueries.RETURN_SOME_FIELDS, ignoreNullGIS, limit);
 		List<OccurrenceReduced> output = new ArrayList<OccurrenceReduced>();
 		try {
 			while (resultSet.next()) {

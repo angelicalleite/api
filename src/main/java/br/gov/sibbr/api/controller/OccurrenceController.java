@@ -80,11 +80,12 @@ public class OccurrenceController {
 	
 	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idc}/alldata", method = RequestMethod.GET)
 	public Object fullOccurrencesOnaCityOnaResource(@PathVariable("ido") String ido,@PathVariable("idc") String idc,
-			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates) {
+			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates,
+			@RequestParam(value = "limit", defaultValue = "0") int limit) {
 			Long resourceId = Long.parseLong(ido);
 			Long cityId = Long.parseLong(idc);
 				if (resourceId != null && cityId != null) {
-					return databaseService.getExtendedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"));
+					return databaseService.getExtendedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"), limit);
 				}	
 				
 				return resourceId == null ? new ErrorResult("No Resource Id provided for the search"):
@@ -94,11 +95,12 @@ public class OccurrenceController {
 	}
 	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idc}/somedata", method = RequestMethod.GET)
 	public Object partialOccurrencesOnaCityOnaResource(@PathVariable("ido") String ido,@PathVariable("idc") String idc,
-			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates) {
+			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates,
+			@RequestParam(value = "limit", defaultValue = "0") int limit) {
 			Long resourceId = Long.parseLong(ido);
 			Long cityId = Long.parseLong(idc);
 			if (resourceId != null && cityId != null) {
-				return databaseService.getReducedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"));
+				return databaseService.getReducedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"), limit);
 			}	
 			
 			return resourceId == null ? new ErrorResult("No Resource Id provided for the search"):

@@ -51,18 +51,12 @@ public class ResourceController {
 
 	@RequestMapping(value = "/recursos", method = RequestMethod.GET)
 	public Object resources(@RequestParam(value = "token", defaultValue = "null") String token) {
-		// Check of the user has proper access grant token
-		String tokenCheck = authService.checkToken(token);
-		// If user provided a valid token, proceed:
-		if (tokenCheck == null) {
 
-			Long startTimeInMs = System.currentTimeMillis();
-			ArrayList<Resource> resources = databaseService.fetchResources();
-			Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
-			ResourceResult resourceResult = new ResourceResult(resources, totalTimeInMs);
-			return resourceResult;
-		}
-		return new ErrorResult(tokenCheck);
+		Long startTimeInMs = System.currentTimeMillis();
+		ArrayList<Resource> resources = databaseService.fetchResources();
+		Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
+		ResourceResult resourceResult = new ResourceResult(resources, totalTimeInMs);
+		return resourceResult;
 	}
 
 	// Method responsible for managing occurrence requests with resource
@@ -72,19 +66,18 @@ public class ResourceController {
 	public Object occurrencesByResource(@PathVariable String id,
 			@RequestParam(value = "scientificname", defaultValue = "") String scientificname,
 			@RequestParam(value = "ignoreNullCoordinates", defaultValue = "false") String ignorenullcoordinates,
-			@RequestParam(value = "limit", defaultValue = "0") String limit,
+			@RequestParam(value = "limit", defaultValue = "0") int limit,
 			@RequestParam(value = "fields", defaultValue = "0") String fields) {
 		Long startTimeInMs = System.currentTimeMillis();
 		int intResourceId = Integer.parseInt(id);
-		int intLimit = Integer.parseInt(limit);
 		int intFields = Integer.parseInt(fields);
 		if (ignorenullcoordinates.equalsIgnoreCase("false")) {
-			ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, false, intLimit,
+			ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, false, limit,
 					intFields, intResourceId);
 			Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
 			return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
 		} else if (ignorenullcoordinates.equalsIgnoreCase("true")) {
-			ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, true, intLimit,
+			ArrayList<?> occurrences = databaseService.fetchOccurrencesByResource(scientificname, true, limit,
 					intFields, intResourceId);
 			Long totalTimeInMs = databaseService.calculateTimeLapse(startTimeInMs, System.currentTimeMillis());
 			return new OccurrenceResult(scientificname, occurrences, totalTimeInMs);
@@ -96,7 +89,8 @@ public class ResourceController {
 	// Method responsible for returning the available scientific data within a resource
 		@RequestMapping(value = "/recursos/{id}/sdata", method = RequestMethod.GET)
 		public Object scientificDataByResource(@PathVariable String id,
-				@RequestParam(value = "type", defaultValue = "genus") String theType) {
+				@RequestParam(value = "type", defaultValue = "genus") String theType,
+				@RequestParam(value = "limit", defaultValue = "0") int limit) {
 
 			if (id == null){
 				return new ErrorResult("Recurso Inválido");
@@ -104,7 +98,7 @@ public class ResourceController {
 			if (theType != null && ! theType.isEmpty()) {
 				Long intResourceId = Long.parseLong(id);
 				TAXONOMIAS theTax = TAXONOMIAS.getByLatinName(theType);
-				return databaseService.getScientifcDataOnResource(intResourceId, theTax);
+				return databaseService.getScientifcDataOnResource(intResourceId, theTax, limit);
 			}
 			else {
 				return new ErrorResult("Taxonomia Inválida");

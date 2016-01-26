@@ -408,17 +408,26 @@ public class DatabaseQueries {
 	 * 
 	 * @return
 	 */
-	public ResultSet queryScienticNamesInaResource(TAXONOMIAS whichType, Long whichResource) {
+	public ResultSet queryScienticNamesInaResource(TAXONOMIAS whichType, Long whichResource, int limit) {
 		ResultSet resultSet = null;
 		PreparedStatement statement = null;
+		StringBuffer queryBuff = new StringBuffer();
 		try {
-			statement = conn.prepareStatement(QUERY_SCIENTIFIC_NAMES_RESOURCE.replace("%", preparePlaceHolders(whichType.getSinonimos().length)));
+			queryBuff.append(QUERY_SCIENTIFIC_NAMES_RESOURCE.replace("%", preparePlaceHolders(whichType.getSinonimos().length)));
+			if (limit > 0){
+				queryBuff.append(" limit ?");
+			}
+			statement = conn.prepareStatement(queryBuff.toString());
 			statement.setLong(whichType.getSinonimos().length+1, whichResource);
-			LOGGER.debug("Query com : "+QUERY_SCIENTIFIC_NAMES_RESOURCE.replace("%", preparePlaceHolders(whichType.getSinonimos().length))+" e recurso id :"+whichResource);
+			if (limit > 0){
+				statement.setInt(whichType.getSinonimos().length+2, limit);
+			}
+			LOGGER.debug("Query com : "+queryBuff.toString()+" e recurso id :"+whichResource);
 			setValues(statement,whichType.getSinonimos());
 			resultSet = statement.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			LOGGER.error("Query "+queryBuff.toString()+" causou a exceção "+e.getMessage()+" ("+e.getErrorCode()+") ");
 		}
 		return resultSet;
 	}
@@ -466,21 +475,28 @@ public class DatabaseQueries {
 	 * 
 	 * @return
 	 */
-	public ResultSet queryOcurrencesInaResourceInaCity(Long whichResource,Long whichCity,int todosRegistros, Boolean ignoreNullGIS) {
+	public ResultSet queryOcurrencesInaResourceInaCity(Long whichResource,Long whichCity,int todosRegistros, Boolean ignoreNullGIS, int limit) {
 		ResultSet resultSet = null;
 		PreparedStatement statement = null;
-
-		LOGGER.debug("Query com : "+QUERY_OCURRENCES_CITY_RESOURCE.replace("%", RETURN_SOME_FIELDS == todosRegistros ? 
-				SOME_OCCURRENCE_FIELDS :ALL_OCCURRENCE_FIELDS ).replace("{OTHERAND}", ignoreNullGIS ? NO_NULL_GIS : "" ));
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append(QUERY_OCURRENCES_CITY_RESOURCE.replace("%", RETURN_SOME_FIELDS == todosRegistros ? 
+				SOME_OCCURRENCE_FIELDS :ALL_OCCURRENCE_FIELDS ).replace("{OTHERAND}", ignoreNullGIS ? NO_NULL_GIS : ""));
+		if (limit > 0){
+			queryBuff.append(" limit ?");
+		}
+		LOGGER.debug("Query com : "+queryBuff.toString());
 		
 		try {
-			statement = conn.prepareStatement(QUERY_OCURRENCES_CITY_RESOURCE.replaceAll("%", RETURN_SOME_FIELDS == todosRegistros ? 
-					SOME_OCCURRENCE_FIELDS :ALL_OCCURRENCE_FIELDS ).replace("{OTHERAND}", ignoreNullGIS ? NO_NULL_GIS : "" ));
+			statement = conn.prepareStatement(queryBuff.toString());
 			statement.setLong(1, whichCity);
 			statement.setLong(2, whichResource);
+			if (limit > 0){
+				statement.setInt(3, limit);
+			}
 			resultSet = statement.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			LOGGER.error("Query "+queryBuff.toString()+" causou a exceção "+e.getMessage()+" ("+e.getErrorCode()+") ");
 		}
 		return resultSet;
 	}
