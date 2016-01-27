@@ -12,6 +12,4 @@ create index api_token_token_index on api_token (token);
 create index ocurrence_rid_index on occurrence (resource_id);
 create index ocurrence_up_sc_name_index on occurrence (upper(scientificname));
 create index ocurrence_up_taxr_index on occurrence (upper(taxonrank));
-
-		
 		
