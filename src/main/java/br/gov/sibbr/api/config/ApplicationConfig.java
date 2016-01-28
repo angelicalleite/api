@@ -71,7 +71,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 	    registry.addInterceptor(tFilter).excludePathPatterns("/admin/**","/unauth",
-	    		"/alterarSenha","/login","/registrar","/estatisticas","/recurso","/ocorrencia","/erro");
+	    		"/alterarSenha","/login","/registrar","/estatisticas/**","/recurso","/ocorrencia","/erro");
 	}
 	
 /*	@Bean(name = "messageSource")

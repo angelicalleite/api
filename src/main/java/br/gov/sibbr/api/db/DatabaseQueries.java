@@ -125,7 +125,7 @@ public class DatabaseQueries {
 
 	/**
 	 * Fetches records from dataportal schema, returning different sets of
-	 * fields from occurrence table that match the given scientificname and
+	 * fields from occurrence table that match the given scientific name and
 	 * filtering by resource;
 	 * 
 	 * @param scientificname

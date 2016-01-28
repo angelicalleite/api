@@ -15,7 +15,9 @@
 
 package br.gov.sibbr.api.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,11 +32,16 @@ import br.gov.sibbr.api.service.DatabaseService;
  *
  */
 @RestController
+@Component
 public class StatisticsController {
 
-	// Auxiliary service class
-	DatabaseService databaseService = new DatabaseService();
-	AuthService authService = new AuthService();
+
+	@Autowired(required=true)
+	AuthService authService;
+	
+	@Autowired(required=true)
+	DatabaseService databaseService;
+
 
 	// Method responsible for managing occurrence requests
 	@RequestMapping(value = "/estatisticas/totalRegistros", method = RequestMethod.GET)

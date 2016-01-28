@@ -50,7 +50,7 @@ public class ResourceController {
 	DatabaseService databaseService;
 
 	@RequestMapping(value = "/recursos", method = RequestMethod.GET)
-	public Object resources(@RequestParam(value = "token", defaultValue = "null") String token) {
+	public Object resources() {
 
 		Long startTimeInMs = System.currentTimeMillis();
 		ArrayList<Resource> resources = databaseService.fetchResources();
