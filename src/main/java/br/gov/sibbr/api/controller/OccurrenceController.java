@@ -16,6 +16,7 @@
 package br.gov.sibbr.api.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -78,33 +79,37 @@ public class OccurrenceController {
 
 	}
 	
-	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idc}/alldata", method = RequestMethod.GET)
-	public Object fullOccurrencesOnaCityOnaResource(@PathVariable("ido") String ido,@PathVariable("idc") String idc,
+	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idcities}/alldata", method = RequestMethod.GET)
+	public Object fullOccurrencesOnaCityOnaResource(@PathVariable("ido") String ido,@PathVariable("idcities") Long[] idc,
 			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates,
 			@RequestParam(value = "limit", defaultValue = "0") int limit) {
 			Long resourceId = Long.parseLong(ido);
-			Long cityId = Long.parseLong(idc);
-				if (resourceId != null && cityId != null) {
-					return databaseService.getExtendedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"), limit);
-				}	
-				
-				return resourceId == null ? new ErrorResult("No Resource Id provided for the search"):
-					new ErrorResult("No City Id provided for the search");
-				
-		
-	}
-	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idc}/somedata", method = RequestMethod.GET)
-	public Object partialOccurrencesOnaCityOnaResource(@PathVariable("ido") String ido,@PathVariable("idc") String idc,
-			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates,
-			@RequestParam(value = "limit", defaultValue = "0") int limit) {
-			Long resourceId = Long.parseLong(ido);
-			Long cityId = Long.parseLong(idc);
-			if (resourceId != null && cityId != null) {
-				return databaseService.getReducedOcurrencesByResourceAndCity(resourceId, cityId, ignorenullcoordinates.equalsIgnoreCase("true"), limit);
+			if (resourceId != null && idc != null && idc.length > 0) {
+				if (idc.length == 1){
+					return databaseService.getExtendedOcurrencesByResourceAndCity(resourceId, idc[0], ignorenullcoordinates.equalsIgnoreCase("true"), limit);
+				}
+				return databaseService.getExtendedOcurrencesByResourceAndCities(resourceId, Arrays.asList(idc), ignorenullcoordinates.equalsIgnoreCase("true"), limit);
 			}	
 			
 			return resourceId == null ? new ErrorResult("No Resource Id provided for the search"):
-				new ErrorResult("No City Id provided for the search");
-
+				new ErrorResult("No Cities Ids provided for the search");
 	}
+	
+	@RequestMapping(value = "/ocorrencias/{ido}/cidade/{idcities}/somedata", method = RequestMethod.GET)
+	public Object partialOccurrencesOnManyCitiesOnaResource(@PathVariable("ido") String ido,@PathVariable("idcities") Long[] idc,
+			@RequestParam(value = "ignc", defaultValue = "false") String ignorenullcoordinates,
+			@RequestParam(value = "limit", defaultValue = "0") int limit) {
+			Long resourceId = Long.parseLong(ido);
+			if (resourceId != null && idc != null && idc.length > 0) {
+				if (idc.length == 1){
+					return databaseService.getReducedOcurrencesByResourceAndCity(resourceId, idc[0], ignorenullcoordinates.equalsIgnoreCase("true"), limit);
+				}
+				return databaseService.getReducedOcurrencesByResourceAndCities(resourceId, Arrays.asList(idc), ignorenullcoordinates.equalsIgnoreCase("true"), limit);
+			}	
+			
+			return resourceId == null ? new ErrorResult("No Resource Id provided for the search"):
+				new ErrorResult("No Cities Ids provided for the search");
+	}
+	
+	
 }

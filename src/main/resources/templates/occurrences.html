@@ -33,11 +33,11 @@
 				Estas consultas permitem buscar registros de ocorrência a partir da
 				aplicação do filtro nome científico (<b>scientificname</b>).
 			</p>
-			<p>Os resultados serão exibidos no formato JSON, com os seguintes
-				campos:</p>
+			<p>Os resultados serão exibidos no formato JSON, com duas semânticas:</p>
+			<p><h3>Retorno Completo</h3></p>
 			<ul>
 				<li><b>count</b> - Número de registros retornados pela
-					constula.</li>
+					consulta.</li>
 				<li><b>occurrences</b> - Lista de registros retornados pela
 					consulta, com os seguintes campos:</li>
 				<ul>
@@ -139,6 +139,29 @@
 				<li><b>queryLength</b> - Duração, em milissegundos, do tempo
 					necessário para realizar a consulta.</li>
 			</ul>
+			<p><h3>Retorno Sintético (para consultas geográficas)</h3></p>
+			<ul>
+				<li><b>count</b> - Número de registros retornados pela
+					consulta.</li>
+				<li><b>occurrences</b> - Lista de registros retornados pela
+					consulta, com os seguintes campos:</li>
+				<ul>
+					<li><b>auto_id</b> - Identificador único de uma ocorrência
+						dentro do sistema do <a href="http://gbif.sibbr.gov.br/explorador"
+						target="_blank">explorador de dados de biodiversidade</a>.</li>
+					<li><b>decimallatitude</b> - A latitude geográfica (em graus
+						decimais, utilizando o sistema de referência espacial dado em
+						geodeticDatum) do centro geográfico de uma localização. Os valores
+						positivos são ao norte do Equador, os valores negativos são ao
+						sul. Os valores corretos ficam entre -90 e 90.</li>
+					<li><b>decimallongitude</b> - A longitude geográfica (em graus
+						decimais, utilizando o sistema de referência espacial dada em
+						geodeticDatum) do centro geográfico de uma localização. Os valores
+						positivos estão a leste do meridiano de Greenwich, valores
+						negativos são a oeste dela. Os valores legais encontram-se entre
+						-180 e 180.</li>
+				</ul>
+			</ul>
 
 			<h3>Parâmetros</h3>
 			<ul>
@@ -153,9 +176,8 @@
 							venaticus&amp;token=VALID_TOKEN</a></i>
 				</p>
 				<li><b>fields</b> - Indica o conjunto de campos a serem
-					retornados. O valor 1 retorna todos os campos disponíveis, enquanto
-					o valor 0 retorna apenas o subconjunto de campos {auto_id,
-					decimalLatitude, decimallongitude}. <b>(Valor padrão é 0)</b>.</li>
+					retornados. O valor 1 indica o <i>Retorno Completo</i>, enquanto
+					o valor 0 <i>Retorno Sintético</i>. <b>(Valor padrão é 0)</b>.</li>
 				<p>
 					Ex.: <i><a
 						href="https://gbif.sibbr.gov.br/api/v1.2/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token=VALID_TOKEN">https://gbif.sibbr.gov.br/api/v1.2/ocorrencias?scientificname=Rhipidomys%20mastacalis&amp;fields=1&amp;token=VALID_TOKEN</a></i>
@@ -176,21 +198,59 @@
 						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token=VALID_TOKEN</a></i>
 				</p>
 			</ul>
+			<h2>
+				2. /ocorrencias/* - Buscas Específicas
+			</h2>
+			<p>
+				Estas consultas permitem buscar registros de ocorrências a partir de Recursos e/ou cidades
+			</p>
+			<ul>
+				<li>
+					<b>/ocorrencias/{id recurso}/cidade/{idcidade1,idcidade2,idcidade3,...}/alldata</b> : <i>Retorno Completo</i> de Ocorrências do recurso de ID 
+							<i>id recurso</i> nas cidades de IDs <i>{idcidade1,idcidade2,idcidade3,...}</i> 
+					</br>
+					<b>/ocorrencias/{id recurso}/cidade/idcidade1,idcidade2,idcidade3,.../somedata</b> : <i>Retorno Sintético</i> de Ocorrências do recurso de ID 
+							<i>id recurso</i> nas cidades de IDs <i>{idcidade1,idcidade2,idcidade3,...}</i>
+					</br>
+					Os IDs das cidades podem ser adquiridos nas consultas por <a href="./recurso#rec">Recurso</a> ou <a href="./recurso#est">Estado</a>
+				</li>
+				<li>
+					Parâmetros:
+					<ul>
+						<li>
+							<b>ignc</b> - Ignore dados sem dados geográficos. <i>true</i> ou <i>false</i> 
+							
+						</li>
+						<li>
+							<b>limit</b> - Número de Registros a retornar. Inteiro.
+						</li>
+					</ul>
+				</li>
+				<li>
+				<p>
+					Uso: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/ocorrencias/122/cidade/1501303,2203107,2921906/alldata?token={VALID_TOKEN}&limit=10"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/ocorrencias/122/cidade/1501303,2203107,2921906/alldata?token={VALID_TOKEN}&limit=10</a></i>
+				</p>
+				</li>
+			</ul>
 		</div>
 		<div id="english">
-			<br/>
+						<br/>
 			<p>This interface allows access to species occurrence data
 				records from the SiBBr explorer. To query the interface, please
-				follow the instructions:</p>
-			<h2>1. /ocorrencias - Occurrence records</h2>
-			<p>
+				follow the directions below:</p>
+			<h2>
+				<h2>1. /ocorrencias - Occurrence records</h2>
+			</h2>
+						<p>
 				These queries allow the search for occurrence records based on the
 				usage of the scientific name filter (<b>scientificname</b>).
 			</p>
-			<p>Results will be returned in the JSON format, with the
-				following fields:</p>
+			<p>The results will be availeable in JSON notation, with two distinct semantics:</p>
+			<p><h3>Complete Data</h3></p>
 			<ul>
-				<li><b>count</b> - Amount of records returned by the query.</li>
+				<li><b>count</b> - Number of records returned from the query.</li>
 				<li><b>occurrences</b> - List of records returned by the query,
 					with the following fields:</li>
 				<ul>
@@ -284,6 +344,27 @@
 				<li><b>queryLength</b> - Length, in milliseconds, of the amount
 					of time required to fetch the results.</li>
 			</ul>
+			<p><h3>Minimal Data (meant for geographical use)</h3></p>
+			<ul>
+				<li><b>count</b> - Number of records returned from the query.</li>
+				<li><b>occurrences</b> - List of records returned by the query,
+					with the following fields:</li>
+				<ul>
+					<li><b>auto_id</b> - Unique identifier of an occurrence within
+						the <a href="http://gbif.sibbr.gov.br/explorador" target="_blank">biodiversity data explorer</a>.</li>
+					<li><b>decimallatitude</b> - The geographic latitude (in
+						decimal degrees, using the spatial reference system given in
+						geodeticDatum) of the geographic center of a Location. Positive
+						values are north of the Equator, negative values are south of it.
+						Legal values lie between -90 and 90, inclusive.</li>
+					<li><b>decimallongitude</b> - The geographic longitude (in
+						decimal degrees, using the spatial reference system given in
+						geodeticDatum) of the geographic center of a Location. Positive
+						values are east of the Greenwich Meridian, negative values are
+						west of it. Legal values lie between -180 and 180, inclusive.</li>
+				</ul>
+			</ul>
+
 			<h3>Parameters</h3>
 			<ul>
 				<li><b>scientificname</b> - Scientific name of the taxon to be
@@ -324,6 +405,42 @@
 						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/ocorrencias?scientificname=Aeschynomene
 							falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token=VALID_TOKEN</a></i>
 				</p>
+			</ul>
+			<h2>
+				2. /ocorrencias/* - Specific Queries
+			</h2>
+			<p>
+				This queries allow search based on Resources and/or Cities
+			</p>
+			<ul>
+				<li>
+					<b>/ocorrencias/{id recurso}/cidade/{idcidade1,idcidade2,idcidade3,...}/alldata</b> : <i>Complete Data</i> of Occurences on the resource with ID 
+							<i>id recurso</i> on cities with the IDs <i>{idcidade1,idcidade2,idcidade3,...}</i> 
+					</br>
+					<b>/ocorrencias/{id recurso}/cidade/idcidade1,idcidade2,idcidade3,.../somedata</b> : <i>Minimal Data</i> of Occurences on the resource with ID 
+							<i>id recurso</i> on cities with the IDs <i>{idcidade1,idcidade2,idcidade3,...}</i> 
+					</br>
+					The cities' IDs are returned in the <a href="./recurso#rec">Resources</a> or <a href="./recurso#est">States</a> queries.
+				</li>
+				<li>
+					Parameters:
+					<ul>
+						<li>
+							<b>ignc</b> - Ignore ocurrences with no geographic data. <i>true</i> ou <i>false</i> 
+							
+						</li>
+						<li>
+							<b>limit</b> - Number of records to return. Integer.
+						</li>
+					</ul>
+				</li>
+				<li>
+				<p>
+					Sample use : <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/ocorrencias/122/cidade/1501303,2203107,2921906/alldata?token={VALID_TOKEN}&limit=10"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/ocorrencias/122/cidade/1501303,2203107,2921906/alldata?token={VALID_TOKEN}&limit=10</a></i>
+				</p>
+				</li>
 			</ul>
 		</div>
 	</div>

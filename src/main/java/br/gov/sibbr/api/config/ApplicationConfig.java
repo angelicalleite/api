@@ -48,7 +48,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 		templateResolver.setTemplateMode("XHTML");
 		templateResolver.setTemplateMode("LEGACYHTML5");
 	    templateResolver.setCharacterEncoding("UTF-8");
-	    templateResolver.setCacheable(true);
+	    templateResolver.setCacheable(false);
 		return templateResolver;
 	}
 
@@ -70,7 +70,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-	    registry.addInterceptor(tFilter).excludePathPatterns("/admin/**","/unauth",
+	    registry.addInterceptor(tFilter).excludePathPatterns("/","/admin/**","/unauth",
 	    		"/alterarSenha","/login","/registrar","/estatisticas/**","/recurso","/ocorrencia","/erro");
 	}
 	

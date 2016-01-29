@@ -36,8 +36,9 @@
 				campos:</p>
 			<ul>
 				<li><b>count</b> - Número total de recursos disponíveis.</li>
-				<li><b>resources</b> - Lista de recursos, com os seguintes
-					campos:</li>
+				<li>
+					<b>resources</b> - Lista de recursos, com os seguintes campos:
+				</li>
 				<ul>
 					<li><b>id</b> - Identificador único de um recurso dentro do
 						sistema do <a href="http://gbif.sibbr.gov.br/explorador"
@@ -64,6 +65,41 @@
 						href="https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}"
 						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos?token={VALID_TOKEN}</a></i>
 				</p>
+				<li id="est">
+					<i>Listar estados com ocorrências no recurso:</i>
+				</li>
+				<p>
+					Uso: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id}/estados?token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id}/estados?token={VALID_TOKEN}</a></i>
+				</p>
+				<ul>
+					<li>Os resultados serão exibidos no formato JSON, com os seguintes
+					campos:
+						<ul>
+							<li><b>id</b> - ID do estado.</li>
+							<li><b>sigla</b> - Sigla do estado.</li>
+							<li><b>nome</b> - Nome do Estado</li>
+						</ul>
+					</li>
+				</ul>
+				<li id="rec">
+					<i>Listar cidades com ocorrências no recurso:</i>
+				</li>
+				<p>
+					Uso: <i><a
+						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id}/cidades?token={VALID_TOKEN}"
+						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/{id}/cidades?token={VALID_TOKEN}</a></i>
+				</p>
+				<ul>
+					<li>Os resultados serão exibidos no formato JSON, com os seguintes
+					campos:
+						<ul>
+							<li><b>id</b> - ID da cidade.</li>
+							<li><b>nome</b> - Nome da Cidade</li>
+						</ul>
+					</li>
+				</ul>
 				<li><i>Listar os taxa existentes no recurso:</i></li>
 				<p>
 					Uso: <i><a
@@ -115,7 +151,8 @@
 				</p>
 
 				<li><i>Filtrar registros de ocorrência de um dado recurso,
-						utilizando parâmetros análogos aos da consulta de ocorrências:</i></li>
+						utilizando parâmetros análogos aos da consulta de ocorrências:</i>
+				</li>
 				<p>
 					Uso: <i><a
 						href="https://gbif.sibbr.gov.br/api/v1.2/recursos/{id_do_recurso}/ocorrencias&amp;token={VALID_TOKEN}"
@@ -156,7 +193,6 @@
 						target="_blank">https://gbif.sibbr.gov.br/api/v1.2/recursos/1/ocorrencias?scientificname=Aeschynomene%20falcata&amp;ignoreNullCoordinates=true&amp;limit=50&amp;token={VALID_TOKEN}</a></i>
 				</p>
 			</ul>
-
 			<p>
 				Estas consultas permitem buscar registros de ocorrência de um dado
 				recurso a partir da aplicação do filtro nome científico (<b>scientificname</b>).

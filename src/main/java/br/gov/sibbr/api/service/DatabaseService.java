@@ -18,6 +18,7 @@ package br.gov.sibbr.api.service;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -600,6 +601,22 @@ public class DatabaseService {
 		return output;
 	}
 	
+	public List<OccurrenceExpanded> getExtendedOcurrencesByResourceAndCities(Long idResource, List<Long> idCities, Boolean ignoreNullGIS, int limit){
+		LOGGER.debug(String.format("Buscando por Ocorrências nas Cidade de IDs %s no Recurso %s..",Arrays.asList(idCities), idResource));
+		ResultSet resultSet = null;
+		resultSet = dbq.queryOcurrencesInaResourceInManyCities(idResource, idCities, DatabaseQueries.RETURN_ALL_FIELDS, ignoreNullGIS, limit);
+		List<OccurrenceExpanded> output = new ArrayList<OccurrenceExpanded>();
+		try {
+			while (resultSet.next()) {
+				output.add(new OccurrenceExpanded(resultSet));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		LOGGER.debug(String.format("Achados %s Ocorrências na Cidade %s no Recurso %s..",output.size(),Arrays.asList(idCities), idResource));
+		return output;
+	}
+	
 	public List<OccurrenceReduced> getReducedOcurrencesByResourceAndCity(Long idResource, Long idCity, Boolean ignoreNullGIS, int limit){
 		LOGGER.debug(String.format("Buscando por Ocorrências na Cidade de ID %s no Recurso %s..",idCity, idResource));
 		ResultSet resultSet = null;
@@ -615,5 +632,22 @@ public class DatabaseService {
 		LOGGER.debug(String.format("Achados %s Ocorrências na Cidade %s no Recurso %s..",output.size(),idCity, idResource));
 		return output;
 	}
+	
+	public List<OccurrenceReduced> getReducedOcurrencesByResourceAndCities(Long idResource, List<Long> idCities, Boolean ignoreNullGIS, int limit){
+		LOGGER.debug(String.format("Buscando por Ocorrências nas Cidade de IDs %s no Recurso %s..",Arrays.asList(idCities), idResource));
+		ResultSet resultSet = null;
+		resultSet = dbq.queryOcurrencesInaResourceInManyCities(idResource, idCities, DatabaseQueries.RETURN_SOME_FIELDS, ignoreNullGIS, limit);
+		List<OccurrenceReduced> output = new ArrayList<OccurrenceReduced>();
+		try {
+			while (resultSet.next()) {
+				output.add(new OccurrenceReduced(resultSet));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		LOGGER.debug(String.format("Achados %s Ocorrências na Cidade %s no Recurso %s..",output.size(),Arrays.asList(idCities), idResource));
+		return output;
+	}
+	
 	
 }

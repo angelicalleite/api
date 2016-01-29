@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,14 +59,17 @@ public class DatabaseQueries {
 	
 	
 	// Queries
-	private static final String QUERY_SCIENTIFIC_NAMES_RESOURCE = "SELECT distinct(occ.scientificname) FROM  occurrence occ, dwca_resource dcr where upper(occ.taxonrank) in (%) "+
+	public static final String QUERY_SCIENTIFIC_NAMES_RESOURCE = "SELECT distinct(occ.scientificname) FROM  occurrence occ, dwca_resource dcr where upper(occ.taxonrank) in (%) "+
    " and occ.resource_id = dcr.id and dcr.id = ? and occ.scientificname is not null order by occ.scientificname";
 	
 	private static final String QUERY_CITIES_OCURRENCE_RESOURCE = "SELECT distinct cdd.id, cdd.nome FROM  occurrence occ, cidades cdd where ( unaccent(upper(occ.county)) = cdd.nome_unaccent or "+
 	" unaccent(upper(occ.locality)) = cdd.nome_unaccent or unaccent(upper(occ.municipality)) = cdd.nome_unaccent) and occ.resource_id = ? order by cdd.nome";
 	
-	private static final String QUERY_OCURRENCES_CITY_RESOURCE = "SELECT % FROM  occurrence occ, cidades cdd where ( unaccent(upper(occ.county)) = cdd.nome_unaccent or "+
+	private static final String QUERY_OCURRENCES_CITY_RESOURCE = "SELECT % FROM occurrence occ, cidades cdd where (unaccent(upper(occ.county)) = cdd.nome_unaccent or "+
 			" unaccent(upper(occ.locality)) = cdd.nome_unaccent or unaccent(upper(occ.municipality)) = cdd.nome_unaccent) {OTHERAND}  and cdd.id = ? and occ.resource_id = ?";
+	
+	private static final String QUERY_OCURRENCES_CITIES_RESOURCE = "SELECT % FROM  occurrence occ, cidades cdd where ( unaccent(upper(occ.county)) = cdd.nome_unaccent or "+
+			" unaccent(upper(occ.locality)) = cdd.nome_unaccent or unaccent(upper(occ.municipality)) = cdd.nome_unaccent) {OTHERAND}  and cdd.id in (!) and occ.resource_id = ?";
 	
 	private static final String QUERY_STATES_OCURRENCE_RESOURCE = "SELECT distinct est.id, est.sigla, est.nome FROM  occurrence occ, estados est where ( unaccent(upper(occ.county)) = est.nome_unaccent or "+
 			" unaccent(upper(occ.locality)) = est.nome_unaccent or unaccent(upper(occ.municipality)) = est.nome_unaccent) and occ.resource_id = ? order by est.nome";
@@ -423,7 +427,7 @@ public class DatabaseQueries {
 				statement.setInt(whichType.getSinonimos().length+2, limit);
 			}
 			LOGGER.debug("Query com : "+queryBuff.toString()+" e recurso id :"+whichResource);
-			setValues(statement,whichType.getSinonimos());
+			setValuesString(statement,whichType.getSinonimos());
 			resultSet = statement.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -501,17 +505,51 @@ public class DatabaseQueries {
 		return resultSet;
 	}
 
+	public ResultSet queryOcurrencesInaResourceInManyCities(Long whichResource,List<Long> whichCities,int todosRegistros, Boolean ignoreNullGIS, int limit) {
+		ResultSet resultSet = null;
+		PreparedStatement statement = null;
+		StringBuffer queryBuff = new StringBuffer();
+		queryBuff.append(QUERY_OCURRENCES_CITIES_RESOURCE.replace("%", RETURN_SOME_FIELDS == todosRegistros ? 
+				SOME_OCCURRENCE_FIELDS :ALL_OCCURRENCE_FIELDS ).replace("{OTHERAND}", ignoreNullGIS ? NO_NULL_GIS : "").
+				replace("!", preparePlaceHolders(whichCities.size())));
+		
+		if (limit > 0){
+			queryBuff.append(" limit ?");
+		}
+		
+		LOGGER.debug("Query com : "+queryBuff.toString());
+		
+		try {
+			statement = conn.prepareStatement(queryBuff.toString());
+			setValuesLong(statement, whichCities);
+			statement.setLong(whichCities.size()+1, whichResource);
+			if (limit > 0){
+				statement.setInt(whichCities.size()+2, limit);
+			}
+			resultSet = statement.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.error("Query "+queryBuff.toString()+" causou a exceção "+e.getMessage()+" ("+e.getErrorCode()+") ");
+		}
+		return resultSet;
+	}
 	
 	private static String preparePlaceHolders(int length) {
 	    return String.join(",", Collections.nCopies(length, "?"));
 	}
 	
-	private static void setValues(PreparedStatement preparedStatement, String... values) throws SQLException {
+	private static void setValuesString(PreparedStatement preparedStatement, String... values) throws SQLException {
 	    for (int i = 0; i < values.length; i++) {
-	        preparedStatement.setObject(i + 1, values[i]);
+	        preparedStatement.setString(i + 1, values[i]);
 	    }
 	}
 	
+	private static void setValuesLong(PreparedStatement preparedStatement, List<Long> values) throws SQLException {
+	    for (int i = 0; i < values.size(); i++) {
+	        preparedStatement.setLong(i + 1, values.get(i));
+	    }
+	}
+
 	/**
 	 * SELECT count(occ.*) FROM  occurrence occ, cidades cdd
 where unaccent(upper(occ.county)) = cdd.nome_unaccent;
